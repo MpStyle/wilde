@@ -7,7 +7,7 @@ import {ProjectTreeItemLoader} from "./ProjectTreeItemLoader";
 import {useDispatch, useSelector} from "react-redux";
 import {openEditor} from "../../slice/OpenEditorsSlice";
 import {AppDispatch, AppState} from "../../store/AppStore";
-import {scanProjectDirectory} from "../../slice/ProjectFolderSlice";
+import {scanProjectDirectory} from "../../slice/ProjectDirectorySlice";
 
 export const ProjectTreeItem: FunctionComponent<ProjectTreeItemProps> = props => {
     const directoryStructure = useSelector((appState: AppState) => appState.projectFolder.directoryStructure);

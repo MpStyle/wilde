@@ -31,10 +31,13 @@ export const openEditorsSlice = createSlice({
 
             state.openEditors.splice(editorIndex, 1);
         },
+        closeAllEditors: (state) => {
+            state.openEditors = [];
+        }
     },
 })
 
 // Action creators are generated for each case reducer function
-export const {openEditor, closeEditor} = openEditorsSlice.actions
+export const {openEditor, closeEditor, closeAllEditors} = openEditorsSlice.actions
 
 export const openEditorsReducer = openEditorsSlice.reducer;

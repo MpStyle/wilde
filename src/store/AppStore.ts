@@ -1,6 +1,6 @@
 import {configureStore} from '@reduxjs/toolkit'
 import {openEditorsReducer} from "../slice/OpenEditorsSlice";
-import {projectFolderReducer} from "../slice/ProjectFolderSlice";
+import {projectFolderReducer} from "../slice/ProjectDirectorySlice";
 
 export const appStore = configureStore({
     reducer: {

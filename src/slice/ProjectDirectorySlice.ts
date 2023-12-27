@@ -22,24 +22,29 @@ const scanDirectory = async (path: string, dirHandle: FileSystemDirectoryHandle)
 };
 
 export const scanProjectDirectory = createAsyncThunk(
-    'projectFolder/scanProjectDirectory',
+    'projectDirectory/scanProjectDirectory',
     async (args: { path: string, dirHandle: FileSystemDirectoryHandle }) => {
         return scanDirectory(args.path, args.dirHandle);
     }
 )
 
 export const openProjectDirectory = createAsyncThunk(
-    'projectFolder/openProjectDirectory',
+    'projectDirectory/openProjectDirectory',
     async (dirHandle: FileSystemDirectoryHandle) => {
         const scanResult = await scanDirectory("/", dirHandle);
         return {...scanResult, root: dirHandle};
     }
 )
 
-export const projectFolderSlice = createSlice({
-    name: 'projectFolder',
+export const projectDirectorySlice = createSlice({
+    name: 'projectDirectory',
     initialState,
-    reducers: {},
+    reducers: {
+        closeProjectDirectory: (state) => {
+            state.directoryStructure = {};
+            state.rootDirectory = undefined;
+        }
+    },
     extraReducers: (builder) => {
         builder
             .addCase(scanProjectDirectory.fulfilled, (state, action) => {
@@ -52,4 +57,6 @@ export const projectFolderSlice = createSlice({
     }
 })
 
-export const projectFolderReducer = projectFolderSlice.reducer;
+export const {closeProjectDirectory} = projectDirectorySlice.actions
+
+export const projectFolderReducer = projectDirectorySlice.reducer;

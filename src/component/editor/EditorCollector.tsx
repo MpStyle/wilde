@@ -48,6 +48,10 @@ export const EditorCollector: FunctionComponent = () => {
         <Box sx={{borderBottom: 1, borderColor: 'divider'}}>
             <Tabs value={value} onChange={handleChange} aria-label="Open editors">
                 {editors.openEditors.map((editor, i) => {
+                    if(!directoryStructure.hasOwnProperty(editor.path)){
+                        return null;
+                    }
+
                     const fileHandler = directoryStructure[editor.path].find(fileHandler => fileHandler.name === editor.fileName);
 
                     if (!fileHandler) {
@@ -81,6 +85,10 @@ export const EditorCollector: FunctionComponent = () => {
             </Tabs>
         </Box>
         {editors.openEditors.map((editor, i) => {
+            if(!directoryStructure.hasOwnProperty(editor.path)){
+                return null;
+            }
+
             const fileHandler = directoryStructure[editor.path].find(fileHandler => fileHandler.name === editor.fileName);
 
             if (!fileHandler) {
