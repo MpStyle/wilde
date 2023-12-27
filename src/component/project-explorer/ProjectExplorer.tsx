@@ -1,17 +1,19 @@
-import React, {FunctionComponent, useState} from "react";
+import React, {FunctionComponent} from "react";
 import {TreeView} from "@mui/x-tree-view";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import {Box, ButtonGroup, IconButton} from "@mui/material";
 import FolderOpenIcon from '@mui/icons-material/FolderOpen';
 import UnfoldLessIcon from '@mui/icons-material/UnfoldLess';
-import {ProjectStructure} from "./entity/ProjectStructure";
 import {ProjectTreeItem} from "./ProjectTreeItem";
+import {useDispatch, useSelector} from "react-redux";
+import {AppDispatch, AppState} from "../../store/AppStore";
+import {openProjectDirectory} from "../../slice/ProjectFolderSlice";
 
 export const ProjectExplorer: FunctionComponent<ProjectExplorerProps> = () => {
-    const [projectStructure, setProjectStructure] = useState<ProjectStructure>({});
-    const [root, setRoot] = useState<FileSystemDirectoryHandle | undefined>(undefined)
+    const rootDirectory=useSelector((appState:AppState)=>appState.projectFolder.rootDirectory);
     const [expanded, setExpanded] = React.useState<string[]>([]);
+    const dispatch=useDispatch<AppDispatch>();
 
     const handleCollapseAllClick = () => {
         setExpanded([]);
@@ -21,28 +23,14 @@ export const ProjectExplorer: FunctionComponent<ProjectExplorerProps> = () => {
         setExpanded(nodeIds);
     };
 
-    const scanFolder = async (path: string, dirHandle: FileSystemDirectoryHandle) => {
-        const values: (FileSystemDirectoryHandle | FileSystemFileHandle)[] = [];
-
-        for await (const value of dirHandle.values()) {
-            values.push(value);
-        }
-
-        setProjectStructure(projectItems => ({
-            ...projectItems,
-            [path]: values
-        }));
-    }
-
-    const openFolder = async () => {
+    const selectProjectDirectory = async () => {
         const dirHandle = await window.showDirectoryPicker();
-        setRoot(dirHandle);
-        await scanFolder("/", dirHandle);
+        dispatch(openProjectDirectory(dirHandle));
     }
 
     return <Box>
         <ButtonGroup variant="contained" aria-label="outlined primary button group" size="small">
-            <IconButton title="Open folder" onClick={() => openFolder()}><FolderOpenIcon/></IconButton>
+            <IconButton title="Open folder" onClick={() => selectProjectDirectory()}><FolderOpenIcon/></IconButton>
             <IconButton title="Collapse all" onClick={() => handleCollapseAllClick()}><UnfoldLessIcon/></IconButton>
         </ButtonGroup>
 
@@ -53,7 +41,7 @@ export const ProjectExplorer: FunctionComponent<ProjectExplorerProps> = () => {
             expanded={expanded}
             onNodeToggle={handleToggle}
             sx={{flexGrow: 1, maxWidth: 400, overflowY: 'auto'}}>
-            {root && <ProjectTreeItem path="/" handler={root} projectStructure={projectStructure} scanFolder={scanFolder}/>}
+            {rootDirectory && <ProjectTreeItem path="/" handler={rootDirectory}/>}
         </TreeView>
     </Box>
 }

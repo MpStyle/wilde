@@ -3,23 +3,34 @@ import {TreeItem} from "@mui/x-tree-view";
 import {Box, Typography} from "@mui/material";
 import FolderIcon from "@mui/icons-material/Folder";
 import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
-import {ProjectStructure} from "./entity/ProjectStructure";
 import {ProjectTreeItemLoader} from "./ProjectTreeItemLoader";
+import {useDispatch, useSelector} from "react-redux";
+import {openEditor} from "../../slice/OpenEditorsSlice";
+import {AppDispatch, AppState} from "../../store/AppStore";
+import {scanProjectDirectory} from "../../slice/ProjectFolderSlice";
 
 export const ProjectTreeItem: FunctionComponent<ProjectTreeItemProps> = props => {
-    useEffect(() => {
-        if (!props.projectStructure.hasOwnProperty(props.path)) {
-            props.scanFolder(props.path, props.handler);
-        }
-    }, [props.projectStructure, props.path])
+    const directoryStructure = useSelector((appState: AppState) => appState.projectFolder.directoryStructure);
+    const dispatch = useDispatch<AppDispatch>();
 
-    if (!props.projectStructure.hasOwnProperty(props.path)) {
+    useEffect(() => {
+        if (!directoryStructure.hasOwnProperty(props.path)) {
+            dispatch(scanProjectDirectory({path: props.path, dirHandle: props.handler}));
+        }
+    }, [directoryStructure, props.path])
+
+    if (!directoryStructure.hasOwnProperty(props.path)) {
         return <ProjectTreeItemLoader path={props.path}/>
     }
 
     return <Fragment>
-        {props.projectStructure[props.path].map(item =>
+        {directoryStructure[props.path].map(item =>
             <TreeItem
+                onClick={() => {
+                    if (item.kind === "file") {
+                        dispatch(openEditor({path: props.path, fileName: item.name}));
+                    }
+                }}
                 nodeId={item.name}
                 label={<Box sx={{
                     display: 'flex',
@@ -35,9 +46,7 @@ export const ProjectTreeItem: FunctionComponent<ProjectTreeItemProps> = props =>
                 key={props.path + "/" + item.name}>
                 {item.kind === 'directory' &&
                     <ProjectTreeItem path={props.path + item.name + "/"}
-                                     handler={item}
-                                     projectStructure={props.projectStructure}
-                                     scanFolder={props.scanFolder}/>}
+                                     handler={item}/>}
             </TreeItem>
         )}
     </Fragment>;
@@ -46,6 +55,4 @@ export const ProjectTreeItem: FunctionComponent<ProjectTreeItemProps> = props =>
 export interface ProjectTreeItemProps {
     path: string;
     handler: FileSystemDirectoryHandle;
-    projectStructure: ProjectStructure;
-    scanFolder: (path: string, dirHandle: FileSystemDirectoryHandle) => void;
 }

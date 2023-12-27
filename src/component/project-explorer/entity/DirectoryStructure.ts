@@ -1,3 +1,3 @@
-export type ProjectStructure = {
+export type DirectoryStructure = {
     [path: string]: (FileSystemDirectoryHandle | FileSystemFileHandle)[]
 };
