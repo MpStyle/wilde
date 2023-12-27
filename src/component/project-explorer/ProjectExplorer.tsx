@@ -1,17 +1,15 @@
-import React, {Fragment, FunctionComponent, useEffect, useState} from "react";
-import {TreeItem, TreeView} from "@mui/x-tree-view";
+import React, {FunctionComponent, useState} from "react";
+import {TreeView} from "@mui/x-tree-view";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import {Box, ButtonGroup, CircularProgress, IconButton, Typography} from "@mui/material";
+import {Box, ButtonGroup, IconButton} from "@mui/material";
 import FolderOpenIcon from '@mui/icons-material/FolderOpen';
 import UnfoldLessIcon from '@mui/icons-material/UnfoldLess';
-import FolderIcon from '@mui/icons-material/Folder';
-import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
+import {ProjectStructure} from "./entity/ProjectStructure";
+import {ProjectTreeItem} from "./ProjectTreeItem";
 
 export const ProjectExplorer: FunctionComponent<ProjectExplorerProps> = () => {
-    const [projectItems, setProjectItems] = useState<{
-        [path: string]: (FileSystemDirectoryHandle | FileSystemFileHandle)[]
-    }>({});
+    const [projectStructure, setProjectStructure] = useState<ProjectStructure>({});
     const [root, setRoot] = useState<FileSystemDirectoryHandle | undefined>(undefined)
     const [expanded, setExpanded] = React.useState<string[]>([]);
 
@@ -23,15 +21,14 @@ export const ProjectExplorer: FunctionComponent<ProjectExplorerProps> = () => {
         setExpanded(nodeIds);
     };
 
-    const addFolder = async (path: string, dirHandle: FileSystemDirectoryHandle) => {
+    const scanFolder = async (path: string, dirHandle: FileSystemDirectoryHandle) => {
         const values: (FileSystemDirectoryHandle | FileSystemFileHandle)[] = [];
-        console.log("Index", path);
 
         for await (const value of dirHandle.values()) {
             values.push(value);
         }
 
-        setProjectItems(projectItems => ({
+        setProjectStructure(projectItems => ({
             ...projectItems,
             [path]: values
         }));
@@ -40,54 +37,7 @@ export const ProjectExplorer: FunctionComponent<ProjectExplorerProps> = () => {
     const openFolder = async () => {
         const dirHandle = await window.showDirectoryPicker();
         setRoot(dirHandle);
-        await addFolder("/", dirHandle);
-    }
-
-    const Folder: FunctionComponent<{ path: string, handler: FileSystemDirectoryHandle }> = props => {
-        console.log("Render", props.path);
-
-        useEffect(() => {
-            if (!projectItems.hasOwnProperty(props.path)) {
-                addFolder(props.path, props.handler);
-            }
-        }, [projectItems, props.path])
-
-        if (!projectItems.hasOwnProperty(props.path)) {
-            return <TreeItem
-                nodeId={props.path}
-                label={<Box sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    p: 0.5,
-                    pr: 0,
-                }}>
-                    <Box sx={{mr: 1}}>
-                        <CircularProgress size={20}/>
-                    </Box>
-                    <Typography variant="body2" sx={{fontWeight: 'inherit', flexGrow: 1}}>Loading...</Typography>
-                </Box>}/>;
-        }
-
-        return <Fragment>
-            {projectItems[props.path].map(item =>
-                <TreeItem
-                    nodeId={item.name}
-                    label={<Box sx={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        p: 0.5,
-                        pr: 0,
-                    }}>
-                        <Box component={item.kind === "directory" ? FolderIcon : InsertDriveFileIcon}
-                             color="inherit"
-                             sx={{mr: 1}}/>
-                        <Typography variant="body2" sx={{fontWeight: 'inherit', flexGrow: 1}}>{item.name}</Typography>
-                    </Box>}
-                    key={props.path + "/" + item.name}>
-                    {item.kind === 'directory' && <Folder path={props.path + item.name + "/"} handler={item}/>}
-                </TreeItem>
-            )}
-        </Fragment>;
+        await scanFolder("/", dirHandle);
     }
 
     return <Box>
@@ -103,7 +53,7 @@ export const ProjectExplorer: FunctionComponent<ProjectExplorerProps> = () => {
             expanded={expanded}
             onNodeToggle={handleToggle}
             sx={{flexGrow: 1, maxWidth: 400, overflowY: 'auto'}}>
-            {root && <Folder path="/" handler={root}/>}
+            {root && <ProjectTreeItem path="/" handler={root} projectStructure={projectStructure} scanFolder={scanFolder}/>}
         </TreeView>
     </Box>
 }
