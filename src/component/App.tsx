@@ -1,4 +1,4 @@
-import React, {Fragment, FunctionComponent, useState} from 'react';
+import React, {Fragment, FunctionComponent, useEffect, useState} from 'react';
 import './App.css';
 import {TreeItem, TreeView} from "@mui/x-tree-view";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -18,11 +18,11 @@ export const App: FunctionComponent = () => {
             values.push(value);
         }
 
-        for (let value of values) {
-            if (value.kind === 'directory') {
-                await addFolder(path + value.name + "/", value);
-            }
-        }
+        // for (let value of values) {
+        //     if (value.kind === 'directory') {
+        //         await addFolder(path + value.name + "/", value);
+        //     }
+        // }
 
         setProjectItems(projectItems => ({
             ...projectItems,
@@ -36,11 +36,17 @@ export const App: FunctionComponent = () => {
         await addFolder("/", dirHandle);
     }
 
-    const Folder: FunctionComponent<{ path: string }> = props => {
+    const Folder: FunctionComponent<{ path: string, handler: FileSystemDirectoryHandle }> = props => {
         console.log("Render", props.path);
 
+        useEffect(()=>{
+            if (!projectItems.hasOwnProperty(props.path)) {
+                addFolder(props.path, props.handler);
+            }
+        }, [projectItems, props.path])
+
         if (!projectItems.hasOwnProperty(props.path)) {
-            return null;
+            return <TreeItem nodeId={props.path} label="Loading..." />;
         }
 
         return <Fragment>
@@ -49,7 +55,7 @@ export const App: FunctionComponent = () => {
                     nodeId={item.name}
                     label={item.name}
                     key={props.path + "/" + item.name}>
-                    {item.kind === 'directory' && <Folder path={props.path + item.name + "/"}/>}
+                    {item.kind === 'directory' && <Folder path={props.path + item.name + "/"} handler={item}/>}
                 </TreeItem>
             )}
         </Fragment>;
@@ -62,7 +68,7 @@ export const App: FunctionComponent = () => {
             defaultCollapseIcon={<ExpandMoreIcon/>}
             defaultExpandIcon={<ChevronRightIcon/>}
             sx={{flexGrow: 1, maxWidth: 400, overflowY: 'auto'}}>
-            {projectItems.hasOwnProperty("/") && <Folder path="/"/>}
+            {root && <Folder path="/" handler={root}/>}
         </TreeView>
     </div>;
 }
