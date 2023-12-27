@@ -2,7 +2,7 @@ import React, {Fragment, FunctionComponent, useEffect, useState} from "react";
 import {TreeItem, TreeView} from "@mui/x-tree-view";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import {Box, ButtonGroup, IconButton, Typography} from "@mui/material";
+import {Box, ButtonGroup, CircularProgress, IconButton, Typography} from "@mui/material";
 import FolderOpenIcon from '@mui/icons-material/FolderOpen';
 import UnfoldLessIcon from '@mui/icons-material/UnfoldLess';
 import FolderIcon from '@mui/icons-material/Folder';
@@ -53,7 +53,19 @@ export const ProjectExplorer: FunctionComponent<ProjectExplorerProps> = () => {
         }, [projectItems, props.path])
 
         if (!projectItems.hasOwnProperty(props.path)) {
-            return <TreeItem nodeId={props.path} label="Loading..."/>;
+            return <TreeItem
+                nodeId={props.path}
+                label={<Box sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    p: 0.5,
+                    pr: 0,
+                }}>
+                    <Box sx={{mr: 1}}>
+                        <CircularProgress size={20}/>
+                    </Box>
+                    <Typography variant="body2" sx={{fontWeight: 'inherit', flexGrow: 1}}>Loading...</Typography>
+                </Box>}/>;
         }
 
         return <Fragment>
