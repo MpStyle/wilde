@@ -9,12 +9,15 @@ import {openEditor} from "../../slice/OpenEditorsSlice";
 import {AppDispatch, AppState} from "../../store/AppStore";
 import {scanProjectDirectory} from "../../slice/ProjectDirectorySlice";
 
+const requestedPaths: string[] = [];
+
 export const ProjectTreeItem: FunctionComponent<ProjectTreeItemProps> = props => {
     const directoryStructure = useSelector((appState: AppState) => appState.projectFolder.directoryStructure);
     const dispatch = useDispatch<AppDispatch>();
 
     useEffect(() => {
-        if (!directoryStructure.hasOwnProperty(props.path)) {
+        if (!directoryStructure.hasOwnProperty(props.path) && !requestedPaths.includes(props.path)) {
+            requestedPaths.push(props.path);
             dispatch(scanProjectDirectory({path: props.path, dirHandle: props.handler}));
         }
     }, [directoryStructure, props.path])
