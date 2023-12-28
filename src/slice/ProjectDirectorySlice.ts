@@ -1,5 +1,5 @@
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit'
-import {DirectoryStructure} from "../component/project-explorer/entity/DirectoryStructure";
+import {DirectoryStructure} from "../entity/DirectoryStructure";
 
 export interface ProjectFolderState {
     directoryStructure: DirectoryStructure;

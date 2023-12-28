@@ -5,13 +5,11 @@ import {Box} from "@mui/material";
 import {EditorCollector} from "./editor/EditorCollector";
 
 export const App: FunctionComponent = () => {
-    return <Box className="App"
+    return <Box className="app"
                 sx={{
-                    display: 'flex',
-                    p: 0.5,
-                    pr: 0,
+                    display: 'flex'
                 }}>
-        <Box>
+        <Box className="sidebar">
             <ProjectExplorer/>
         </Box>
         <Box  sx={{flexGrow: 1}}>
