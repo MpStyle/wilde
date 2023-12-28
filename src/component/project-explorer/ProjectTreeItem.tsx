@@ -34,7 +34,8 @@ export const ProjectTreeItem: FunctionComponent<ProjectTreeItemProps> = props =>
                         dispatch(openEditor({path: props.path, fileName: item.name}));
                     }
                 }}
-                nodeId={item.name}
+                nodeId={props.path + item.name}
+                key={props.path + item.name}
                 label={<Box sx={{
                     display: 'flex',
                     alignItems: 'center',
@@ -45,8 +46,7 @@ export const ProjectTreeItem: FunctionComponent<ProjectTreeItemProps> = props =>
                          color="inherit"
                          sx={{mr: 1}}/>
                     <Typography variant="body2" sx={{fontWeight: 'inherit', flexGrow: 1}}>{item.name}</Typography>
-                </Box>}
-                key={props.path + "/" + item.name}>
+                </Box>}>
                 {item.kind === 'directory' &&
                     <ProjectTreeItem path={props.path + item.name + "/"}
                                      handler={item}/>}
