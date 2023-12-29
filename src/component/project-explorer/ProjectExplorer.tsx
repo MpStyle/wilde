@@ -3,11 +3,11 @@ import {Box, ButtonGroup, IconButton} from "@mui/material";
 import FolderOpenIcon from '@mui/icons-material/FolderOpen';
 import {useDispatch, useSelector} from "react-redux";
 import {AppDispatch, AppState} from "../../store/AppStore";
-import {closeProjectDirectory, openProjectDirectory} from "../../slice/ProjectDirectorySlice";
+import {openProjectDirectory} from "../../slice/ProjectDirectorySlice";
 import CloseIcon from '@mui/icons-material/Close';
-import {closeAllEditors} from "../../slice/OpenEditorsSlice";
 import {SpeedTree} from "./SpeedTree";
 import UnfoldLessIcon from '@mui/icons-material/UnfoldLess';
+import {closeProjectDirectoryAction} from "../../action/CloseProjectDirectoryAction";
 
 export const ProjectExplorer: FunctionComponent<ProjectExplorerProps> = () => {
     const [openedNodeIds, setOpenedNodeIds] = useState<string[]>([]);
@@ -15,13 +15,17 @@ export const ProjectExplorer: FunctionComponent<ProjectExplorerProps> = () => {
     const dispatch = useDispatch<AppDispatch>();
 
     const selectProjectDirectory = async () => {
-        const dirHandle = await window.showDirectoryPicker();
-        dispatch(openProjectDirectory(dirHandle));
+        try {
+            const dirHandle = await window.showDirectoryPicker();
+            closeProjectDirectoryAction(dispatch);
+            dispatch(openProjectDirectory(dirHandle));
+        } catch (e) {
+            console.error(e);
+        }
     }
 
     const handleCloseProjectDirectory = async () => {
-        dispatch(closeAllEditors());
-        dispatch(closeProjectDirectory());
+        closeProjectDirectoryAction(dispatch);
     }
 
     const handleCollapseAllClick = () => {
