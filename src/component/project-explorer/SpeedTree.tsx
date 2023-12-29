@@ -7,7 +7,7 @@ import {AppDispatch, AppState} from "../../store/AppStore";
 import {scanProjectDirectory} from "../../slice/ProjectDirectorySlice";
 import {openEditor} from "../../slice/OpenEditorsSlice";
 import {FileSystemHandle} from "./entity/FileSystemHandle";
-import {TreeNode} from "./entity/SpeedTreeNode";
+import {TreeNode} from "./entity/TreeNode";
 import {SpeedTreeItem} from "./SpeedTreeItem";
 import {FileSorter} from "./book/FileSorter";
 

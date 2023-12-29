@@ -1,26 +1,25 @@
 import React, {CSSProperties, memo} from "react";
-import {Box, Typography} from "@mui/material";
-import FolderIcon from "@mui/icons-material/Folder";
-import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
+import {Box, Icon, Typography} from "@mui/material";
 import {areEqual} from "react-window";
-import {TreeNode} from "./entity/SpeedTreeNode";
+import {TreeNode} from "./entity/TreeNode";
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import {IconResolver} from "../../book/IconResolver";
 
 export const SpeedTreeItem = memo((props: SpeedTreeItemProps) => {
     const node = props.data.flattenedData[props.index];
     const left = node.depth * 20;
 
     return <Box sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    userSelect: 'none',
-                    '&:hover':{
-                        backgroundColor: 'rgba(207, 208, 209, 1)',
-                        cursor: 'pointer'
-                    }
-                }}
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        userSelect: 'none',
+        '&:hover': {
+            backgroundColor: 'rgba(207, 208, 209, 1)',
+            cursor: 'pointer'
+        }
+    }}
                 style={props.style}
                 onClick={() => props.data.onOpen(node)}>
         <Box component="div"
@@ -33,13 +32,19 @@ export const SpeedTreeItem = memo((props: SpeedTreeItemProps) => {
                  justifyContent: 'left'
              }}>
             <Box component={node.collapsed ? KeyboardArrowRightIcon : KeyboardArrowDownIcon}
-                 color="inherit"
+                 color="text.disabled"
                  sx={{
                      visibility: node.handler.kind === "directory" ? 'visible' : 'hidden'
                  }}/>
-            <Box component={node.handler.kind === "directory" ? FolderIcon : InsertDriveFileIcon}
-                 color="inherit"
-                 sx={{mr: 1}}/>
+            <Icon sx={{mr: 1}}>
+                <img src={IconResolver.byTreeNode(node)}
+                     alt={node.path + node.handler.name}
+                     style={{
+                         display: 'flex',
+                         height: 'inherit',
+                         width: 'inherit',
+                     }}/>
+            </Icon>
             <Typography variant="body2"
                         sx={{
                             fontWeight: 'inherit',

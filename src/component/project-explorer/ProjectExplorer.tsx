@@ -29,7 +29,7 @@ export const ProjectExplorer: FunctionComponent<ProjectExplorerProps> = () => {
     };
 
     return <Fragment>
-        <ButtonGroup variant="contained" aria-label="outlined primary button group" size="small">
+        <ButtonGroup variant="text" aria-label="project explorer actions" size="small">
             <IconButton title="Open folder"
                         onClick={() => selectProjectDirectory()}>
                 <FolderOpenIcon/>
