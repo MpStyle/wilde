@@ -1,8 +1,9 @@
 import {FunctionComponent, useEffect, useState} from "react";
-import {Box, TextField} from "@mui/material";
+import {Box, useTheme} from "@mui/material";
 
 export const TextEditor: FunctionComponent<TextEditorProps> = props => {
     const [content, setContent] = useState<string | undefined>(undefined);
+    const theme=useTheme();
 
     useEffect(() => {
         const loadContent = async () => {
@@ -16,8 +17,14 @@ export const TextEditor: FunctionComponent<TextEditorProps> = props => {
         }
     }, [content])
 
-    return <Box>
-        <TextField multiline value={content ?? ''} fullWidth disabled/>
+    return <Box component='pre'
+                sx={{
+                    height: `calc(100% - 48px - 8px)`,
+                    m: 0,
+                    pt: 1,
+                    overflow: 'scroll'
+                }}>
+        {content ?? ''}
     </Box>;
 }
 
