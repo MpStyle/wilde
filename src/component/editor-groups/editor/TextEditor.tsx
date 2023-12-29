@@ -1,9 +1,8 @@
 import {FunctionComponent, useEffect, useState} from "react";
-import {Box, useTheme} from "@mui/material";
+import {Box} from "@mui/material";
 
 export const TextEditor: FunctionComponent<TextEditorProps> = props => {
     const [content, setContent] = useState<string | undefined>(undefined);
-    const theme=useTheme();
 
     useEffect(() => {
         const loadContent = async () => {
