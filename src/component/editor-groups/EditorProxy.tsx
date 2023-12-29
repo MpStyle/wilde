@@ -1,5 +1,5 @@
 import React, {Fragment, FunctionComponent} from "react";
-import {TextEditor} from "./TextEditor";
+import {TextEditor} from "./editor/TextEditor";
 
 export const EditorProxy: FunctionComponent<EditorProxyProps> = props => {
     return <Fragment>
