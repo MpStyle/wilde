@@ -7,6 +7,8 @@ import {AppState} from "../../store/AppStore";
 import {EditorProxy} from "./EditorProxy";
 import CloseIcon from '@mui/icons-material/Close';
 import {closeEditor} from "../../slice/OpenEditorsSlice";
+import {FileIcon} from "../core/FileIcon";
+import {TreeNode} from "../../entity/TreeNode";
 
 interface TabPanelProps {
     children?: React.ReactNode;
@@ -64,6 +66,7 @@ export const EditorCollector: FunctionComponent = () => {
                             alignItems: 'center',
                             pr: 0,
                         }}>
+                            <FileIcon node={{handler: fileHandler} as TreeNode} sx={{mr:1}} />
                             <Typography variant="body2"
                                         sx={{flexGrow: 1}}>
                                 {fileHandler.name}

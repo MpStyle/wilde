@@ -1,10 +1,11 @@
 import React, {CSSProperties, memo} from "react";
 import {Box, Icon, Typography} from "@mui/material";
 import {areEqual} from "react-window";
-import {TreeNode} from "./entity/TreeNode";
+import {TreeNode} from "../../entity/TreeNode";
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import {IconResolver} from "../../book/IconResolver";
+import {FileIcon} from "../core/FileIcon";
 
 export const SpeedTreeItem = memo((props: SpeedTreeItemProps) => {
     const node = props.data.flattenedData[props.index];
@@ -36,15 +37,7 @@ export const SpeedTreeItem = memo((props: SpeedTreeItemProps) => {
                  sx={{
                      visibility: node.handler.kind === "directory" ? 'visible' : 'hidden'
                  }}/>
-            <Icon sx={{mr: 1}}>
-                <img src={IconResolver.byTreeNode(node)}
-                     alt={node.path + node.handler.name}
-                     style={{
-                         display: 'flex',
-                         height: 'inherit',
-                         width: 'inherit',
-                     }}/>
-            </Icon>
+            <FileIcon sx={{mr: 1}} node={node} />
             <Typography variant="body2"
                         sx={{
                             fontWeight: 'inherit',

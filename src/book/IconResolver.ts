@@ -1,4 +1,4 @@
-import {TreeNode} from "../component/project-explorer/entity/TreeNode";
+import {TreeNode} from "../entity/TreeNode";
 import {FileUtils} from "./FileUtils";
 
 const iconsFolder = 'icons/default/';

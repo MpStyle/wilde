@@ -1,11 +1,10 @@
-import React, {FunctionComponent} from "react";
-import {Box} from "@mui/material";
+import React, {Fragment, FunctionComponent} from "react";
 import {TextEditor} from "./TextEditor";
 
 export const EditorProxy: FunctionComponent<EditorProxyProps> = props => {
-    return <Box>
+    return <Fragment>
         <TextEditor handler={props.handler}/>
-    </Box>;
+    </Fragment>;
 }
 
 export interface EditorProxyProps {

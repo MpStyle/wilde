@@ -1,4 +1,4 @@
-import {FileSystemHandle} from "../entity/FileSystemHandle";
+import {FileSystemHandle} from "../../../entity/FileSystemHandle";
 
 export type SortResult = -1 | 0 | 1;
 
