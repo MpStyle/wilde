@@ -9,6 +9,7 @@ import {openEditor} from "../../slice/OpenEditorsSlice";
 import {FileSystemHandle} from "./entity/FileSystemHandle";
 import {TreeNode} from "./entity/SpeedTreeNode";
 import {SpeedTreeItem} from "./SpeedTreeItem";
+import {FileSorter} from "./book/FileSorter";
 
 const getItemData = memoizeOne((onOpen: (node: TreeNode) => void, flattenedData: TreeNode[]) => ({
     onOpen,
@@ -21,8 +22,9 @@ export const SpeedTree: FunctionComponent<SpeedTreeProps> = props => {
 
     const toFlat = (items: FileSystemHandle[], depth: number, path: string): TreeNode[] => {
         const result: TreeNode[] = [];
+        const sortedItems=[...items].sort(FileSorter.byTypeByName);
 
-        for (let item of items) {
+        for (let item of sortedItems) {
             const collapsed = !props.openedNodeIds.includes(path + item.name);
             result.push({
                 handler: item,
