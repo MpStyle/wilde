@@ -3,15 +3,16 @@ import './App.css';
 import {ProjectExplorer} from "./project-explorer/ProjectExplorer";
 import {Box} from "@mui/material";
 import {EditorCollector} from "./editor/EditorCollector";
+import {Sidebar} from "./Sidebar";
 
 export const App: FunctionComponent = () => {
     return <Box className="app"
                 sx={{
                     display: 'flex'
                 }}>
-        <Box className="sidebar">
+        <Sidebar>
             <ProjectExplorer/>
-        </Box>
+        </Sidebar>
         <Box  sx={{flexGrow: 1}}>
             <EditorCollector />
         </Box>
