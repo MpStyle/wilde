@@ -32,7 +32,7 @@ export const SpeedTreeItem = memo((props: SpeedTreeItemProps) => {
                  justifyContent: 'left'
              }}>
             <Box component={node.collapsed ? KeyboardArrowRightIcon : KeyboardArrowDownIcon}
-                 color="text.disabled"
+                 color="text.secondary"
                  sx={{
                      visibility: node.handler.kind === "directory" ? 'visible' : 'hidden'
                  }}/>
