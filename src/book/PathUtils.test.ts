@@ -6,6 +6,11 @@ describe('PathUtils', () => {
         expect(result).toBe('root/folder1/folder2');
     });
 
+    test('combine folders with separator', () => {
+        const result = PathUtils.combine('/', 'folder1/', 'folder2/folder3');
+        expect(result).toBe('/folder1/folder2/folder3');
+    });
+
     test('combine folders and file', () => {
         const result = PathUtils.combine('root', 'folder1', 'folder2', 'file.txt');
         expect(result).toBe('root/folder1/folder2/file.txt');

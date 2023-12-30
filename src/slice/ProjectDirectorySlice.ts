@@ -31,7 +31,7 @@ export const scanProjectDirectory = createAsyncThunk(
 export const openProjectDirectory = createAsyncThunk(
     'projectDirectory/openProjectDirectory',
     async (dirHandle: FileSystemDirectoryHandle) => {
-        const scanResult = await scanDirectory("/", dirHandle);
+        const scanResult = await scanDirectory(".", dirHandle);
         return {...scanResult, root: dirHandle};
     }
 )

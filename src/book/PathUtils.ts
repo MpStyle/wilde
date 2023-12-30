@@ -18,32 +18,33 @@ export const PathUtils = {
         })();
     },
     combine: (...parts: string[]): string => {
-        const error = !PathUtils.isValid();
+        const error = !PathUtils.isValid(...parts);
 
         if (error) {
             throw new Error("Invalid chars in path");
         }
 
-        let combinedPath = parts.join(PathUtils.separator);
-
-        if (combinedPath.endsWith(PathUtils.separator) && combinedPath.length > 1) {
-            combinedPath = combinedPath.slice(0, -1);
+        if (parts.length === 1) {
+            return parts[0];
         }
 
-        return combinedPath;
+        const isPathRooted = (path: string): boolean => path?.startsWith(PathUtils.separator) ?? false;
+
+        const combineNoChecks = (path1: string, path2: string): string => {
+            if (path2.length === 0) return path1;
+            if (path1.length === 0 || isPathRooted(path2)) return path2;
+
+            const ch = path1[path1.length - 1];
+            return `${path1}${ch !== PathUtils.separator ? PathUtils.separator : ''}${path2}`;
+        };
+
+        return parts.reduce(combineNoChecks, '');
     },
     getInvalidPathChars: (): string[] => {
         return [
             ...Array.from({length: 31}, (_, i) => i.toString(16)),
             ...['|', '"', "<", ">"].map(c => c.charCodeAt(0).toString(16))
         ];
-
-        // return [
-        //     ...Array.from({length: 26}, (_, i) => String.fromCharCode(65 + i)), // Uppercase letters
-        //     ...Array.from({length: 26}, (_, i) => String.fromCharCode(97 + i)), // Lowercase letters
-        //     ...Array.from({length: 10}, (_, i) => i.toString()),              // Numbers
-        //     '_', '-', ' ', '.'                                                      // Underscore, hyphen, space
-        // ].map(c => c.charCodeAt(0).toString(16));
     },
     getInvalidFileNameChars: (): string[] => {
         return [
