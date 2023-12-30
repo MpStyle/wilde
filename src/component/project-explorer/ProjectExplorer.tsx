@@ -1,5 +1,5 @@
 import React, {Fragment, FunctionComponent, useState} from "react";
-import {Box, ButtonGroup, IconButton} from "@mui/material";
+import {Box, ButtonGroup, IconButton, useTheme} from "@mui/material";
 import FolderOpenIcon from '@mui/icons-material/FolderOpen';
 import {useDispatch, useSelector} from "react-redux";
 import {AppDispatch, AppState} from "../../store/AppStore";
@@ -13,6 +13,8 @@ export const ProjectExplorer: FunctionComponent<ProjectExplorerProps> = () => {
     const [openedNodeIds, setOpenedNodeIds] = useState<string[]>([]);
     const rootDirectory = useSelector((appState: AppState) => appState.projectFolder.rootDirectory);
     const dispatch = useDispatch<AppDispatch>();
+    const theme = useTheme();
+    const topBarHeight = '48px';
 
     const selectProjectDirectory = async () => {
         try {
@@ -33,7 +35,10 @@ export const ProjectExplorer: FunctionComponent<ProjectExplorerProps> = () => {
     };
 
     return <Fragment>
-        <ButtonGroup variant="text" aria-label="project explorer actions" size="small">
+        <ButtonGroup variant="text"
+                     sx={{height: topBarHeight}}
+                     aria-label="project explorer actions"
+                     size="small">
             <IconButton title="Open folder"
                         onClick={() => selectProjectDirectory()}>
                 <FolderOpenIcon/>
@@ -48,7 +53,7 @@ export const ProjectExplorer: FunctionComponent<ProjectExplorerProps> = () => {
             </IconButton>}
         </ButtonGroup>
 
-        <Box sx={{height: 'calc(100% - 40px)'}}>
+        <Box sx={{height: `calc(100% - ${topBarHeight})`, borderTop: `1px solid ${theme.palette.text.disabled}`}}>
             {rootDirectory && <SpeedTree setOpenedNodeIds={setOpenedNodeIds} openedNodeIds={openedNodeIds}/>}
         </Box>
     </Fragment>

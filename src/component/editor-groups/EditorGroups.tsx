@@ -1,5 +1,5 @@
 import React, {Fragment, FunctionComponent} from "react";
-import {Box, IconButton, Typography} from "@mui/material";
+import {Box, IconButton, Typography, useTheme} from "@mui/material";
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import {useDispatch, useSelector} from "react-redux";
@@ -12,9 +12,10 @@ import {TreeNode} from "../../entity/TreeNode";
 
 const EditorTabPanel = (props: EditorTabPanelProps) => {
     const {children, value, index, ...other} = props;
+    const theme = useTheme();
 
     return <Box role="tabpanel"
-                sx={{height: '100%', pl: 1}}
+                sx={{height: '100%', pl: 1, borderTop: `1px solid ${theme.palette.text.disabled}`}}
                 hidden={value !== index}
                 id={`editor-tabpanel-${index}`}
                 aria-labelledby={`editor-tab-${index}`}
