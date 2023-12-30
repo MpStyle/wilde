@@ -6,22 +6,22 @@ import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import {FileIcon} from "../core/FileIcon";
 
-export const SpeedTreeItem = memo((props: SpeedTreeItemProps) => {
+export const DirectoryTreeItem = memo((props: SpeedTreeItemProps) => {
     const node = props.data.flattenedData[props.index];
     const left = node.depth * 20;
 
-    return <Box sx={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        userSelect: 'none',
-        '&:hover': {
-            backgroundColor: 'rgba(207, 208, 209, 1)',
-            cursor: 'pointer'
-        }
-    }}
-                style={props.style}
-                onClick={() => props.data.onOpen(node)}>
+    return <Box style={props.style}
+                onClick={() => props.data.onOpen(node)}
+                sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    userSelect: 'none',
+                    '&:hover': {
+                        backgroundColor: 'rgba(207, 208, 209, 1)',
+                        cursor: 'pointer'
+                    }
+                }}>
         <Box component="div"
              style={{
                  position: 'absolute',
@@ -36,7 +36,7 @@ export const SpeedTreeItem = memo((props: SpeedTreeItemProps) => {
                  sx={{
                      visibility: node.handler.kind === "directory" ? 'visible' : 'hidden'
                  }}/>
-            <FileIcon sx={{mr: 1}} node={node} />
+            <FileIcon sx={{mr: 1}} node={node}/>
             <Typography variant="body2"
                         sx={{
                             fontWeight: 'inherit',

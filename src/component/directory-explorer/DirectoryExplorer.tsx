@@ -5,11 +5,11 @@ import {useDispatch, useSelector} from "react-redux";
 import {AppDispatch, AppState} from "../../store/AppStore";
 import {openProjectDirectory} from "../../slice/ProjectDirectorySlice";
 import CloseIcon from '@mui/icons-material/Close';
-import {SpeedTree} from "./SpeedTree";
+import {DirectoryTree} from "./DirectoryTree";
 import UnfoldLessIcon from '@mui/icons-material/UnfoldLess';
 import {closeProjectDirectoryAction} from "../../action/CloseProjectDirectoryAction";
 
-export const ProjectExplorer: FunctionComponent<ProjectExplorerProps> = () => {
+export const DirectoryExplorer: FunctionComponent<ProjectExplorerProps> = () => {
     const [openedNodeIds, setOpenedNodeIds] = useState<string[]>([]);
     const rootDirectory = useSelector((appState: AppState) => appState.projectFolder.rootDirectory);
     const dispatch = useDispatch<AppDispatch>();
@@ -54,7 +54,7 @@ export const ProjectExplorer: FunctionComponent<ProjectExplorerProps> = () => {
         </ButtonGroup>
 
         <Box sx={{height: `calc(100% - ${topBarHeight})`, borderTop: `1px solid ${theme.palette.text.disabled}`}}>
-            {rootDirectory && <SpeedTree setOpenedNodeIds={setOpenedNodeIds} openedNodeIds={openedNodeIds}/>}
+            {rootDirectory && <DirectoryTree setOpenedNodeIds={setOpenedNodeIds} openedNodeIds={openedNodeIds}/>}
         </Box>
     </Fragment>
 }

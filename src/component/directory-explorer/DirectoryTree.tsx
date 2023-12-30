@@ -8,7 +8,7 @@ import {scanProjectDirectory} from "../../slice/ProjectDirectorySlice";
 import {openEditor} from "../../slice/OpenEditorsSlice";
 import {FileSystemHandle} from "../../entity/FileSystemHandle";
 import {TreeNode} from "../../entity/TreeNode";
-import {SpeedTreeItem} from "./SpeedTreeItem";
+import {DirectoryTreeItem} from "./DirectoryTreeItem";
 import {FileSorter} from "./book/FileSorter";
 import {PathUtils} from "../../book/PathUtils";
 
@@ -17,7 +17,7 @@ const getItemData = memoizeOne((onOpen: (node: TreeNode) => void, flattenedData:
     flattenedData,
 }));
 
-export const SpeedTree: FunctionComponent<SpeedTreeProps> = props => {
+export const DirectoryTree: FunctionComponent<SpeedTreeProps> = props => {
     const directoryStructure = useSelector((appState: AppState) => appState.projectFolder.directoryStructure);
     const dispatch = useDispatch<AppDispatch>();
 
@@ -74,7 +74,7 @@ export const SpeedTree: FunctionComponent<SpeedTreeProps> = props => {
                   itemSize={32}
                   itemKey={index => PathUtils.combine(flattenedData[index].path, (flattenedData[index].handler?.name ?? 'loading...'))}
                   itemData={itemData}>
-                {SpeedTreeItem}
+                {DirectoryTreeItem}
             </List>}
     </AutoSizer>;
 };
