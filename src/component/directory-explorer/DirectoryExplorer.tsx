@@ -1,4 +1,4 @@
-import React, {Fragment, FunctionComponent, useState} from "react";
+import React, {FunctionComponent, useState} from "react";
 import {Box, ButtonGroup, IconButton, useTheme} from "@mui/material";
 import FolderOpenIcon from '@mui/icons-material/FolderOpen';
 import {useDispatch, useSelector} from "react-redux";
@@ -8,6 +8,8 @@ import CloseIcon from '@mui/icons-material/Close';
 import {DirectoryTree} from "./DirectoryTree";
 import UnfoldLessIcon from '@mui/icons-material/UnfoldLess';
 import {closeProjectDirectoryAction} from "../../action/CloseProjectDirectoryAction";
+import {DirectoryExplorerProvider, useDirectoryExplorerActions} from "./DirectoryExplorerContext";
+import CreateNewFolderIcon from '@mui/icons-material/CreateNewFolder';
 
 export const DirectoryExplorer: FunctionComponent<ProjectExplorerProps> = () => {
     const [openedNodeIds, setOpenedNodeIds] = useState<string[]>([]);
@@ -34,11 +36,13 @@ export const DirectoryExplorer: FunctionComponent<ProjectExplorerProps> = () => 
         setOpenedNodeIds([]);
     };
 
-    return <Fragment>
-        <ButtonGroup variant="text"
-                     sx={{height: topBarHeight}}
-                     aria-label="project explorer actions"
-                     size="small">
+    const ActionsBar: FunctionComponent = () => {
+        const actions = useDirectoryExplorerActions();
+
+        return <ButtonGroup variant="text"
+                            sx={{height: topBarHeight}}
+                            aria-label="project explorer actions"
+                            size="small">
             <IconButton title="Open folder"
                         onClick={() => selectProjectDirectory()}>
                 <FolderOpenIcon/>
@@ -51,12 +55,23 @@ export const DirectoryExplorer: FunctionComponent<ProjectExplorerProps> = () => 
                                           onClick={() => handleCloseProjectDirectory()}>
                 <CloseIcon/>
             </IconButton>}
-        </ButtonGroup>
+            {rootDirectory && <IconButton title="New folder..."
+                                          onClick={() => actions.openNewDirectoryDialog({
+                                              path: '.',
+                                              handler: rootDirectory
+                                          })}>
+                <CreateNewFolderIcon/>
+            </IconButton>}
+        </ButtonGroup>;
+    };
+
+    return <DirectoryExplorerProvider>
+        <ActionsBar/>
 
         <Box sx={{height: `calc(100% - ${topBarHeight})`, borderTop: `1px solid ${theme.palette.text.disabled}`}}>
             {rootDirectory && <DirectoryTree setOpenedNodeIds={setOpenedNodeIds} openedNodeIds={openedNodeIds}/>}
         </Box>
-    </Fragment>
+    </DirectoryExplorerProvider>
 }
 
 export interface ProjectExplorerProps {

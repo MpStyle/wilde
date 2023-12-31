@@ -1,6 +1,6 @@
 export type DirectoryStructure = {
     [path: string]: {
-        handler: FileSystemHandle,
+        handler: FileSystemDirectoryHandle,
         content: (FileSystemDirectoryHandle | FileSystemFileHandle)[]
     }
 };

@@ -5,13 +5,24 @@ import {TreeNode} from "../../entity/TreeNode";
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import {FileIcon} from "../core/FileIcon";
+import {useDirectoryExplorerActions} from "./DirectoryExplorerContext";
+import {PathUtils} from "../../book/PathUtils";
 
 export const DirectoryTreeItem = memo((props: SpeedTreeItemProps) => {
     const node = props.data.flattenedData[props.index];
     const left = node.depth * 20;
+    const actions = useDirectoryExplorerActions();
 
     return <Box style={props.style}
                 onClick={() => props.data.onOpen(node)}
+                onContextMenu={e => {
+                    if (node.handler.kind === 'directory') {
+                        actions.openContextMenu(e, {
+                            path: PathUtils.combine(node.path, node.handler.name),
+                            handler: node.handler
+                        });
+                    }
+                }}
                 sx={{
                     display: 'flex',
                     alignItems: 'center',
