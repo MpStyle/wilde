@@ -17,12 +17,13 @@ import {DirectoryUtils} from "../../book/DirectoryUtils";
 
 export interface DirectoryExplorerOptions {
     path: string;
-    handler: FileSystemDirectoryHandle;
+    handler: FileSystemHandle;
 }
 
 interface DirectoryExplorerContextActions {
     openContextMenu: (event: React.MouseEvent, options: DirectoryExplorerOptions) => void;
     openNewDirectoryDialog: (options?: DirectoryExplorerOptions) => void;
+    openNewFileDialog: (options?: DirectoryExplorerOptions) => void;
 }
 
 const DirectoryExplorerContext = createContext<DirectoryExplorerContextActions>({
@@ -30,6 +31,8 @@ const DirectoryExplorerContext = createContext<DirectoryExplorerContextActions>(
     },
     openNewDirectoryDialog: () => {
     },
+    openNewFileDialog: () => {
+    }
 });
 
 export const useDirectoryExplorerActions = () => useContext(DirectoryExplorerContext);
@@ -45,7 +48,9 @@ export const DirectoryExplorerProvider: FunctionComponent<PropsWithChildren> = p
         mouseY: number;
     } | null>(null);
     const [isNewDirectoryDialogOpen, setIsNewDirectoryDialogOpen] = useState(false);
+    const [isNewFileDialogOpen, setIsNewFileDialogOpen] = useState(false);
     const [newDirectoryName, setNewDirectoryName] = useState<string>('');
+    const [newFileName, setNewFileName] = useState<string>('');
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
     const dispatch = useDispatch<AppDispatch>();
 
@@ -71,7 +76,7 @@ export const DirectoryExplorerProvider: FunctionComponent<PropsWithChildren> = p
         setIsNewDirectoryDialogOpen(false);
     }
 
-    const createNewDirectory = (directoryName: string) => {
+    const createNewDirectory = () => {
         closeNewDirectoryDialog();
 
         if (!selectedTreeItem || selectedTreeItem.handler.kind !== 'directory') {
@@ -80,7 +85,7 @@ export const DirectoryExplorerProvider: FunctionComponent<PropsWithChildren> = p
 
         const directoryHandle = selectedTreeItem.handler as FileSystemDirectoryHandle;
 
-        directoryHandle.getDirectoryHandle(directoryName, {create: true})
+        directoryHandle.getDirectoryHandle(newDirectoryName, {create: true})
             .then(_ => {
                 dispatch(scanProjectDirectory({
                     path: selectedTreeItem.path,
@@ -88,6 +93,39 @@ export const DirectoryExplorerProvider: FunctionComponent<PropsWithChildren> = p
                 }));
             });
     }
+
+    //#region New file
+    const openNewFileDialog = (options?: DirectoryExplorerOptions) => {
+        if (options) {
+            setSelectedTreeItem({path: options.path, handler: options.handler});
+        }
+
+        closeContextMenu();
+        setIsNewFileDialogOpen(true);
+    }
+    const closeNewFileDialog = () => {
+        setNewFileName('');
+        setIsNewFileDialogOpen(false);
+    }
+
+    const createNewFile = () => {
+        closeNewFileDialog();
+
+        if (!selectedTreeItem || selectedTreeItem.handler.kind !== 'directory') {
+            return;
+        }
+
+        const directoryHandle = selectedTreeItem.handler as FileSystemDirectoryHandle;
+
+        directoryHandle.getFileHandle(newFileName, {create: true})
+            .then(_ => {
+                dispatch(scanProjectDirectory({
+                    path: selectedTreeItem.path,
+                    dirHandle: directoryHandle
+                }));
+            });
+    }
+    //#endregion
 
     const openDeleteDialog = () => {
         closeContextMenu();
@@ -116,6 +154,7 @@ export const DirectoryExplorerProvider: FunctionComponent<PropsWithChildren> = p
         <DirectoryExplorerContext.Provider value={{
             openContextMenu,
             openNewDirectoryDialog,
+            openNewFileDialog
         }}>
             {props.children}
         </DirectoryExplorerContext.Provider>
@@ -128,7 +167,10 @@ export const DirectoryExplorerProvider: FunctionComponent<PropsWithChildren> = p
                       ? {top: contextMenu.mouseY, left: contextMenu.mouseX}
                       : undefined
               }>
-            <MenuItem onClick={() => openNewDirectoryDialog()}>New folder...</MenuItem>
+            {selectedTreeItem?.handler.kind === 'directory' &&
+                <MenuItem onClick={() => openNewFileDialog()}>New File...</MenuItem>}
+            {selectedTreeItem?.handler.kind === 'directory' &&
+                <MenuItem onClick={() => openNewDirectoryDialog()}>New folder...</MenuItem>}
             <MenuItem onClick={() => openDeleteDialog()}>Delete</MenuItem>
         </Menu>
 
@@ -147,10 +189,32 @@ export const DirectoryExplorerProvider: FunctionComponent<PropsWithChildren> = p
             </DialogContent>
             <DialogActions>
                 <Button onClick={closeNewDirectoryDialog}>Cancel</Button>
-                <Button onClick={() => createNewDirectory(newDirectoryName)}>Create</Button>
+                <Button onClick={() => createNewDirectory()}>Create</Button>
             </DialogActions>
         </Dialog>
 
+        //#region New file
+        <Dialog open={isNewFileDialogOpen} onClose={closeNewFileDialog}>
+            <DialogTitle>New File...</DialogTitle>
+            <DialogContent>
+                <TextField value={newFileName}
+                           onChange={e => setNewFileName(e.target.value)}
+                           autoFocus
+                           margin="dense"
+                           label="File name"
+                           type="text"
+                           fullWidth
+                           variant="standard"
+                />
+            </DialogContent>
+            <DialogActions>
+                <Button onClick={closeNewDirectoryDialog}>Cancel</Button>
+                <Button onClick={() => createNewFile()}>Create</Button>
+            </DialogActions>
+        </Dialog>
+        //#endregion
+
+        //#region Delete file
         <Dialog open={isDeleteDialogOpen} onClose={closeDeleteDialog}>
             <DialogTitle>Delete {selectedTreeItem?.handler.kind === 'directory' ? 'folder' : 'file'}</DialogTitle>
             <DialogContent>
@@ -164,5 +228,6 @@ export const DirectoryExplorerProvider: FunctionComponent<PropsWithChildren> = p
                 <Button onClick={() => deleteFile()}>Delete</Button>
             </DialogActions>
         </Dialog>
+        //#endregion
     </Fragment>;
 }

@@ -10,6 +10,7 @@ import UnfoldLessIcon from '@mui/icons-material/UnfoldLess';
 import {closeProjectDirectoryAction} from "../../action/CloseProjectDirectoryAction";
 import {DirectoryExplorerProvider, useDirectoryExplorerActions} from "./DirectoryExplorerContext";
 import CreateNewFolderIcon from '@mui/icons-material/CreateNewFolder';
+import NoteAddIcon from '@mui/icons-material/NoteAdd';
 
 export const DirectoryExplorer: FunctionComponent<ProjectExplorerProps> = () => {
     const [openedNodeIds, setOpenedNodeIds] = useState<string[]>([]);
@@ -61,6 +62,13 @@ export const DirectoryExplorer: FunctionComponent<ProjectExplorerProps> = () => 
                                               handler: rootDirectory
                                           })}>
                 <CreateNewFolderIcon/>
+            </IconButton>}
+            {rootDirectory && <IconButton title="New File..."
+                                          onClick={() => actions.openNewFileDialog({
+                                              path: '.',
+                                              handler: rootDirectory
+                                          })}>
+                <NoteAddIcon/>
             </IconButton>}
         </ButtonGroup>;
     };

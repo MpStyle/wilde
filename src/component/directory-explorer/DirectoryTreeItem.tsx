@@ -16,12 +16,10 @@ export const DirectoryTreeItem = memo((props: SpeedTreeItemProps) => {
     return <Box style={props.style}
                 onClick={() => props.data.onOpen(node)}
                 onContextMenu={e => {
-                    if (node.handler.kind === 'directory') {
-                        actions.openContextMenu(e, {
-                            path: PathUtils.combine(node.path, node.handler.name),
-                            handler: node.handler
-                        });
-                    }
+                    actions.openContextMenu(e, {
+                        path: PathUtils.combine(node.path, node.handler.name),
+                        handler: node.handler
+                    });
                 }}
                 sx={{
                     display: 'flex',
