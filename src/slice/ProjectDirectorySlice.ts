@@ -18,7 +18,7 @@ const scanDirectory = async (path: string, dirHandle: FileSystemDirectoryHandle)
         values.push(value);
     }
 
-    return {path, handlers: values};
+    return {path, handler: dirHandle, handlers: values};
 };
 
 export const scanProjectDirectory = createAsyncThunk(
@@ -48,10 +48,16 @@ export const projectDirectorySlice = createSlice({
     extraReducers: (builder) => {
         builder
             .addCase(scanProjectDirectory.fulfilled, (state, action) => {
-                state.directoryStructure[action.payload.path] = action.payload.handlers;
+                state.directoryStructure[action.payload.path] = {
+                    content: action.payload.handlers,
+                    handler: action.payload.handler
+                };
             })
             .addCase(openProjectDirectory.fulfilled, (state, action) => {
-                state.directoryStructure[action.payload.path] = action.payload.handlers;
+                state.directoryStructure[action.payload.path] = {
+                    content: action.payload.handlers,
+                    handler: action.payload.handler
+                };
                 state.rootDirectory = action.payload.root;
             })
     }

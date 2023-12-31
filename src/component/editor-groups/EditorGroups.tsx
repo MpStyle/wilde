@@ -47,7 +47,7 @@ export const EditorGroups: FunctionComponent = () => {
                     return null;
                 }
 
-                const fileHandler = directoryStructure[editor.path].find(fileHandler => fileHandler.name === editor.fileName);
+                const fileHandler = directoryStructure[editor.path].content.find(fileHandler => fileHandler.name === editor.fileName);
 
                 if (!fileHandler) {
                     return null;
@@ -84,7 +84,7 @@ export const EditorGroups: FunctionComponent = () => {
                 return null;
             }
 
-            const fileHandler = directoryStructure[editor.path].find(fileHandler => fileHandler.name === editor.fileName);
+            const fileHandler = directoryStructure[editor.path].content.find(fileHandler => fileHandler.name === editor.fileName);
 
             if (!fileHandler) {
                 return null;

@@ -37,7 +37,7 @@ export const DirectoryTree: FunctionComponent<SpeedTreeProps> = props => {
 
             const absolutePath = PathUtils.combine(path, item.name);
             if (item.kind === 'directory' && directoryStructure.hasOwnProperty(absolutePath) && !collapsed) {
-                result.push(...toFlat(directoryStructure[absolutePath], depth + 1, absolutePath))
+                result.push(...toFlat(directoryStructure[absolutePath].content, depth + 1, absolutePath))
             }
         }
 
@@ -63,7 +63,7 @@ export const DirectoryTree: FunctionComponent<SpeedTreeProps> = props => {
         }
     };
 
-    const flattenedData = toFlat(directoryStructure["."], 0, ".");
+    const flattenedData = toFlat(directoryStructure["."].content, 0, ".");
     const itemData = getItemData(onOpen, flattenedData);
 
     return <AutoSizer>
