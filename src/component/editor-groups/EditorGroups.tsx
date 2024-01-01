@@ -34,6 +34,7 @@ export const EditorGroups: FunctionComponent = () => {
     const editors = useSelector((state: AppState) => state.openEditors);
     const [value, setValue] = React.useState(0);
     const dispatch = useDispatch();
+    const theme = useTheme();
 
     const handleChange = (_: React.SyntheticEvent, newValue: number) => {
         setValue(newValue);
@@ -47,7 +48,7 @@ export const EditorGroups: FunctionComponent = () => {
                 }
 
                 return <Tab id={`editor-tab-${i}`}
-                            sx={{p: 0.2}}
+                            sx={{p: 0.4}}
                             key={`open-editor-tab-${i}`}
                             label={
                                 <Box sx={{
@@ -57,7 +58,11 @@ export const EditorGroups: FunctionComponent = () => {
                                 }}>
                                     <FileIcon node={{handler: editor.handler} as TreeNode} sx={{mr: 1}}/>
                                     <Typography variant="body2"
-                                                sx={{flexGrow: 1}}>
+                                                sx={{
+                                                    textTransform: 'none',
+                                                    flexGrow: 1,
+                                                    color: value === i ? theme.palette.text.primary : theme.palette.text.disabled
+                                                }}>
                                         {editor.handler.name}
                                     </Typography>
                                     <IconButton component="span"
