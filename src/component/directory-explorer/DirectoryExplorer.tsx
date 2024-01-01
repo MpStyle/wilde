@@ -1,6 +1,5 @@
 import React, {Fragment, FunctionComponent, useState} from "react";
-import {Box, ButtonGroup, IconButton, useTheme} from "@mui/material";
-import FolderOpenIcon from '@mui/icons-material/FolderOpen';
+import {Box, ButtonGroup, IconButton, Typography, useTheme} from "@mui/material";
 import {useDispatch, useSelector} from "react-redux";
 import {AppDispatch, AppState} from "../../store/AppStore";
 import {closeProjectDirectory, openProjectDirectory} from "../../slice/ProjectDirectorySlice";
@@ -33,51 +32,56 @@ export const DirectoryExplorer: FunctionComponent<ProjectExplorerProps> = () => 
 
     const handleCollapseAllClick = () => setOpenedNodeIds([]);
 
-    if(!rootDirectory){
-        return <EmptyDirectoryExplorer />;
+    if (!rootDirectory) {
+        return <EmptyDirectoryExplorer/>;
     }
 
     const ActionsBar: FunctionComponent = () => {
         const actions = useDirectoryExplorerActions();
 
         return <ButtonGroup variant="text"
-                            sx={{height: topBarHeight}}
                             aria-label="project explorer actions"
                             size="small">
-            {!rootDirectory && <IconButton title="Open folder"
-                                           onClick={() => selectProjectDirectory()}>
-                <FolderOpenIcon/>
-            </IconButton>}
             {rootDirectory && <Fragment>
                 <IconButton title="New File..."
+                            size="small"
                             onClick={() => actions.openNewFileDialog({
                                 path: '.',
                                 handler: rootDirectory
                             })}>
-                    <NoteAddIcon/>
+                    <NoteAddIcon fontSize="small"/>
                 </IconButton>
                 <IconButton title="New folder..."
+                            size="small"
                             onClick={() => actions.openNewDirectoryDialog({
                                 path: '.',
                                 handler: rootDirectory
                             })}>
-                    <CreateNewFolderIcon/>
-
+                    <CreateNewFolderIcon fontSize="small"/>
                 </IconButton>
                 <IconButton title="Collapse all"
+                            size="small"
                             onClick={() => handleCollapseAllClick()}>
-                    <UnfoldLessIcon/>
+                    <UnfoldLessIcon fontSize="small"/>
                 </IconButton>
                 <IconButton title="Close folder"
+                            size="small"
                             onClick={() => handleCloseProjectDirectory()}>
-                    <CloseIcon/>
+                    <CloseIcon fontSize="small"/>
                 </IconButton>
             </Fragment>}
         </ButtonGroup>;
     };
 
     return <DirectoryExplorerProvider>
-        <ActionsBar/>
+        <Box sx={{pl: 0.5, pr: 0.5, height: topBarHeight, display: 'flex', alignItems: 'center'}}>
+            <Typography title={`Explorer: ${rootDirectory.name}`}
+                        sx={{flex: 1, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis"}}>
+                Explorer: {rootDirectory.name}
+            </Typography>
+
+            <ActionsBar/>
+        </Box>
 
         <Box sx={{height: `calc(100% - ${topBarHeight})`, borderTop: `1px solid ${theme.palette.text.disabled}`}}>
             {rootDirectory && <DirectoryTree setOpenedNodeIds={setOpenedNodeIds} openedNodeIds={openedNodeIds}/>}
