@@ -2,9 +2,16 @@
 
 __!!!WORK IN PROGRESS PROJECT!!!__
 
+![Wilde logo](public/images/wilde-logo.png)
+
 Wilde is a web integrated local desktop environment.
 
 ![Wilde screenshot](docs/images/wilde.png)
+
+## About logo
+
+**Font**: antre \
+**Colors**: from left to right, #3D44FF and #6CB5FF.
 
 ## Libraries
 
