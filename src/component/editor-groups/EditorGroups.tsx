@@ -31,25 +31,18 @@ interface EditorTabPanelProps {
 }
 
 export const EditorGroups: FunctionComponent = () => {
-    const directoryStructure = useSelector((appState: AppState) => appState.projectFolder.directoryStructure);
     const editors = useSelector((state: AppState) => state.openEditors);
     const [value, setValue] = React.useState(0);
     const dispatch = useDispatch();
 
-    const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+    const handleChange = (_: React.SyntheticEvent, newValue: number) => {
         setValue(newValue);
     };
 
     return <Fragment>
         <Tabs value={value} onChange={handleChange} aria-label="Open editors">
             {editors.openEditors.map((editor, i) => {
-                if (!directoryStructure.hasOwnProperty(editor.path)) {
-                    return null;
-                }
-
-                const fileHandler = directoryStructure[editor.path].content.find(fileHandler => fileHandler.name === editor.fileName);
-
-                if (!fileHandler) {
+                if (!editor.handler) {
                     return null;
                 }
 
@@ -62,17 +55,23 @@ export const EditorGroups: FunctionComponent = () => {
                                     alignItems: 'center',
                                     pr: 0,
                                 }}>
-                                    <FileIcon node={{handler: fileHandler} as TreeNode} sx={{mr: 1}}/>
+                                    <FileIcon node={{handler: editor.handler} as TreeNode} sx={{mr: 1}}/>
                                     <Typography variant="body2"
                                                 sx={{flexGrow: 1}}>
-                                        {fileHandler.name}
+                                        {editor.handler.name}
                                     </Typography>
                                     <IconButton component="span"
                                                 sx={{ml: 1}}
-                                                onClick={() => dispatch(closeEditor({
-                                                    path: editor.path,
-                                                    fileName: fileHandler?.name
-                                                }))}>
+                                                onClick={() => {
+                                                    if (!editor.handler) {
+                                                        return;
+                                                    }
+
+                                                    dispatch(closeEditor({
+                                                        path: editor.path,
+                                                        handler: editor.handler
+                                                    }));
+                                                }}>
                                         <CloseIcon/>
                                     </IconButton>
                                 </Box>
@@ -80,18 +79,12 @@ export const EditorGroups: FunctionComponent = () => {
             })}
         </Tabs>
         {editors.openEditors.map((editor, i) => {
-            if (!directoryStructure.hasOwnProperty(editor.path)) {
-                return null;
-            }
-
-            const fileHandler = directoryStructure[editor.path].content.find(fileHandler => fileHandler.name === editor.fileName);
-
-            if (!fileHandler) {
+            if (!editor.handler) {
                 return null;
             }
 
             return <EditorTabPanel value={value} index={i} key={`open-editor-${i}`}>
-                <EditorProxy handler={fileHandler as FileSystemFileHandle}/>
+                <EditorProxy handler={editor.handler}/>
             </EditorTabPanel>
         })}
     </Fragment>

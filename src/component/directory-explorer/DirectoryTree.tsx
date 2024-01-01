@@ -48,7 +48,7 @@ export const DirectoryTree: FunctionComponent<SpeedTreeProps> = props => {
         const nodePath = PathUtils.combine(node.path, node.handler.name);
 
         if (node.handler.kind === 'file') {
-            dispatch(openEditor({path: node.path, fileName: node.handler.name}));
+            dispatch(openEditor({path: node.path, handler: node.handler}));
             return;
         }
 

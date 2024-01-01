@@ -2,7 +2,7 @@ import type {PayloadAction} from '@reduxjs/toolkit'
 import {createSlice} from '@reduxjs/toolkit'
 import {closeProjectDirectory} from "./ProjectDirectorySlice";
 
-type OpenEditor = { path: string, fileName: string };
+type OpenEditor = { path: string, handler: FileSystemFileHandle };
 
 export interface EditorState {
     openEditors: OpenEditor[];
@@ -16,15 +16,15 @@ export const openEditorsSlice = createSlice({
     name: 'openEditors',
     initialState,
     reducers: {
-        openEditor: (state, action: PayloadAction<{ path: string, fileName: string }>) => {
-            if (state.openEditors.findIndex(oe => oe.fileName === action.payload.fileName && oe.path === action.payload.path) !== -1) {
+        openEditor: (state, action: PayloadAction<{ path: string, handler: FileSystemFileHandle }>) => {
+            if (state.openEditors.findIndex(oe => oe.handler === action.payload.handler && oe.path === action.payload.path) !== -1) {
                 return;
             }
 
             state.openEditors = [...state.openEditors, action.payload]
         },
-        closeEditor: (state, action: PayloadAction<{ path: string, fileName: string }>) => {
-            const editorIndex = state.openEditors.findIndex(oe => oe.fileName === action.payload.fileName && oe.path === action.payload.path);
+        closeEditor: (state, action: PayloadAction<{ path: string, handler: FileSystemFileHandle }>) => {
+            const editorIndex = state.openEditors.findIndex(oe => oe.handler === action.payload.handler && oe.path === action.payload.path);
 
             if (editorIndex === -1) {
                 return;
