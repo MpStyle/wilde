@@ -1,4 +1,4 @@
-import React, {FunctionComponent, useState} from "react";
+import React, {Fragment, FunctionComponent, useState} from "react";
 import {Box, ButtonGroup, IconButton, useTheme} from "@mui/material";
 import FolderOpenIcon from '@mui/icons-material/FolderOpen';
 import {useDispatch, useSelector} from "react-redux";
@@ -44,32 +44,34 @@ export const DirectoryExplorer: FunctionComponent<ProjectExplorerProps> = () => 
                             sx={{height: topBarHeight}}
                             aria-label="project explorer actions"
                             size="small">
-            <IconButton title="Open folder"
+            {!rootDirectory && <IconButton title="Open folder"
                         onClick={() => selectProjectDirectory()}>
                 <FolderOpenIcon/>
-            </IconButton>
-            {rootDirectory && <IconButton title="Collapse all"
-                                          onClick={() => handleCollapseAllClick()}>
-                <UnfoldLessIcon/>
             </IconButton>}
-            {rootDirectory && <IconButton title="Collapse all"
-                                          onClick={() => handleCloseProjectDirectory()}>
-                <CloseIcon/>
-            </IconButton>}
-            {rootDirectory && <IconButton title="New folder..."
-                                          onClick={() => actions.openNewDirectoryDialog({
-                                              path: '.',
-                                              handler: rootDirectory
-                                          })}>
-                <CreateNewFolderIcon/>
-            </IconButton>}
-            {rootDirectory && <IconButton title="New File..."
-                                          onClick={() => actions.openNewFileDialog({
-                                              path: '.',
-                                              handler: rootDirectory
-                                          })}>
-                <NoteAddIcon/>
-            </IconButton>}
+            {rootDirectory && <Fragment>
+                <IconButton title="Collapse all"
+                            onClick={() => handleCollapseAllClick()}>
+                    <UnfoldLessIcon/>
+                </IconButton>
+                <IconButton title="Collapse all"
+                            onClick={() => handleCloseProjectDirectory()}>
+                    <CloseIcon/>
+                </IconButton>
+                <IconButton title="New folder..."
+                            onClick={() => actions.openNewDirectoryDialog({
+                                path: '.',
+                                handler: rootDirectory
+                            })}>
+                    <CreateNewFolderIcon/>
+                </IconButton>
+                <IconButton title="New File..."
+                            onClick={() => actions.openNewFileDialog({
+                                path: '.',
+                                handler: rootDirectory
+                            })}>
+                    <NoteAddIcon/>
+                </IconButton>
+            </Fragment>}
         </ButtonGroup>;
     };
 
