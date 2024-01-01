@@ -9,6 +9,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import {closeEditor} from "../../slice/OpenEditorsSlice";
 import {FileIcon} from "../core/FileIcon";
 import {TreeNode} from "../../entity/TreeNode";
+import {PathUtils} from "../../book/PathUtils";
 
 const EditorTabPanel = (props: EditorTabPanelProps) => {
     const {children, value, index, ...other} = props;
@@ -32,6 +33,7 @@ interface EditorTabPanelProps {
 
 export const EditorGroups: FunctionComponent = () => {
     const editors = useSelector((state: AppState) => state.openEditors);
+    const rootDirectory = useSelector((appState: AppState) => appState.projectFolder.rootDirectory);
     const [value, setValue] = React.useState(0);
     const dispatch = useDispatch();
     const theme = useTheme();
@@ -47,8 +49,12 @@ export const EditorGroups: FunctionComponent = () => {
                     return null;
                 }
 
+                const path = PathUtils.combine(editor.path, editor.handler.name).replace("./", `${rootDirectory!.name}/`)
+                const showPathInTab = editors.openEditors.filter(oe => oe.handler.name === editor.handler.name).length > 1;
+
                 return <Tab id={`editor-tab-${i}`}
-                            sx={{p: 0.4}}
+                            sx={{pl: 1, pr: 0.6, pt: 0.2, pb: 0.2}}
+                            title={path}
                             key={`open-editor-tab-${i}`}
                             label={
                                 <Box sx={{
@@ -56,7 +62,9 @@ export const EditorGroups: FunctionComponent = () => {
                                     alignItems: 'center',
                                     pr: 0,
                                 }}>
-                                    <FileIcon node={{handler: editor.handler} as TreeNode} sx={{mr: 1}}/>
+                                    <FileIcon node={{handler: editor.handler} as TreeNode}
+                                              sx={{mr: 1}}
+                                              size='small'/>
                                     <Typography variant="body2"
                                                 sx={{
                                                     textTransform: 'none',
@@ -65,6 +73,20 @@ export const EditorGroups: FunctionComponent = () => {
                                                 }}>
                                         {editor.handler.name}
                                     </Typography>
+                                    {showPathInTab && <Typography variant='caption'
+                                                                  sx={{
+                                                                      ml: 0.8,
+                                                                      textTransform: 'none',
+                                                                      color: theme.palette.text.disabled,
+                                                                      whiteSpace: "nowrap",
+                                                                      overflow: "hidden",
+                                                                      textOverflow: "ellipsis",
+                                                                      maxWidth: "70px",
+                                                                      direction: "rtl",
+                                                                      textAlign: "left"
+                                                                  }}>
+                                        {editor.path}{PathUtils.separator}
+                                    </Typography>}
                                     <IconButton component="span"
                                                 sx={{ml: 1}}
                                                 onClick={() => {
