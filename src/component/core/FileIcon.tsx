@@ -5,8 +5,8 @@ import {SxProps} from "@mui/system";
 import {Theme} from "@mui/material/styles";
 import {TreeNode} from "../../entity/TreeNode";
 
-export const FileIcon:FunctionComponent<FileIconProps>=props=>{
-    return <Icon sx={props.sx}>
+export const FileIcon: FunctionComponent<FileIconProps> = props => {
+    return <Icon sx={props.sx} fontSize={props.size}>
         <img src={IconResolver.byTreeNode(props.node)}
              alt={props.node.path + props.node.handler.name}
              style={{
@@ -17,7 +17,8 @@ export const FileIcon:FunctionComponent<FileIconProps>=props=>{
     </Icon>;
 }
 
-export interface FileIconProps{
+export interface FileIconProps {
     sx?: SxProps<Theme>;
-    node:TreeNode;
+    node: TreeNode;
+    size?: 'inherit' | 'large' | 'medium' | 'small';
 }
