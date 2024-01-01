@@ -2,7 +2,7 @@
 
 __!!!WORK IN PROGRESS PROJECT!!!__
 
-![Wilde logo](public/images/wilde-logo.png)
+![Wilde logo](docs/images/wilde-logo.png)
 
 Wilde is a web integrated local desktop environment.
 
