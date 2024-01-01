@@ -10,6 +10,7 @@ import UnfoldLessIcon from '@mui/icons-material/UnfoldLess';
 import {DirectoryExplorerProvider, useDirectoryExplorerActions} from "./DirectoryExplorerContext";
 import CreateNewFolderIcon from '@mui/icons-material/CreateNewFolder';
 import NoteAddIcon from '@mui/icons-material/NoteAdd';
+import {EmptyDirectoryExplorer} from "./EmptyDirectoryExplorer";
 
 export const DirectoryExplorer: FunctionComponent<ProjectExplorerProps> = () => {
     const [openedNodeIds, setOpenedNodeIds] = useState<string[]>([]);
@@ -31,6 +32,10 @@ export const DirectoryExplorer: FunctionComponent<ProjectExplorerProps> = () => 
     const handleCloseProjectDirectory = async () => dispatch(closeProjectDirectory());
 
     const handleCollapseAllClick = () => setOpenedNodeIds([]);
+
+    if(!rootDirectory){
+        return <EmptyDirectoryExplorer />;
+    }
 
     const ActionsBar: FunctionComponent = () => {
         const actions = useDirectoryExplorerActions();
