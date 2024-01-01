@@ -45,17 +45,16 @@ export const DirectoryExplorer: FunctionComponent<ProjectExplorerProps> = () => 
                             aria-label="project explorer actions"
                             size="small">
             {!rootDirectory && <IconButton title="Open folder"
-                        onClick={() => selectProjectDirectory()}>
+                                           onClick={() => selectProjectDirectory()}>
                 <FolderOpenIcon/>
             </IconButton>}
             {rootDirectory && <Fragment>
-                <IconButton title="Collapse all"
-                            onClick={() => handleCollapseAllClick()}>
-                    <UnfoldLessIcon/>
-                </IconButton>
-                <IconButton title="Collapse all"
-                            onClick={() => handleCloseProjectDirectory()}>
-                    <CloseIcon/>
+                <IconButton title="New File..."
+                            onClick={() => actions.openNewFileDialog({
+                                path: '.',
+                                handler: rootDirectory
+                            })}>
+                    <NoteAddIcon/>
                 </IconButton>
                 <IconButton title="New folder..."
                             onClick={() => actions.openNewDirectoryDialog({
@@ -63,13 +62,15 @@ export const DirectoryExplorer: FunctionComponent<ProjectExplorerProps> = () => 
                                 handler: rootDirectory
                             })}>
                     <CreateNewFolderIcon/>
+
                 </IconButton>
-                <IconButton title="New File..."
-                            onClick={() => actions.openNewFileDialog({
-                                path: '.',
-                                handler: rootDirectory
-                            })}>
-                    <NoteAddIcon/>
+                <IconButton title="Collapse all"
+                            onClick={() => handleCollapseAllClick()}>
+                    <UnfoldLessIcon/>
+                </IconButton>
+                <IconButton title="Close folder"
+                            onClick={() => handleCloseProjectDirectory()}>
+                    <CloseIcon/>
                 </IconButton>
             </Fragment>}
         </ButtonGroup>;
