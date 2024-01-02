@@ -15,8 +15,11 @@ jobs:
       - name: Installing dependencies...
         run: npm i
         shell: bash
+      - name: Clean installing...
+        run: npm ci
+        shell: bash
       - name: Building...
-        run: npm run build
+        run: CI=false npm run build
         shell: bash
       - run: git config user.name github-actions
         shell: bash
