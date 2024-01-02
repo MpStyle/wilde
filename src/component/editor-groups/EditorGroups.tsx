@@ -26,6 +26,8 @@ export const EditorGroups: FunctionComponent = () => {
                 }
 
                 const path = PathUtils.combine(editor.path, editor.handler.name).replace("./", `${rootDirectory!.name}/`)
+
+                // A portion of the path will be displayed if there are multiple files open with the same name
                 const showPathInTab = editors.openEditors.filter(oe => oe.handler.name === editor.handler.name).length > 1;
 
                 return <Tab id={`editor-tab-${i}`}
