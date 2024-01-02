@@ -40,7 +40,8 @@ export const EditorGroups: FunctionComponent = () => {
         <Tabs value={tabsValue}
               onChange={handleChange}
               variant="scrollable"
-              aria-label="Open editors">
+              aria-label="Open editors"
+              TabIndicatorProps={{sx: {height: 3}}}>
             {editors.openEditors.map((editor, i) => {
                 if (!editor.handle) {
                     return null;
@@ -52,7 +53,7 @@ export const EditorGroups: FunctionComponent = () => {
                 const showPathInTab = editors.openEditors.filter(oe => oe.handle.name === editor.handle.name).length > 1;
 
                 return <Tab id={`editor-tab-${i}`}
-                            sx={{pl: 1, pr: 0.6, pt: 0.2, pb: 0.2}}
+                            sx={{pl: 1.4, pr: 0.6, pt: 0.2, pb: 0.2}}
                             title={path}
                             onContextMenu={(e) => openContextMenu(e)}
                             key={`open-editor-tab-${i}`}

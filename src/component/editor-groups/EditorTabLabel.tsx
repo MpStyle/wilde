@@ -1,7 +1,7 @@
 import React, {FunctionComponent} from "react";
 import {FileIcon} from "../core/FileIcon";
 import {TreeNode} from "../../entity/TreeNode";
-import {Box, IconButton, Typography, useTheme} from "@mui/material";
+import {alpha, Box, IconButton, Typography, useTheme} from "@mui/material";
 import {PathUtils} from "../../book/PathUtils";
 import {closeEditor} from "../../slice/OpenEditorsSlice";
 import CloseIcon from "@mui/icons-material/Close";
@@ -23,7 +23,8 @@ export const EditorTabLabel: FunctionComponent<EditorTabLabelProps> = props => {
                     sx={{
                         textTransform: 'none',
                         flexGrow: 1,
-                        color: props.isSelected ? theme.palette.text.primary : theme.palette.text.disabled
+                        color: props.isSelected ? theme.palette.text.primary : alpha(theme.palette.text.disabled, 0.7),
+                        fontWeight: props.isSelected ? "bold" : 'normal',
                     }}>
             {props.editor.handle.name}
         </Typography>
