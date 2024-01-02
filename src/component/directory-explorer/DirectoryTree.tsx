@@ -1,4 +1,4 @@
-import React, {FunctionComponent} from 'react';
+import React, {FunctionComponent, useState} from 'react';
 import {FixedSizeList as List} from 'react-window';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import memoizeOne from 'memoize-one';
@@ -12,13 +12,20 @@ import {DirectoryTreeItem} from "./DirectoryTreeItem";
 import {FileSorter} from "./book/FileSorter";
 import {PathUtils} from "../../book/PathUtils";
 
-const getItemData = memoizeOne((onOpen: (node: TreeNode) => void, flattenedData: TreeNode[]) => ({
-    onOpen,
-    flattenedData,
-}));
+const getItemData = memoizeOne(
+    (onOpen: (node: TreeNode) => void,
+     flattenedData: TreeNode[],
+     selectedTreeItem: string | undefined,
+     setSelectedTreeItem: (treeItemPath: string) => void) => ({
+        onOpen,
+        flattenedData,
+        selectedTreeItem,
+        setSelectedTreeItem,
+    }));
 
 export const DirectoryTree: FunctionComponent<SpeedTreeProps> = props => {
     const directoryStructure = useSelector((appState: AppState) => appState.projectFolder.directoryStructure);
+    const [selectedTreeItem, setSelectedTreeItem] = useState<string | undefined>(undefined);
     const dispatch = useDispatch<AppDispatch>();
 
     const toFlat = (items: FileSystemHandle[], depth: number, path: string): TreeNode[] => {
@@ -64,7 +71,7 @@ export const DirectoryTree: FunctionComponent<SpeedTreeProps> = props => {
     };
 
     const flattenedData = toFlat(directoryStructure["."].content, 0, ".");
-    const itemData = getItemData(onOpen, flattenedData);
+    const itemData = getItemData(onOpen, flattenedData, selectedTreeItem, setSelectedTreeItem);
 
     return <AutoSizer>
         {({height, width}: { height: string | number, width: string | number }) =>

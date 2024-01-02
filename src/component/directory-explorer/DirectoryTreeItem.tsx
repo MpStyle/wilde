@@ -12,6 +12,7 @@ export const DirectoryTreeItem = memo((props: SpeedTreeItemProps) => {
     const node = props.data.flattenedData[props.index];
     const left = node.depth * 20;
     const actions = useDirectoryExplorerActions();
+    const isSelected = props.data.selectedTreeItem === PathUtils.combine(node.path, node.handler.name);
 
     return <Box style={props.style}
                 onClick={() => props.data.onOpen(node)}
@@ -26,12 +27,14 @@ export const DirectoryTreeItem = memo((props: SpeedTreeItemProps) => {
                     alignItems: 'center',
                     justifyContent: 'center',
                     userSelect: 'none',
-                    '&:hover': {
-                        backgroundColor: 'rgba(207, 208, 209, 1)',
-                        cursor: 'pointer'
-                    }
+                    backgroundColor: isSelected ? 'rgba(207, 208, 209, 1)' : undefined,
+                    cursor: isSelected ? 'pointer' : undefined
                 }}>
         <Box component="div"
+             onMouseOver={_ => {
+                 const path=PathUtils.combine(node.path, node.handler.name);
+                 props.data.setSelectedTreeItem(path);
+             }}
              style={{
                  position: 'absolute',
                  left: `${left}px`,
@@ -61,6 +64,8 @@ export const DirectoryTreeItem = memo((props: SpeedTreeItemProps) => {
 interface RowPropsData {
     onOpen: (node: TreeNode) => void;
     flattenedData: TreeNode[];
+    selectedTreeItem: string | undefined;
+    setSelectedTreeItem: (treeItemPath: string) => void;
 }
 
 interface SpeedTreeItemProps {
