@@ -1,11 +1,11 @@
-import type {PayloadAction} from '@reduxjs/toolkit'
-import {createSlice} from '@reduxjs/toolkit'
+import {createSlice, PayloadAction} from '@reduxjs/toolkit'
 import {closeProjectDirectory} from "./ProjectDirectorySlice";
 
-type OpenEditor = { path: string, handle: FileSystemFileHandle };
+export type EditorInfo = { path: string, handle: FileSystemFileHandle };
 
 export interface EditorState {
-    openEditors: OpenEditor[];
+    openEditors: EditorInfo[];
+    currentEditor?: EditorInfo | undefined;
 }
 
 const initialState: EditorState = {
@@ -16,14 +16,19 @@ export const openEditorsSlice = createSlice({
     name: 'openEditors',
     initialState,
     reducers: {
-        openEditor: (state, action: PayloadAction<{ path: string, handle: FileSystemFileHandle }>) => {
+        currentEditor: (state, action: PayloadAction<EditorInfo>) => {
+            state.currentEditor = action.payload;
+        },
+        openEditor: (state, action: PayloadAction<EditorInfo>) => {
             if (state.openEditors.findIndex(oe => oe.handle === action.payload.handle && oe.path === action.payload.path) !== -1) {
                 return;
             }
 
             state.openEditors = [...state.openEditors, action.payload]
+            state.currentEditor = action.payload;
+            console.log(action.payload.path, action.payload.handle.name);
         },
-        closeEditor: (state, action: PayloadAction<{ path: string, handle: FileSystemFileHandle }>) => {
+        closeEditor: (state, action: PayloadAction<EditorInfo>) => {
             const editorIndex = state.openEditors.findIndex(oe => oe.handle === action.payload.handle && oe.path === action.payload.path);
 
             if (editorIndex === -1) {
@@ -35,7 +40,7 @@ export const openEditorsSlice = createSlice({
         closeAllEditors: (state) => {
             state.openEditors = [];
         },
-        closeOthersEditors: (state, action: PayloadAction<{ path: string, handle: FileSystemFileHandle }>) => {
+        closeOthersEditors: (state, action: PayloadAction<EditorInfo>) => {
             const editorIndex = state.openEditors.findIndex(oe => oe.handle === action.payload.handle && oe.path === action.payload.path);
 
             if (editorIndex === -1) {
@@ -59,6 +64,6 @@ export const openEditorsSlice = createSlice({
 })
 
 // Action creators are generated for each case reducer function
-export const {openEditor, closeEditor, closeAllEditors, closeOthersEditors} = openEditorsSlice.actions
+export const {openEditor, closeEditor, closeAllEditors, closeOthersEditors, currentEditor} = openEditorsSlice.actions
 
 export const openEditorsReducer = openEditorsSlice.reducer;

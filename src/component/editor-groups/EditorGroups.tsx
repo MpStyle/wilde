@@ -8,17 +8,22 @@ import {PathUtils} from "../../book/PathUtils";
 import {EditorTabLabel} from "./EditorTabLabel";
 import {EditorTabPanel} from "./EditorTabPanel";
 import {EditorGroupsContextMenu} from "./EditorGroupsContextMenu";
-import {closeAllEditors, closeEditor, closeOthersEditors} from "../../slice/OpenEditorsSlice";
+import {
+    closeAllEditors,
+    closeEditor,
+    closeOthersEditors,
+    currentEditor,
+    EditorInfo
+} from "../../slice/OpenEditorsSlice";
 
 
 export const EditorGroups: FunctionComponent = () => {
     const editors = useSelector((state: AppState) => state.openEditors);
     const rootDirectory = useSelector((appState: AppState) => appState.projectFolder.rootDirectory);
-    const [tabsValue, setTabsValue] = React.useState(0);
     const dispatch = useDispatch();
 
     const handleChange = (_: React.SyntheticEvent, newValue: number) => {
-        setTabsValue(newValue);
+        dispatch(currentEditor(editors.openEditors[newValue]));
     };
 
     //#region Context menu
@@ -36,8 +41,17 @@ export const EditorGroups: FunctionComponent = () => {
     const closeContextMenu = () => setContextMenu(null);
     //#endregion
 
+    const isCurrentEditor = (editor: EditorInfo) =>{
+        if(!editors.currentEditor){
+            return false;
+        }
+
+        return PathUtils.combine(editor.path, editor.handle.name) === PathUtils.combine(editors.currentEditor.path, editors.currentEditor.handle.name);
+    }
+
+
     return <Fragment>
-        <Tabs value={tabsValue}
+        <Tabs value={editors.openEditors.findIndex(oe => isCurrentEditor(oe))}
               onChange={handleChange}
               variant="scrollable"
               aria-label="Open editors"
@@ -59,15 +73,18 @@ export const EditorGroups: FunctionComponent = () => {
                             key={`open-editor-tab-${i}`}
                             label={<EditorTabLabel editor={editor}
                                                    showPathInTab={showPathInTab}
-                                                   isSelected={i === tabsValue}/>}/>;
+                                                   isSelected={isCurrentEditor(editor)}/>}/>;
             })}
         </Tabs>
         {editors.openEditors.map((editor, i) => {
-            if (!editor.handle) {
+            if (!editor) {
                 return null;
             }
 
-            return <EditorTabPanel value={tabsValue} index={i} key={`open-editor-${i}`}>
+            return <EditorTabPanel editor={editor}
+                                   index={i}
+                                   key={`open-editor-${i}`}
+                                   hidden={!isCurrentEditor(editor)}>
                 <EditorProxy handle={editor.handle}/>
             </EditorTabPanel>
         })}
@@ -76,10 +93,10 @@ export const EditorGroups: FunctionComponent = () => {
                                  position={contextMenu}
                                  onClose={closeContextMenu}
                                  close={() => {
-                                     dispatch(closeEditor({
-                                         path: editors.openEditors[tabsValue].path,
-                                         handle: editors.openEditors[tabsValue].handle
-                                     }));
+                                     if (editors.currentEditor) {
+                                         dispatch(closeEditor(editors.currentEditor));
+                                     }
+
                                      closeContextMenu();
                                  }}
                                  closeAll={() => {
@@ -87,11 +104,12 @@ export const EditorGroups: FunctionComponent = () => {
                                      closeContextMenu();
                                  }}
                                  closeOthers={() => {
-                                     dispatch(closeOthersEditors({
-                                         path: editors.openEditors[tabsValue].path,
-                                         handle: editors.openEditors[tabsValue].handle
-                                     }));
+                                     if (editors.currentEditor) {
+                                         dispatch(closeOthersEditors(editors.currentEditor));
+                                     }
+
                                      closeContextMenu();
                                  }}/>
     </Fragment>
 }
+
