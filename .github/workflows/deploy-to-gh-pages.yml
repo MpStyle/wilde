@@ -15,9 +15,6 @@ jobs:
       - name: Installing dependencies...
         run: npm i
         shell: bash
-      - name: Clean installing...
-        run: npm ci
-        shell: bash
       - name: Building...
         run: npm run build
         shell: bash
