@@ -1,4 +1,4 @@
-import React, {FunctionComponent} from 'react';
+import React, {FunctionComponent, useEffect} from 'react';
 import './App.css';
 import {Box} from "@mui/material";
 import {EditorGroups} from "./editor-groups/EditorGroups";
@@ -10,6 +10,20 @@ import {AppState} from "../store/AppStore";
 
 export const App: FunctionComponent = () => {
     const showBackground = useSelector((appState: AppState) => !appState.openEditors.openEditors || !appState.openEditors.openEditors.length);
+
+    useEffect(() => {
+        const unloadCallback = (event: BeforeUnloadEvent) => {
+            event.preventDefault();
+            event.returnValue = "";
+            return "";
+        };
+
+        window.addEventListener("beforeunload", unloadCallback);
+
+        return () => {
+            window.removeEventListener("beforeunload", unloadCallback);
+        }
+    }, []);
 
     return <Box id="App"
                 sx={{
