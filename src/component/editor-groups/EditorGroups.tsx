@@ -37,7 +37,10 @@ export const EditorGroups: FunctionComponent = () => {
     //#endregion
 
     return <Fragment>
-        <Tabs value={tabsValue} onChange={handleChange} aria-label="Open editors">
+        <Tabs value={tabsValue}
+              onChange={handleChange}
+              variant="scrollable"
+              aria-label="Open editors">
             {editors.openEditors.map((editor, i) => {
                 if (!editor.handle) {
                     return null;
