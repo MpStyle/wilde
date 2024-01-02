@@ -31,6 +31,23 @@ export const openEditorsSlice = createSlice({
             }
 
             state.openEditors.splice(editorIndex, 1);
+        },
+        closeAllEditors: (state) => {
+            state.openEditors = [];
+        },
+        closeOthersEditors:(state, action)=>{
+            const editorIndex = state.openEditors.findIndex(oe => oe.handler === action.payload.handler && oe.path === action.payload.path);
+
+            if (editorIndex === -1) {
+                return;
+            }
+
+            const arr=[...state.openEditors];
+            const removedElement = arr.splice(editorIndex, 1);
+            arr.length = 0;
+            arr.push(removedElement[0]);
+
+            state.openEditors = arr;
         }
     },
     extraReducers: (builder) => {
@@ -42,6 +59,6 @@ export const openEditorsSlice = createSlice({
 })
 
 // Action creators are generated for each case reducer function
-export const {openEditor, closeEditor} = openEditorsSlice.actions
+export const {openEditor, closeEditor, closeAllEditors, closeOthersEditors} = openEditorsSlice.actions
 
 export const openEditorsReducer = openEditorsSlice.reducer;
