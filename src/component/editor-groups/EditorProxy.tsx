@@ -3,10 +3,10 @@ import {TextEditor} from "./editor/TextEditor";
 
 export const EditorProxy: FunctionComponent<EditorProxyProps> = props => {
     return <Fragment>
-        <TextEditor handler={props.handler}/>
+        <TextEditor handle={props.handle}/>
     </Fragment>;
 }
 
 export interface EditorProxyProps {
-    handler: FileSystemFileHandle;
+    handle: FileSystemFileHandle;
 }

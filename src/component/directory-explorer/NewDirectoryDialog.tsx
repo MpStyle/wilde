@@ -12,11 +12,11 @@ export const NewDirectoryDialog: FunctionComponent<NewDirectoryDialogProps> = pr
     const createNewDirectory = () => {
         onClose();
 
-        if (!selectedTreeItem || selectedTreeItem.handler.kind !== 'directory') {
+        if (!selectedTreeItem || selectedTreeItem.handle.kind !== 'directory') {
             return;
         }
 
-        const directoryHandle = selectedTreeItem.handler as FileSystemDirectoryHandle;
+        const directoryHandle = selectedTreeItem.handle as FileSystemDirectoryHandle;
 
         directoryHandle.getDirectoryHandle(newDirectoryName, {create: true})
             .then(_ => {
@@ -52,5 +52,5 @@ export const NewDirectoryDialog: FunctionComponent<NewDirectoryDialogProps> = pr
 export interface NewDirectoryDialogProps {
     open: boolean;
     onClose: () => void;
-    selectedTreeItem: { path: string, handler: FileSystemHandle } | null;
+    selectedTreeItem: { path: string, handle: FileSystemHandle } | null;
 }

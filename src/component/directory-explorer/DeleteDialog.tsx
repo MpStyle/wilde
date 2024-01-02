@@ -18,20 +18,20 @@ export const DeleteDialog: FunctionComponent<DeleteDialogProps> = props => {
         }
 
         const parentPath = DirectoryUtils.getParent(selectedTreeItem.path);
-        const parentHandler = directoryStructure[parentPath].handler;
+        const parentHandle = directoryStructure[parentPath].handle;
 
-        parentHandler.removeEntry(selectedTreeItem.handler.name, {recursive: true})
+        parentHandle.removeEntry(selectedTreeItem.handle.name, {recursive: true})
             .then(_ => {
-                dispatch(scanProjectDirectory({path: parentPath, dirHandle: parentHandler}))
+                dispatch(scanProjectDirectory({path: parentPath, dirHandle: parentHandle}))
             });
     }
 
     return <Dialog open={open} onClose={onClose}>
-        <DialogTitle>Delete {selectedTreeItem?.handler.kind === 'directory' ? 'folder' : 'file'}</DialogTitle>
+        <DialogTitle>Delete {selectedTreeItem?.handle.kind === 'directory' ? 'folder' : 'file'}</DialogTitle>
         <DialogContent>
             <DialogContentText>
                 Do you want to
-                delete {selectedTreeItem?.handler.kind === 'directory' ? 'folder' : 'file'} "{selectedTreeItem?.path}"?
+                delete {selectedTreeItem?.handle.kind === 'directory' ? 'folder' : 'file'} "{selectedTreeItem?.path}"?
             </DialogContentText>
         </DialogContent>
         <DialogActions>
@@ -44,5 +44,5 @@ export const DeleteDialog: FunctionComponent<DeleteDialogProps> = props => {
 export interface DeleteDialogProps {
     open: boolean;
     onClose: () => void;
-    selectedTreeItem: { path: string, handler: FileSystemHandle } | null;
+    selectedTreeItem: { path: string, handle: FileSystemHandle } | null;
 }

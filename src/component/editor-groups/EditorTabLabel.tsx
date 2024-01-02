@@ -16,7 +16,7 @@ export const EditorTabLabel: FunctionComponent<EditorTabLabelProps> = props => {
         alignItems: 'center',
         pr: 0,
     }}>
-        <FileIcon node={{handler: props.editor.handler} as TreeNode}
+        <FileIcon node={{handle: props.editor.handle} as TreeNode}
                   sx={{mr: 1}}
                   size='small'/>
         <Typography variant="body2"
@@ -25,7 +25,7 @@ export const EditorTabLabel: FunctionComponent<EditorTabLabelProps> = props => {
                         flexGrow: 1,
                         color: props.isSelected ? theme.palette.text.primary : theme.palette.text.disabled
                     }}>
-            {props.editor.handler.name}
+            {props.editor.handle.name}
         </Typography>
         {props.showPathInTab && <Typography variant='caption'
                                             sx={{
@@ -44,13 +44,13 @@ export const EditorTabLabel: FunctionComponent<EditorTabLabelProps> = props => {
         <IconButton component="span"
                     sx={{ml: 1}}
                     onClick={() => {
-                        if (!props.editor.handler) {
+                        if (!props.editor.handle) {
                             return;
                         }
 
                         dispatch(closeEditor({
                             path: props.editor.path,
-                            handler: props.editor.handler
+                            handle: props.editor.handle
                         }));
                     }}>
             <CloseIcon/>
@@ -61,5 +61,5 @@ export const EditorTabLabel: FunctionComponent<EditorTabLabelProps> = props => {
 export interface EditorTabLabelProps {
     isSelected: boolean;
     showPathInTab: boolean;
-    editor: { path: string, handler: FileSystemFileHandle };
+    editor: { path: string, handle: FileSystemFileHandle };
 }

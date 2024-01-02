@@ -6,7 +6,7 @@ const iconsFolder = 'icons/default/';
 const directoryIconByTreeNode = (node: TreeNode): string => {
     let fileName = 'default_folder';
 
-    switch (node.handler.name) {
+    switch (node.handle.name) {
         case 'images':
         case 'imgs':
             fileName = 'folder_type_images';
@@ -29,7 +29,7 @@ const directoryIconByTreeNode = (node: TreeNode): string => {
 }
 
 const fileIconByTreeNode = (node: TreeNode): string => {
-    const extension = FileUtils.getExtension(node.handler.name);
+    const extension = FileUtils.getExtension(node.handle.name);
 
     if (extension) {
         switch (extension) {
@@ -72,7 +72,7 @@ const fileIconByTreeNode = (node: TreeNode): string => {
         }
     }
 
-    switch (node.handler.name) {
+    switch (node.handle.name) {
         case 'LICENSE':
             return 'file_type_license';
     }
@@ -82,7 +82,7 @@ const fileIconByTreeNode = (node: TreeNode): string => {
 
 export const IconResolver = {
     byTreeNode: (node: TreeNode): string => {
-        switch (node.handler.kind) {
+        switch (node.handle.kind) {
             case "directory":
                 return `${iconsFolder}${directoryIconByTreeNode(node)}.svg`;
             case "file":

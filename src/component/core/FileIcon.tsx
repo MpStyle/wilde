@@ -8,7 +8,7 @@ import {TreeNode} from "../../entity/TreeNode";
 export const FileIcon: FunctionComponent<FileIconProps> = props => {
     return <Icon sx={props.sx} fontSize={props.size}>
         <img src={IconResolver.byTreeNode(props.node)}
-             alt={props.node.path + props.node.handler.name}
+             alt={props.node.path + props.node.handle.name}
              style={{
                  display: 'flex',
                  height: 'inherit',

@@ -6,7 +6,7 @@ import {DeleteDialog} from "./DeleteDialog";
 
 export interface DirectoryExplorerOptions {
     path: string;
-    handler: FileSystemHandle;
+    handle: FileSystemHandle;
 }
 
 interface DirectoryExplorerContextActions {
@@ -29,7 +29,7 @@ export const useDirectoryExplorerActions = () => useContext(DirectoryExplorerCon
 export const DirectoryExplorerProvider: FunctionComponent<PropsWithChildren> = props => {
     const [selectedTreeItem, setSelectedTreeItem] = useState<{
         path: string,
-        handler: FileSystemHandle
+        handle: FileSystemHandle
     } | null>(null);
 
     //#region Context menu
@@ -41,7 +41,7 @@ export const DirectoryExplorerProvider: FunctionComponent<PropsWithChildren> = p
     const isContextMenuOpen = contextMenu !== null;
 
     const openContextMenu = (event: React.MouseEvent, options: DirectoryExplorerOptions) => {
-        setSelectedTreeItem({path: options.path, handler: options.handler});
+        setSelectedTreeItem({path: options.path, handle: options.handle});
         event.preventDefault();
         setContextMenu(contextMenu === null ? {mouseX: event.clientX + 2, mouseY: event.clientY - 6,} : null);
     };
@@ -53,7 +53,7 @@ export const DirectoryExplorerProvider: FunctionComponent<PropsWithChildren> = p
 
     const openNewDirectoryDialog = (options?: DirectoryExplorerOptions) => {
         if (options) {
-            setSelectedTreeItem({path: options.path, handler: options.handler});
+            setSelectedTreeItem({path: options.path, handle: options.handle});
         }
 
         closeContextMenu();
@@ -67,7 +67,7 @@ export const DirectoryExplorerProvider: FunctionComponent<PropsWithChildren> = p
 
     const openNewFileDialog = (options?: DirectoryExplorerOptions) => {
         if (options) {
-            setSelectedTreeItem({path: options.path, handler: options.handler});
+            setSelectedTreeItem({path: options.path, handle: options.handle});
         }
 
         closeContextMenu();
@@ -100,7 +100,7 @@ export const DirectoryExplorerProvider: FunctionComponent<PropsWithChildren> = p
         <DirectoryExplorerContextMenu open={isContextMenuOpen}
                                       position={contextMenu}
                                       onClose={closeContextMenu}
-                                      selectedTreeItemKind={selectedTreeItem?.handler.kind}
+                                      selectedTreeItemKind={selectedTreeItem?.handle.kind}
                                       openNewFileDialog={openNewFileDialog}
                                       openNewDirectoryDialog={openNewDirectoryDialog}
                                       openDeleteDialog={openDeleteDialog}/>

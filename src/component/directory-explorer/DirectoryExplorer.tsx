@@ -37,7 +37,7 @@ export const DirectoryExplorer: FunctionComponent<ProjectExplorerProps> = () => 
                             size="small"
                             onClick={() => actions.openNewFileDialog({
                                 path: '.',
-                                handler: rootDirectory
+                                handle: rootDirectory
                             })}>
                     <NoteAddIcon fontSize="small"/>
                 </IconButton>
@@ -45,7 +45,7 @@ export const DirectoryExplorer: FunctionComponent<ProjectExplorerProps> = () => 
                             size="small"
                             onClick={() => actions.openNewDirectoryDialog({
                                 path: '.',
-                                handler: rootDirectory
+                                handle: rootDirectory
                             })}>
                     <CreateNewFolderIcon fontSize="small"/>
                 </IconButton>

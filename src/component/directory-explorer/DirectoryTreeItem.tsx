@@ -12,14 +12,14 @@ export const DirectoryTreeItem = memo((props: SpeedTreeItemProps) => {
     const node = props.data.flattenedData[props.index];
     const left = node.depth * 20;
     const actions = useDirectoryExplorerActions();
-    const isSelected = props.data.selectedTreeItem === PathUtils.combine(node.path, node.handler.name);
+    const isSelected = props.data.selectedTreeItem === PathUtils.combine(node.path, node.handle.name);
 
     return <Box style={props.style}
                 onClick={() => props.data.onOpen(node)}
                 onContextMenu={e => {
                     actions.openContextMenu(e, {
-                        path: PathUtils.combine(node.path, node.handler.name),
-                        handler: node.handler
+                        path: PathUtils.combine(node.path, node.handle.name),
+                        handle: node.handle
                     });
                 }}
                 sx={{
@@ -32,7 +32,7 @@ export const DirectoryTreeItem = memo((props: SpeedTreeItemProps) => {
                 }}>
         <Box component="div"
              onMouseOver={_ => {
-                 const path=PathUtils.combine(node.path, node.handler.name);
+                 const path=PathUtils.combine(node.path, node.handle.name);
                  props.data.setSelectedTreeItem(path);
              }}
              style={{
@@ -46,7 +46,7 @@ export const DirectoryTreeItem = memo((props: SpeedTreeItemProps) => {
             <Box component={node.collapsed ? KeyboardArrowRightIcon : KeyboardArrowDownIcon}
                  color="text.secondary"
                  sx={{
-                     visibility: node.handler.kind === "directory" ? 'visible' : 'hidden'
+                     visibility: node.handle.kind === "directory" ? 'visible' : 'hidden'
                  }}/>
             <FileIcon sx={{mr: 1}} node={node}/>
             <Typography variant="body2"
@@ -55,7 +55,7 @@ export const DirectoryTreeItem = memo((props: SpeedTreeItemProps) => {
                             flexGrow: 1,
                             whiteSpace: 'nowrap'
                         }}>
-                {node.handler.name}
+                {node.handle.name}
             </Typography>
         </Box>
     </Box>;

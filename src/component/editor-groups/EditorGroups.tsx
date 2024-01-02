@@ -39,14 +39,14 @@ export const EditorGroups: FunctionComponent = () => {
     return <Fragment>
         <Tabs value={tabsValue} onChange={handleChange} aria-label="Open editors">
             {editors.openEditors.map((editor, i) => {
-                if (!editor.handler) {
+                if (!editor.handle) {
                     return null;
                 }
 
-                const path = PathUtils.combine(editor.path, editor.handler.name).replace("./", `${rootDirectory!.name}/`)
+                const path = PathUtils.combine(editor.path, editor.handle.name).replace("./", `${rootDirectory!.name}/`)
 
                 // A portion of the path will be displayed if there are multiple files open with the same name
-                const showPathInTab = editors.openEditors.filter(oe => oe.handler.name === editor.handler.name).length > 1;
+                const showPathInTab = editors.openEditors.filter(oe => oe.handle.name === editor.handle.name).length > 1;
 
                 return <Tab id={`editor-tab-${i}`}
                             sx={{pl: 1, pr: 0.6, pt: 0.2, pb: 0.2}}
@@ -59,12 +59,12 @@ export const EditorGroups: FunctionComponent = () => {
             })}
         </Tabs>
         {editors.openEditors.map((editor, i) => {
-            if (!editor.handler) {
+            if (!editor.handle) {
                 return null;
             }
 
             return <EditorTabPanel value={tabsValue} index={i} key={`open-editor-${i}`}>
-                <EditorProxy handler={editor.handler}/>
+                <EditorProxy handle={editor.handle}/>
             </EditorTabPanel>
         })}
 
@@ -74,7 +74,7 @@ export const EditorGroups: FunctionComponent = () => {
                                  close={() => {
                                      dispatch(closeEditor({
                                          path: editors.openEditors[tabsValue].path,
-                                         handler: editors.openEditors[tabsValue].handler
+                                         handle: editors.openEditors[tabsValue].handle
                                      }));
                                      closeContextMenu();
                                  }}
@@ -85,7 +85,7 @@ export const EditorGroups: FunctionComponent = () => {
                                  closeOthers={() => {
                                      dispatch(closeOthersEditors({
                                          path: editors.openEditors[tabsValue].path,
-                                         handler: editors.openEditors[tabsValue].handler
+                                         handle: editors.openEditors[tabsValue].handle
                                      }));
                                      closeContextMenu();
                                  }}/>

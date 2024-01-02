@@ -12,11 +12,11 @@ export const NewFileDialog: FunctionComponent<NewFileDialogProps> = props => {
     const createNewFile = () => {
         onClose();
 
-        if (!selectedTreeItem || selectedTreeItem.handler.kind !== 'directory') {
+        if (!selectedTreeItem || selectedTreeItem.handle.kind !== 'directory') {
             return;
         }
 
-        const directoryHandle = selectedTreeItem.handler as FileSystemDirectoryHandle;
+        const directoryHandle = selectedTreeItem.handle as FileSystemDirectoryHandle;
 
         directoryHandle.getFileHandle(newFileName, {create: true})
             .then(_ => {
@@ -52,5 +52,5 @@ export const NewFileDialog: FunctionComponent<NewFileDialogProps> = props => {
 export interface NewFileDialogProps {
     open: boolean;
     onClose: () => void;
-    selectedTreeItem: { path: string, handler: FileSystemHandle } | null;
+    selectedTreeItem: { path: string, handle: FileSystemHandle } | null;
 }

@@ -2,7 +2,7 @@ import type {PayloadAction} from '@reduxjs/toolkit'
 import {createSlice} from '@reduxjs/toolkit'
 import {closeProjectDirectory} from "./ProjectDirectorySlice";
 
-type OpenEditor = { path: string, handler: FileSystemFileHandle };
+type OpenEditor = { path: string, handle: FileSystemFileHandle };
 
 export interface EditorState {
     openEditors: OpenEditor[];
@@ -16,15 +16,15 @@ export const openEditorsSlice = createSlice({
     name: 'openEditors',
     initialState,
     reducers: {
-        openEditor: (state, action: PayloadAction<{ path: string, handler: FileSystemFileHandle }>) => {
-            if (state.openEditors.findIndex(oe => oe.handler === action.payload.handler && oe.path === action.payload.path) !== -1) {
+        openEditor: (state, action: PayloadAction<{ path: string, handle: FileSystemFileHandle }>) => {
+            if (state.openEditors.findIndex(oe => oe.handle === action.payload.handle && oe.path === action.payload.path) !== -1) {
                 return;
             }
 
             state.openEditors = [...state.openEditors, action.payload]
         },
-        closeEditor: (state, action: PayloadAction<{ path: string, handler: FileSystemFileHandle }>) => {
-            const editorIndex = state.openEditors.findIndex(oe => oe.handler === action.payload.handler && oe.path === action.payload.path);
+        closeEditor: (state, action: PayloadAction<{ path: string, handle: FileSystemFileHandle }>) => {
+            const editorIndex = state.openEditors.findIndex(oe => oe.handle === action.payload.handle && oe.path === action.payload.path);
 
             if (editorIndex === -1) {
                 return;
@@ -35,14 +35,14 @@ export const openEditorsSlice = createSlice({
         closeAllEditors: (state) => {
             state.openEditors = [];
         },
-        closeOthersEditors:(state, action)=>{
-            const editorIndex = state.openEditors.findIndex(oe => oe.handler === action.payload.handler && oe.path === action.payload.path);
+        closeOthersEditors: (state, action: PayloadAction<{ path: string, handle: FileSystemFileHandle }>) => {
+            const editorIndex = state.openEditors.findIndex(oe => oe.handle === action.payload.handle && oe.path === action.payload.path);
 
             if (editorIndex === -1) {
                 return;
             }
 
-            const arr=[...state.openEditors];
+            const arr = [...state.openEditors];
             const removedElement = arr.splice(editorIndex, 1);
             arr.length = 0;
             arr.push(removedElement[0]);

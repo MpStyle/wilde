@@ -35,7 +35,7 @@ export const DirectoryTree: FunctionComponent<SpeedTreeProps> = props => {
         for (let item of sortedItems) {
             const collapsed = !props.openedNodeIds.includes(PathUtils.combine(path, item.name));
             result.push({
-                handler: item,
+                handle: item,
                 collapsed: collapsed,
                 depth: depth,
                 hasChildren: item.kind === 'directory',
@@ -52,16 +52,16 @@ export const DirectoryTree: FunctionComponent<SpeedTreeProps> = props => {
     }
 
     const onOpen = (node: TreeNode) => {
-        const nodePath = PathUtils.combine(node.path, node.handler.name);
+        const nodePath = PathUtils.combine(node.path, node.handle.name);
 
-        if (node.handler.kind === 'file') {
-            dispatch(openEditor({path: node.path, handler: node.handler}));
+        if (node.handle.kind === 'file') {
+            dispatch(openEditor({path: node.path, handle: node.handle}));
             return;
         }
 
         if (node.collapsed) {
             if (!directoryStructure.hasOwnProperty(nodePath)) {
-                dispatch(scanProjectDirectory({path: nodePath, dirHandle: node.handler as FileSystemDirectoryHandle}));
+                dispatch(scanProjectDirectory({path: nodePath, dirHandle: node.handle as FileSystemDirectoryHandle}));
             }
 
             return props.setOpenedNodeIds([...props.openedNodeIds, nodePath]);
@@ -79,7 +79,7 @@ export const DirectoryTree: FunctionComponent<SpeedTreeProps> = props => {
                   width={width}
                   itemCount={flattenedData.length}
                   itemSize={32}
-                  itemKey={index => PathUtils.combine(flattenedData[index].path, (flattenedData[index].handler?.name ?? 'loading...'))}
+                  itemKey={index => PathUtils.combine(flattenedData[index].path, (flattenedData[index].handle?.name ?? 'loading...'))}
                   itemData={itemData}>
                 {DirectoryTreeItem}
             </List>}

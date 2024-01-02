@@ -6,7 +6,7 @@ export const TextEditor: FunctionComponent<TextEditorProps> = props => {
 
     useEffect(() => {
         const loadContent = async () => {
-            const file = await props.handler.getFile();
+            const file = await props.handle.getFile();
             const fileContent = await file.text();
             setContent(fileContent);
         }
@@ -28,5 +28,5 @@ export const TextEditor: FunctionComponent<TextEditorProps> = props => {
 }
 
 export interface TextEditorProps {
-    handler: FileSystemFileHandle;
+    handle: FileSystemFileHandle;
 }
