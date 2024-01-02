@@ -4,7 +4,8 @@ __!!!WORK IN PROGRESS PROJECT!!!__
 
 ![Wilde logo](docs/images/wilde-logo.png)
 
-Wilde is a web integrated local desktop environment.
+Wilde is a web integrated local desktop environment. \
+Last version of Wilde is deployed [here](https://mpstyle.github.io/wilde/);
 
 ![Wilde screenshot](docs/images/wilde-instance.png)
 
