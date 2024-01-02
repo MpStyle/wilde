@@ -2,7 +2,7 @@ import React, {Fragment, FunctionComponent, useState} from "react";
 import {Box, ButtonGroup, IconButton, Typography, useTheme} from "@mui/material";
 import {useDispatch, useSelector} from "react-redux";
 import {AppDispatch, AppState} from "../../store/AppStore";
-import {closeProjectDirectory, openProjectDirectory} from "../../slice/ProjectDirectorySlice";
+import {closeProjectDirectory} from "../../slice/ProjectDirectorySlice";
 import CloseIcon from '@mui/icons-material/Close';
 import {DirectoryTree} from "./DirectoryTree";
 import UnfoldLessIcon from '@mui/icons-material/UnfoldLess';
@@ -17,16 +17,6 @@ export const DirectoryExplorer: FunctionComponent<ProjectExplorerProps> = () => 
     const dispatch = useDispatch<AppDispatch>();
     const theme = useTheme();
     const topBarHeight = '48px';
-
-    const selectProjectDirectory = async () => {
-        try {
-            const dirHandle = await window.showDirectoryPicker();
-            dispatch(closeProjectDirectory());
-            dispatch(openProjectDirectory(dirHandle));
-        } catch (e) {
-            console.error(e);
-        }
-    }
 
     const handleCloseProjectDirectory = async () => dispatch(closeProjectDirectory());
 
