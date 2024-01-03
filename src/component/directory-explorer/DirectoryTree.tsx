@@ -9,7 +9,7 @@ import {openEditor} from "../../slice/OpenEditorsSlice";
 import {FileSystemHandle} from "../../entity/FileSystemHandle";
 import {TreeNode} from "../../entity/TreeNode";
 import {DirectoryTreeItem} from "./DirectoryTreeItem";
-import {FileSorter} from "./book/FileSorter";
+import {FileSorter} from "../../book/FileSorter";
 import {PathUtils} from "../../book/PathUtils";
 
 const getItemData = memoizeOne(

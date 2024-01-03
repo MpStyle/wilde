@@ -1,12 +1,11 @@
-import {TreeNode} from "../entity/TreeNode";
 import {FileUtils} from "./FileUtils";
 
 const iconsFolder = 'icons/default/';
 
-const directoryIconByTreeNode = (node: TreeNode): string => {
+const directoryIconByTreeNode = (node: FileSystemHandle, collapsed: boolean | undefined): string => {
     let fileName = 'default_folder';
 
-    switch (node.handle.name) {
+    switch (node.name) {
         case 'images':
         case 'imgs':
             fileName = 'folder_type_images';
@@ -25,11 +24,11 @@ const directoryIconByTreeNode = (node: TreeNode): string => {
             break;
     }
 
-    return node.collapsed ? fileName : `${fileName}_opened`;
+    return collapsed ? fileName : `${fileName}_opened`;
 }
 
-const fileIconByTreeNode = (node: TreeNode): string => {
-    const extension = FileUtils.getExtension(node.handle.name);
+const fileIconByTreeNode = (node: FileSystemHandle): string => {
+    const extension = FileUtils.getExtension(node.name);
 
     if (extension) {
         switch (extension) {
@@ -72,7 +71,7 @@ const fileIconByTreeNode = (node: TreeNode): string => {
         }
     }
 
-    switch (node.handle.name) {
+    switch (node.name) {
         case 'LICENSE':
             return 'file_type_license';
     }
@@ -81,10 +80,10 @@ const fileIconByTreeNode = (node: TreeNode): string => {
 }
 
 export const IconResolver = {
-    byTreeNode: (node: TreeNode): string => {
-        switch (node.handle.kind) {
+    byTreeNode: (node: FileSystemHandle, collapsed: boolean | undefined): string => {
+        switch (node.kind) {
             case "directory":
-                return `${iconsFolder}${directoryIconByTreeNode(node)}.svg`;
+                return `${iconsFolder}${directoryIconByTreeNode(node, collapsed)}.svg`;
             case "file":
                 return `${iconsFolder}${fileIconByTreeNode(node)}.svg`
         }

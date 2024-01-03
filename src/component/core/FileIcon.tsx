@@ -7,8 +7,8 @@ import {TreeNode} from "../../entity/TreeNode";
 
 export const FileIcon: FunctionComponent<FileIconProps> = props => {
     return <Icon sx={props.sx} fontSize={props.size}>
-        <img src={IconResolver.byTreeNode(props.node)}
-             alt={props.node.path + props.node.handle.name}
+        <img src={IconResolver.byTreeNode(props.handle, props.collapsed)}
+             alt={(props.path??'') + props.handle.name}
              style={{
                  display: 'flex',
                  height: 'inherit',
@@ -19,6 +19,8 @@ export const FileIcon: FunctionComponent<FileIconProps> = props => {
 
 export interface FileIconProps {
     sx?: SxProps<Theme>;
-    node: TreeNode;
+    handle: FileSystemHandle;
+    path?: string;
+    collapsed?: boolean;
     size?: 'inherit' | 'large' | 'medium' | 'small';
 }

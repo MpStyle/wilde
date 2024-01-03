@@ -48,7 +48,7 @@ export const DirectoryTreeItem = memo((props: SpeedTreeItemProps) => {
                  sx={{
                      visibility: node.handle.kind === "directory" ? 'visible' : 'hidden'
                  }}/>
-            <FileIcon sx={{mr: 1}} node={node}/>
+            <FileIcon sx={{mr: 1}} handle={node.handle} collapsed={node.collapsed} path={node.path} />
             <Typography variant="body2"
                         sx={{
                             fontWeight: 'inherit',

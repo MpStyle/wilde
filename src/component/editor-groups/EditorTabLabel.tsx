@@ -16,7 +16,7 @@ export const EditorTabLabel: FunctionComponent<EditorTabLabelProps> = props => {
         alignItems: 'center',
         pr: 0,
     }}>
-        <FileIcon node={{handle: props.editor.handle} as TreeNode}
+        <FileIcon handle={props.editor.handle}
                   sx={{mr: 1}}
                   size='small'/>
         <Typography variant="body2"
