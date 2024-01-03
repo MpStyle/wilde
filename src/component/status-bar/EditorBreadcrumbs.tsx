@@ -70,7 +70,7 @@ export const EditorBreadcrumbs: FunctionComponent = () => {
             })}
         </Breadcrumbs>
 
-        {(selectedPathStructureContent.length) && <Menu id="path-menu"
+        {Boolean(selectedPathStructureContent.length) && <Menu id="path-menu"
                                                         anchorEl={anchorEl}
                                                         open={open}
                                                         onClose={handleClose}
