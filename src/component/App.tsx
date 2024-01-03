@@ -34,7 +34,7 @@ export const App: FunctionComponent = () => {
     return <Box id="App"
                 sx={{
                     height: '100%',
-                    overflowX: 'hidden'
+                    overflow: 'hidden'
                 }}>
         <Box sx={{
             display: 'flex',

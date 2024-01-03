@@ -24,7 +24,7 @@ export const ImageViewer:FunctionComponent<ImageViewerProps>=props=>{
                     height: `calc(100% - 48px - 8px)`,
                     m: 0,
                     pt: 1,
-                    overflow: 'scroll'
+                    overflow: 'auto'
                 }}>
         {imageUrl && <img src={imageUrl} alt={props.handle.name} />}
         {!imageUrl && <div>Loading...</div>}

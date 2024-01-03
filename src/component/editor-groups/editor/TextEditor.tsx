@@ -21,7 +21,7 @@ export const TextEditor: FunctionComponent<TextEditorProps> = props => {
                     height: `calc(100% - 48px - 8px)`,
                     m: 0,
                     pt: 1,
-                    overflow: 'scroll'
+                    overflow: 'auto'
                 }}>
         {content ?? ''}
     </Box>;
