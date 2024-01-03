@@ -2,7 +2,7 @@ import React, {Fragment, FunctionComponent, useState} from "react";
 import {Box, ButtonGroup, IconButton, Typography, useTheme} from "@mui/material";
 import {useDispatch, useSelector} from "react-redux";
 import {AppDispatch, AppState} from "../../store/AppStore";
-import {closeProjectDirectory} from "../../slice/ProjectDirectorySlice";
+import {closeProjectDirectory, refreshProjectDirectory} from "../../slice/ProjectDirectorySlice";
 import CloseIcon from '@mui/icons-material/Close';
 import {DirectoryTree} from "./DirectoryTree";
 import UnfoldLessIcon from '@mui/icons-material/UnfoldLess';
@@ -10,6 +10,7 @@ import {DirectoryExplorerProvider, useDirectoryExplorerActions} from "./Director
 import CreateNewFolderIcon from '@mui/icons-material/CreateNewFolder';
 import NoteAddIcon from '@mui/icons-material/NoteAdd';
 import {EmptyDirectoryExplorer} from "./EmptyDirectoryExplorer";
+import CachedIcon from '@mui/icons-material/Cached';
 
 export const DirectoryExplorer: FunctionComponent<ProjectExplorerProps> = () => {
     const [openedNodeIds, setOpenedNodeIds] = useState<string[]>([]);
@@ -19,6 +20,17 @@ export const DirectoryExplorer: FunctionComponent<ProjectExplorerProps> = () => 
     const topBarHeight = '48px';
 
     const handleCloseProjectDirectory = async () => dispatch(closeProjectDirectory());
+
+    const handleRefreshProjectDirectory = async () => {
+        if (!rootDirectory) {
+            return;
+        }
+
+        dispatch(refreshProjectDirectory({
+            rootHandle: rootDirectory,
+            paths: openedNodeIds
+        }));
+    };
 
     const handleCollapseAllClick = () => setOpenedNodeIds([]);
 
@@ -53,6 +65,11 @@ export const DirectoryExplorer: FunctionComponent<ProjectExplorerProps> = () => 
                             size="small"
                             onClick={() => handleCollapseAllClick()}>
                     <UnfoldLessIcon fontSize="small"/>
+                </IconButton>
+                <IconButton title="Refresh"
+                            size="small"
+                            onClick={() => handleRefreshProjectDirectory()}>
+                    <CachedIcon fontSize="small"/>
                 </IconButton>
                 <IconButton title="Close folder"
                             size="small"

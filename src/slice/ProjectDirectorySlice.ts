@@ -1,5 +1,6 @@
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit'
 import {DirectoryStructure} from "../entity/DirectoryStructure";
+import {PathUtils} from "../book/PathUtils";
 
 export interface ProjectFolderState {
     directoryStructure: DirectoryStructure;
@@ -36,6 +37,35 @@ export const openProjectDirectory = createAsyncThunk(
     }
 )
 
+export const refreshProjectDirectory = createAsyncThunk(
+    'projectDirectory/refreshProjectDirectory',
+    async (args: { rootHandle: FileSystemDirectoryHandle, paths: string[] }) => {
+        const directoryStructureBuilder = async (path: string, handle: FileSystemDirectoryHandle) => {
+            let result: DirectoryStructure = {};
+            const scanResult = await scanDirectory(path, handle);
+
+            result[path] = {content: scanResult.handles, handle};
+
+            for (let subHandle of scanResult.handles) {
+                const subPath = PathUtils.combine(path, subHandle.name);
+
+                if (args.paths.includes(subPath)) {
+                    const internalScanResult = await directoryStructureBuilder(subPath, subHandle as FileSystemDirectoryHandle);
+
+                    result = {
+                        ...result,
+                        ...internalScanResult
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        return directoryStructureBuilder(".", args.rootHandle);
+    }
+)
+
 export const projectDirectorySlice = createSlice({
     name: 'projectDirectory',
     initialState,
@@ -59,6 +89,9 @@ export const projectDirectorySlice = createSlice({
                     handle: action.payload.handle
                 };
                 state.rootDirectory = action.payload.root;
+            })
+            .addCase(refreshProjectDirectory.fulfilled, (state, action) => {
+                state.directoryStructure = action.payload;
             })
     }
 })
