@@ -27,7 +27,6 @@ export const openEditorsSlice = createSlice({
 
             state.openEditors = [...state.openEditors, action.payload]
             state.currentEditor = action.payload;
-            console.log(action.payload.path, action.payload.handle.name);
         },
         closeEditor: (state, action: PayloadAction<EditorInfo>) => {
             const editorIndex = state.openEditors.findIndex(oe => oe.handle === action.payload.handle && oe.path === action.payload.path);
@@ -37,6 +36,10 @@ export const openEditorsSlice = createSlice({
             }
 
             state.openEditors.splice(editorIndex, 1);
+
+            if (state.openEditors.length) {
+                state.currentEditor = state.openEditors[0];
+            }
         },
         closeAllEditors: (state) => {
             state.openEditors = [];
