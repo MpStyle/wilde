@@ -1,19 +1,21 @@
 import React, {Fragment, FunctionComponent, useState} from "react";
-import {Box, Button, ListItemIcon, ListItemText, Menu, MenuItem, Typography} from "@mui/material";
+import {Box, Breadcrumbs, Button, ListItemIcon, ListItemText, Menu, MenuItem, Typography} from "@mui/material";
 import {FileIcon} from "../core/FileIcon";
 import {PathUtils} from "../../book/PathUtils";
 import {useDispatch, useSelector} from "react-redux";
 import {AppState} from "../../store/AppStore";
 import {FileSorter} from "../../book/FileSorter";
 import {openEditor} from "../../slice/OpenEditorsSlice";
+import {styled} from "@mui/system";
+import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 
-export const EditorBreadcrumbs:FunctionComponent=()=>{
+export const EditorBreadcrumbs: FunctionComponent = () => {
     const currentEditor = useSelector((appState: AppState) => appState.openEditors.currentEditor);
     const directoryStructure = useSelector((appState: AppState) => appState.projectFolder.directoryStructure);
     const rootDirectoryName = useSelector((appState: AppState) => appState.projectFolder.rootDirectory?.name);
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const [selectedPath, setSelectedPath] = useState<string | undefined>(undefined);
-    const dispatch=useDispatch()
+    const dispatch = useDispatch()
 
     if (!rootDirectoryName || !currentEditor) {
         return null;
@@ -37,13 +39,13 @@ export const EditorBreadcrumbs:FunctionComponent=()=>{
         setAnchorEl(null);
     };
 
-    const handleItemClick = (handle: FileSystemFileHandle, path: string)=>{
-        dispatch(openEditor({ handle, path }));
+    const handleItemClick = (handle: FileSystemFileHandle, path: string) => {
+        dispatch(openEditor({handle, path}));
         setAnchorEl(null);
     }
 
     return <Fragment>
-        <Typography sx={{display: 'flex'}}>
+        <Breadcrumbs aria-label="breadcrumb" separator={<NavigateNextIcon fontSize="small"/>}>
             {currentEditorPathParts.map((part, i) => {
                 const isLast = i === currentEditorPathParts.length - 1;
 
@@ -60,20 +62,13 @@ export const EditorBreadcrumbs:FunctionComponent=()=>{
                     </Box>
                 }
 
-                return <Box component='span'
-                            key={`status-bar-path-part-${i}`}
-                            sx={{
-                                cursor: 'pointer'
-                            }}>
-                    <Button sx={{pt: 0, pb: 0, textTransform: 'none', minWidth: 'auto'}}
-                            onClick={e => handleClick(e, PathUtils.combine(...(completePathParts.slice(0, i + 1))))}
-                            variant="text">
-                        {part}
-                    </Button>
-                    <Box component='span' sx={{pl: '0.5em', pr: '0.5em'}}>&gt;</Box>
-                </Box>;
+                return <Button sx={{pt: 0, pb: 0, textTransform: 'none', minWidth: 'auto', fontSize: '1em'}}
+                               onClick={e => handleClick(e, PathUtils.combine(...(completePathParts.slice(0, i + 1))))}
+                               component="button">
+                    {part}
+                </Button>;
             })}
-        </Typography>
+        </Breadcrumbs>
 
         {(selectedPathStructureContent.length) && <Menu id="path-menu"
                                                         anchorEl={anchorEl}
@@ -91,7 +86,7 @@ export const EditorBreadcrumbs:FunctionComponent=()=>{
                                                             'aria-labelledby': 'path-menu',
                                                         }}>
             {selectedPathStructureContent.map(sps => {
-                return <MenuItem onClick={()=>handleItemClick(sps as FileSystemFileHandle, selectedPath!)}>
+                return <MenuItem onClick={() => handleItemClick(sps as FileSystemFileHandle, selectedPath!)}>
                     <ListItemIcon>
                         <FileIcon handle={sps}
                                   sx={{mr: '0.25em'}}

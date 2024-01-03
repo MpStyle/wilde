@@ -21,6 +21,7 @@ export const openEditorsSlice = createSlice({
         },
         openEditor: (state, action: PayloadAction<EditorInfo>) => {
             if (state.openEditors.findIndex(oe => oe.handle === action.payload.handle && oe.path === action.payload.path) !== -1) {
+                state.currentEditor = action.payload;
                 return;
             }
 
