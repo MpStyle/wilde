@@ -1,6 +1,6 @@
 import React, {FunctionComponent} from "react";
-import {Box, CircularProgress} from "@mui/material";
-import WarningAmberIcon from "@mui/icons-material/WarningAmber";
+import {Box} from "@mui/material";
+import {Loader} from "../../core/Loader";
 
 export const LoaderEditor: FunctionComponent = () => {
     return <Box sx={{
@@ -11,9 +11,6 @@ export const LoaderEditor: FunctionComponent = () => {
         p: 0,
         overflow: 'auto'
     }}>
-        <Box sx={{maxWidth: '600px', textAlign: 'center', margin: '0 auto'}}>
-            <CircularProgress/>
-            <Box sx={{mt: 2, fontSize: '1.2em'}}>Loading content...</Box>
-        </Box>
+        <Loader message="Loading content..." sx={{maxWidth: '600px', textAlign: 'center', margin: '0 auto'}}/>
     </Box>;
 }

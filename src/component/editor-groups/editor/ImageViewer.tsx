@@ -1,6 +1,7 @@
 import {Fragment, FunctionComponent, useEffect, useState} from "react";
 import {Box} from "@mui/material";
 import {ByteUtils} from "../../../book/ByteUtils";
+import {Loader} from "../../core/Loader";
 
 export const ImageViewer: FunctionComponent<ImageViewerProps> = props => {
     const [state, setState] = useState<ImageViewerState | undefined>(undefined);
@@ -55,7 +56,7 @@ export const ImageViewer: FunctionComponent<ImageViewerProps> = props => {
                      alt={props.handle.name}/>
             </Box>
         </Fragment>}
-        {!state && <div>Loading...</div>}
+        {!state && <Loader message="Loading image, please wait..." /> }
     </Box>;
 }
 
