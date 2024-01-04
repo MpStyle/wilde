@@ -1,18 +1,31 @@
-import React, {FunctionComponent} from "react";
+import React, {FunctionComponent, useEffect, useState} from "react";
 import {TextEditor} from "./editor/TextEditor";
 import {FileUtils} from "../../book/FileUtils";
 import {ImageViewer} from "./editor/ImageViewer";
+import {LoaderEditor} from "./editor/LoaderEditor";
+import {IsBinaryEditor} from "./editor/IsBinaryEditor";
 
 export const EditorProxy: FunctionComponent<EditorProxyProps> = props => {
-    const extension=FileUtils.getExtension(props.handle.name);
+    const [isTextFile, setIsTextFile] = useState<boolean | undefined>(undefined);
+    const extension = FileUtils.getExtension(props.handle.name);
 
-    switch(extension){
+    useEffect(() => {
+        if (isTextFile === undefined) {
+            FileUtils.isTextFile(props.handle).then(result => setIsTextFile(result));
+        }
+    }, [isTextFile]);
+
+    if (isTextFile === undefined) {
+        return <LoaderEditor/>;
+    }
+
+    switch (extension) {
         case 'png':
         case 'jpg':
         case 'ico':
-            return <ImageViewer handle={props.handle} />
+            return <ImageViewer handle={props.handle}/>;
         default:
-            return <TextEditor handle={props.handle}/>
+            return isTextFile ? <TextEditor handle={props.handle}/> : <IsBinaryEditor/>;
     }
 }
 
