@@ -78,7 +78,7 @@ export const DirectoryTree: FunctionComponent<SpeedTreeProps> = props => {
             <List height={height}
                   width={width}
                   itemCount={flattenedData.length}
-                  itemSize={32}
+                  itemSize={28}
                   itemKey={index => PathUtils.combine(flattenedData[index].path, (flattenedData[index].handle?.name ?? 'loading...'))}
                   itemData={itemData}>
                 {DirectoryTreeItem}
