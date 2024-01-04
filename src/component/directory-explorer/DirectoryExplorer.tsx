@@ -11,15 +11,22 @@ import CreateNewFolderIcon from '@mui/icons-material/CreateNewFolder';
 import NoteAddIcon from '@mui/icons-material/NoteAdd';
 import {EmptyDirectoryExplorer} from "./EmptyDirectoryExplorer";
 import CachedIcon from '@mui/icons-material/Cached';
+import {CloseDirectoryDialog} from "./CloseDirectoryDialog";
 
 export const DirectoryExplorer: FunctionComponent<ProjectExplorerProps> = () => {
     const [openedNodeIds, setOpenedNodeIds] = useState<string[]>([]);
+    const [openCloseDirectoryDialog, setOpenCloseDirectoryDialog] = useState<boolean>(false);
     const rootDirectory = useSelector((appState: AppState) => appState.projectFolder.rootDirectory);
     const dispatch = useDispatch<AppDispatch>();
     const theme = useTheme();
     const topBarHeight = '48px';
 
-    const handleCloseProjectDirectory = async () => dispatch(closeProjectDirectory());
+    const handleCloseProjectDirectory = () => setOpenCloseDirectoryDialog(true);
+    const onCloseDirectoryDialog = () => setOpenCloseDirectoryDialog(false);
+    const onConfirmCloseDirectoryDialog = () => {
+        onCloseDirectoryDialog();
+        dispatch(closeProjectDirectory());
+    };
 
     const handleRefreshProjectDirectory = async () => {
         if (!rootDirectory) {
@@ -93,6 +100,10 @@ export const DirectoryExplorer: FunctionComponent<ProjectExplorerProps> = () => 
         <Box sx={{height: `calc(100% - ${topBarHeight})`, borderTop: `1px solid ${theme.palette.text.disabled}`}}>
             {rootDirectory && <DirectoryTree setOpenedNodeIds={setOpenedNodeIds} openedNodeIds={openedNodeIds}/>}
         </Box>
+
+        <CloseDirectoryDialog open={openCloseDirectoryDialog}
+                              onClose={onCloseDirectoryDialog}
+                              onConfirm={onConfirmCloseDirectoryDialog}/>
     </DirectoryExplorerProvider>
 }
 
