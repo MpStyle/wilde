@@ -1,4 +1,3 @@
-import {DirectoryUtils} from "./DirectoryUtils";
 import {ByteUtils} from "./ByteUtils";
 
 describe('ByteUtils', () => {
