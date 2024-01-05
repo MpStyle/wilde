@@ -1,6 +1,5 @@
 import React, {FunctionComponent} from "react";
 import {FileIcon} from "../core/FileIcon";
-import {TreeNode} from "../../entity/TreeNode";
 import {alpha, Box, IconButton, Typography, useTheme} from "@mui/material";
 import {PathUtils} from "../../book/PathUtils";
 import {closeEditor} from "../../slice/OpenEditorsSlice";

@@ -1,12 +1,11 @@
 import React, {Fragment, FunctionComponent, useState} from "react";
-import {Box, Breadcrumbs, Button, ListItemIcon, ListItemText, Menu, MenuItem, Typography} from "@mui/material";
+import {Box, Breadcrumbs, Button, ListItemIcon, ListItemText, Menu, MenuItem} from "@mui/material";
 import {FileIcon} from "../core/FileIcon";
 import {PathUtils} from "../../book/PathUtils";
 import {useDispatch, useSelector} from "react-redux";
 import {AppState} from "../../store/AppStore";
 import {FileSorter} from "../../book/FileSorter";
 import {openEditor} from "../../slice/OpenEditorsSlice";
-import {styled} from "@mui/system";
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 
 export const EditorBreadcrumbs: FunctionComponent = () => {
