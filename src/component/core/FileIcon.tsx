@@ -3,7 +3,6 @@ import {IconResolver} from "../../book/IconResolver";
 import {Icon} from "@mui/material";
 import {SxProps} from "@mui/system";
 import {Theme} from "@mui/material/styles";
-import {TreeNode} from "../../entity/TreeNode";
 
 export const FileIcon: FunctionComponent<FileIconProps> = props => {
     return <Icon sx={props.sx} fontSize={props.size}>
