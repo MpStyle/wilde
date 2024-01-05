@@ -97,24 +97,26 @@ export const DirectoryExplorerProvider: FunctionComponent<PropsWithChildren> = p
             {props.children}
         </DirectoryExplorerContext.Provider>
 
-        <DirectoryExplorerContextMenu open={isContextMenuOpen}
-                                      position={contextMenu}
-                                      onClose={closeContextMenu}
-                                      selectedTreeItemKind={selectedTreeItem?.handle.kind}
-                                      openNewFileDialog={openNewFileDialog}
-                                      openNewDirectoryDialog={openNewDirectoryDialog}
-                                      openDeleteDialog={openDeleteDialog}/>
+        {!!selectedTreeItem && <Fragment>
+            <DirectoryExplorerContextMenu open={isContextMenuOpen}
+                                          position={contextMenu}
+                                          onClose={closeContextMenu}
+                                          selectedTreeItemKind={selectedTreeItem.handle.kind}
+                                          openNewFileDialog={openNewFileDialog}
+                                          openNewDirectoryDialog={openNewDirectoryDialog}
+                                          openDeleteDialog={openDeleteDialog}/>
 
-        <NewDirectoryDialog open={isNewDirectoryDialogOpen}
-                            onClose={closeNewDirectoryDialog}
-                            selectedTreeItem={selectedTreeItem}/>
+            <NewDirectoryDialog open={isNewDirectoryDialogOpen}
+                                onClose={closeNewDirectoryDialog}
+                                selectedTreeItem={selectedTreeItem}/>
 
-        <NewFileDialog open={isNewFileDialogOpen}
-                       onClose={closeNewFileDialog}
-                       selectedTreeItem={selectedTreeItem}/>
+            <NewFileDialog open={isNewFileDialogOpen}
+                           onClose={closeNewFileDialog}
+                           selectedTreeItem={selectedTreeItem}/>
 
-        <DeleteDialog open={isDeleteDialogOpen}
-                      onClose={closeDeleteDialog}
-                      selectedTreeItem={selectedTreeItem}/>
+            <DeleteDialog open={isDeleteDialogOpen}
+                          onClose={closeDeleteDialog}
+                          selectedTreeItem={selectedTreeItem}/>
+        </Fragment>}
     </Fragment>;
 }
