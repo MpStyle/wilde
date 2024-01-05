@@ -23,6 +23,9 @@ export const DirectoryTreeItem = memo((props: SpeedTreeItemProps) => {
                     props.data.setSelectedTreeItem(path);
                 }}
                 onContextMenu={e => {
+                    const path = PathUtils.combine(node.path, node.handle.name);
+                    props.data.setSelectedTreeItem(path);
+
                     actions.openContextMenu(e, {
                         path: PathUtils.combine(node.path, node.handle.name),
                         handle: node.handle
