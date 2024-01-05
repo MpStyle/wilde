@@ -16,5 +16,16 @@ export const DirectoryUtils = {
         }
 
         return parentDirectoryPath;
+    },
+    exists: async (folder: FileSystemDirectoryHandle, directoryName: string): Promise<boolean> => {
+        let result = false;
+        for await (const value of folder.values()) {
+            result = value.name === directoryName;
+            if (result) {
+                break;
+            }
+        }
+
+        return result;
     }
 }

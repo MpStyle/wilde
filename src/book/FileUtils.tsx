@@ -39,5 +39,16 @@ export const FileUtils = {
             console.error("Error reading the file:", error);
             return false;
         }
+    },
+    exists: async (folder: FileSystemDirectoryHandle, fileName: string): Promise<boolean> => {
+        let result = false;
+        for await (const value of folder.values()) {
+            result = value.name === fileName;
+            if (result) {
+                break;
+            }
+        }
+
+        return result;
     }
 }
