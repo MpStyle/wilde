@@ -1,7 +1,11 @@
-import {createSlice, PayloadAction} from '@reduxjs/toolkit'
-import {closeProjectDirectory} from "./ProjectDirectorySlice";
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { closeProjectDirectory } from "./ProjectDirectorySlice";
 
-export type EditorInfo = { path: string, handle: FileSystemFileHandle };
+export type EditorInfo = {
+    path: string;
+    handle: FileSystemFileHandle;
+    isChange?: boolean;
+};
 
 export interface EditorState {
     openEditors: EditorInfo[];
@@ -16,6 +20,13 @@ export const openEditorsSlice = createSlice({
     name: 'openEditors',
     initialState,
     reducers: {
+        editorContentIsChanged: (state, action: PayloadAction<{ path: string, isChanged: boolean }>) => {
+            const changedEditor = state.openEditors.find(editor => editor.path === action.payload.path);
+
+            if (changedEditor) {
+                changedEditor.isChange = action.payload.isChanged;
+            }
+        },
         currentEditor: (state, action: PayloadAction<EditorInfo>) => {
             state.currentEditor = action.payload;
         },
@@ -68,6 +79,6 @@ export const openEditorsSlice = createSlice({
 })
 
 // Action creators are generated for each case reducer function
-export const {openEditor, closeEditor, closeAllEditors, closeOthersEditors, currentEditor} = openEditorsSlice.actions
+export const { openEditor, closeEditor, closeAllEditors, closeOthersEditors, currentEditor, editorContentIsChanged } = openEditorsSlice.actions
 
 export const openEditorsReducer = openEditorsSlice.reducer;

@@ -13,6 +13,7 @@ import {
     closeEditor,
     closeOthersEditors,
     currentEditor,
+    editorContentIsChanged,
     EditorInfo
 } from "../../slice/OpenEditorsSlice";
 
@@ -87,9 +88,9 @@ export const EditorGroups: FunctionComponent = () => {
                 hidden={!isCurrentEditor(editor)}>
                 <EditorProxy
                     handle={editor.handle}
-                    onContentChange={() => { }}
-                    onContentRestore={() => { }}
-                    onContentSave={() => { }}
+                    onContentChange={() => dispatch(editorContentIsChanged({ path: editor.path, isChanged: true }))}
+                    onContentRestore={() => dispatch(editorContentIsChanged({ path: editor.path, isChanged: false }))}
+                    onContentSave={() => dispatch(editorContentIsChanged({ path: editor.path, isChanged: false }))}
                 />
             </EditorTabPanel>
         })}
