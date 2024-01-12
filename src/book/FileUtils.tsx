@@ -1,4 +1,9 @@
 export const FileUtils = {
+    writeContent: async (fileHandle: FileSystemFileHandle, content: string): Promise<void> => {
+        const writable = await fileHandle.createWritable();
+        await writable.write(content);
+        await writable.close();
+    },
     getExtension: (fileName: string): string | null => {
         const lastDotIndex = fileName.lastIndexOf('.');
         if (lastDotIndex === -1) {

@@ -3,10 +3,12 @@ import { Box } from "@mui/material";
 import { EditorProps } from "../book/EditorProps";
 import { FileUtils } from "../../../book/FileUtils";
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
+import { useWildeContext } from "../../core/wilde-context/WildeContext";
 
 export const TextEditor: FunctionComponent<EditorProps> = props => {
     const [editor, setEditor] = useState<monaco.editor.IStandaloneCodeEditor | null>(null);
     const monacoEl = useRef(null);
+    const wildeContext = useWildeContext();
 
     const getLanguage = () => {
         const extension = FileUtils.getExtension(props.handle.name);
@@ -21,6 +23,22 @@ export const TextEditor: FunctionComponent<EditorProps> = props => {
             default: return undefined;
         }
     }
+
+    // onSave event listener
+    useEffect(() => {
+        const onSave = () => {
+            if (editor) {
+                FileUtils.writeContent(props.handle, editor.getValue())
+                props.onContentSave();
+            }
+        }
+
+        wildeContext.addEventListener('onSave', onSave);
+
+        return () => {
+            wildeContext.removeEventListener('onSave', onSave);
+        };
+    });
 
     // Load editor and its content
     useEffect(() => {

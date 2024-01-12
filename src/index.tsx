@@ -1,11 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import {App} from './component/App';
-import {Provider} from "react-redux";
-import {appStore} from "./store/AppStore";
-import {createTheme, ThemeProvider} from '@mui/material/styles';
+import { App } from './component/App';
+import { Provider } from "react-redux";
+import { appStore } from "./store/AppStore";
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 import * as serviceWorker from './serviceWorker';
+import { ShortcutManager } from './component/core/shortcut-manager/ShortcutManager';
+import { WildeProvider } from './component/core/wilde-context/WildeContext';
 
 const theme = createTheme({
     palette: {
@@ -25,7 +27,10 @@ root.render(
     <React.StrictMode>
         <ThemeProvider theme={theme}>
             <Provider store={appStore}>
-                <App/>
+                <WildeProvider>
+                    <ShortcutManager />
+                    <App />
+                </WildeProvider>
             </Provider>
         </ThemeProvider>
     </React.StrictMode>
