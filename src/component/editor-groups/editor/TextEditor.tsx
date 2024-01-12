@@ -1,29 +1,62 @@
-import { FunctionComponent, useEffect, useState } from "react";
+import { FunctionComponent, useEffect, useRef, useState } from "react";
 import { Box } from "@mui/material";
 import { EditorProps } from "../book/EditorProps";
+import { FileUtils } from "../../../book/FileUtils";
+import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 
 export const TextEditor: FunctionComponent<EditorProps> = props => {
-    const [content, setContent] = useState<string | undefined>(undefined);
+    const [editor, setEditor] = useState<monaco.editor.IStandaloneCodeEditor | null>(null);
+    const monacoEl = useRef(null);
 
+    const getLanguage = () => {
+        const extension = FileUtils.getExtension(props.handle.name);
+        switch (extension) {
+            case 'ts': return 'typescript';
+            case 'js': return 'javascript';
+            case 'css': return 'css';
+            case 'json': return 'json';
+            case 'html':
+            case 'htm':
+                return 'html';
+            default: return undefined;
+        }
+    }
+
+    // Load editor and its content
     useEffect(() => {
         const loadContent = async () => {
             const file = await props.handle.getFile();
             const fileContent = await file.text();
-            setContent(fileContent);
+
+            setEditor((editor) => {
+                if (editor) return editor;
+
+                const newEditor = monaco.editor.create(monacoEl.current!, {
+                    value: fileContent,
+                    language: getLanguage(),
+                    automaticLayout: true,
+                });
+
+                newEditor.onDidChangeModelContent((e) => {
+                    props.onContentChange();
+                })
+
+                return newEditor;
+            });
         }
 
-        if (content === undefined) {
+        if (monacoEl) {
             loadContent();
         }
-    }, [content])
 
-    return <Box component='pre'
+        return () => editor?.dispose();
+    }, [monacoEl.current]);
+
+    return <Box
+        ref={monacoEl}
         sx={{
+            width: '100vw',
             height: `calc(100% - 48px - 8px)`,
-            m: 0,
-            pt: 1,
-            overflow: 'auto'
         }}>
-        {content ?? ''}
     </Box>;
 }
