@@ -1,13 +1,13 @@
-import React, {Fragment, FunctionComponent} from "react";
+import React, { Fragment, FunctionComponent } from "react";
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
-import {useDispatch, useSelector} from "react-redux";
-import {AppState} from "../../store/AppStore";
-import {EditorProxy} from "./EditorProxy";
-import {PathUtils} from "../../book/PathUtils";
-import {EditorTabLabel} from "./EditorTabLabel";
-import {EditorTabPanel} from "./EditorTabPanel";
-import {EditorGroupsContextMenu} from "./EditorGroupsContextMenu";
+import { useDispatch, useSelector } from "react-redux";
+import { AppState } from "../../store/AppStore";
+import { EditorProxy } from "./EditorProxy";
+import { PathUtils } from "../../book/PathUtils";
+import { EditorTabLabel } from "./EditorTabLabel";
+import { EditorTabPanel } from "./EditorTabPanel";
+import { EditorGroupsContextMenu } from "./EditorGroupsContextMenu";
 import {
     closeAllEditors,
     closeEditor,
@@ -36,13 +36,13 @@ export const EditorGroups: FunctionComponent = () => {
 
     const openContextMenu = (event: React.MouseEvent) => {
         event.preventDefault();
-        setContextMenu(contextMenu === null ? {mouseX: event.clientX + 2, mouseY: event.clientY - 6,} : null);
+        setContextMenu(contextMenu === null ? { mouseX: event.clientX + 2, mouseY: event.clientY - 6, } : null);
     };
     const closeContextMenu = () => setContextMenu(null);
     //#endregion
 
-    const isCurrentEditor = (editor: EditorInfo) =>{
-        if(!editors.currentEditor){
+    const isCurrentEditor = (editor: EditorInfo) => {
+        if (!editors.currentEditor) {
             return false;
         }
 
@@ -52,10 +52,10 @@ export const EditorGroups: FunctionComponent = () => {
 
     return <Fragment>
         <Tabs value={editors.openEditors.findIndex(oe => isCurrentEditor(oe))}
-              onChange={handleChange}
-              variant="scrollable"
-              aria-label="Open editors"
-              TabIndicatorProps={{sx: {height: 3}}}>
+            onChange={handleChange}
+            variant="scrollable"
+            aria-label="Open editors"
+            TabIndicatorProps={{ sx: { height: 3 } }}>
             {editors.openEditors.map((editor, i) => {
                 if (!editor.handle) {
                     return null;
@@ -67,13 +67,13 @@ export const EditorGroups: FunctionComponent = () => {
                 const showPathInTab = editors.openEditors.filter(oe => oe.handle.name === editor.handle.name).length > 1;
 
                 return <Tab id={`editor-tab-${i}`}
-                            sx={{pl: 1.4, pr: 0.6, pt: 0.2, pb: 0.2}}
-                            title={path}
-                            onContextMenu={(e) => openContextMenu(e)}
-                            key={`open-editor-tab-${i}`}
-                            label={<EditorTabLabel editor={editor}
-                                                   showPathInTab={showPathInTab}
-                                                   isSelected={isCurrentEditor(editor)}/>}/>;
+                    sx={{ pl: 1.4, pr: 0.6, pt: 0.2, pb: 0.2 }}
+                    title={path}
+                    onContextMenu={(e) => openContextMenu(e)}
+                    key={`open-editor-tab-${i}`}
+                    label={<EditorTabLabel editor={editor}
+                        showPathInTab={showPathInTab}
+                        isSelected={isCurrentEditor(editor)} />} />;
             })}
         </Tabs>
         {editors.openEditors.map((editor, i) => {
@@ -82,34 +82,39 @@ export const EditorGroups: FunctionComponent = () => {
             }
 
             return <EditorTabPanel editor={editor}
-                                   index={i}
-                                   key={`open-editor-${i}`}
-                                   hidden={!isCurrentEditor(editor)}>
-                <EditorProxy handle={editor.handle}/>
+                index={i}
+                key={`open-editor-${i}`}
+                hidden={!isCurrentEditor(editor)}>
+                <EditorProxy
+                    handle={editor.handle}
+                    onContentChange={() => { }}
+                    onContentRestore={() => { }}
+                    onContentSave={() => { }}
+                />
             </EditorTabPanel>
         })}
 
         <EditorGroupsContextMenu open={isContextMenuOpen}
-                                 position={contextMenu}
-                                 onClose={closeContextMenu}
-                                 close={() => {
-                                     if (editors.currentEditor) {
-                                         dispatch(closeEditor(editors.currentEditor));
-                                     }
+            position={contextMenu}
+            onClose={closeContextMenu}
+            close={() => {
+                if (editors.currentEditor) {
+                    dispatch(closeEditor(editors.currentEditor));
+                }
 
-                                     closeContextMenu();
-                                 }}
-                                 closeAll={() => {
-                                     dispatch(closeAllEditors());
-                                     closeContextMenu();
-                                 }}
-                                 closeOthers={() => {
-                                     if (editors.currentEditor) {
-                                         dispatch(closeOthersEditors(editors.currentEditor));
-                                     }
+                closeContextMenu();
+            }}
+            closeAll={() => {
+                dispatch(closeAllEditors());
+                closeContextMenu();
+            }}
+            closeOthers={() => {
+                if (editors.currentEditor) {
+                    dispatch(closeOthersEditors(editors.currentEditor));
+                }
 
-                                     closeContextMenu();
-                                 }}/>
+                closeContextMenu();
+            }} />
     </Fragment>
 }
 
