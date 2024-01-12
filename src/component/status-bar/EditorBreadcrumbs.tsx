@@ -1,11 +1,11 @@
-import React, {Fragment, FunctionComponent, useState} from "react";
-import {Box, Breadcrumbs, Button, ListItemIcon, ListItemText, Menu, MenuItem} from "@mui/material";
-import {FileIcon} from "../core/FileIcon";
-import {PathUtils} from "../../book/PathUtils";
-import {useDispatch, useSelector} from "react-redux";
-import {AppState} from "../../store/AppStore";
-import {FileSorter} from "../../book/FileSorter";
-import {openEditor} from "../../slice/OpenEditorsSlice";
+import React, { Fragment, FunctionComponent, useState } from "react";
+import { Box, Breadcrumbs, Button, ListItemIcon, ListItemText, Menu, MenuItem } from "@mui/material";
+import { FileIcon } from "../core/FileIcon";
+import { PathUtils } from "../../book/PathUtils";
+import { useDispatch, useSelector } from "react-redux";
+import { AppState } from "../../store/AppStore";
+import { FileSorter } from "../../book/FileSorter";
+import { openEditor } from "../../slice/OpenEditorsSlice";
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 
 export const EditorBreadcrumbs: FunctionComponent = () => {
@@ -39,57 +39,58 @@ export const EditorBreadcrumbs: FunctionComponent = () => {
     };
 
     const handleItemClick = (handle: FileSystemFileHandle, path: string) => {
-        dispatch(openEditor({handle, path}));
+        dispatch(openEditor({ handle, path }));
         setAnchorEl(null);
     }
 
     return <Fragment>
-        <Breadcrumbs aria-label="breadcrumb" separator={<NavigateNextIcon fontSize="small"/>}>
+        <Breadcrumbs aria-label="breadcrumb" separator={<NavigateNextIcon fontSize="small" />}>
             {currentEditorPathParts.map((part, i) => {
                 const isLast = i === currentEditorPathParts.length - 1;
 
                 if (isLast) {
                     return <Box component='span'
-                                key={`status-bar-path-part-${i}`}
-                                sx={{
-                                    display: 'flex',
-                                    alignItems: 'center'
-                                }}>
+                        key={`status-bar-path-part-${i}`}
+                        sx={{
+                            display: 'flex',
+                            alignItems: 'center'
+                        }}>
                         <FileIcon handle={currentEditor?.handle}
-                                  sx={{mr: '0.25em'}}
-                                  size='small'/> {part}
+                            sx={{ mr: '0.25em' }}
+                            size='small' /> {part}
                     </Box>
                 }
 
-                return <Button sx={{pt: 0, pb: 0, textTransform: 'none', minWidth: 'auto', fontSize: '1em'}}
-                               onClick={e => handleClick(e, PathUtils.combine(...(completePathParts.slice(0, i + 1))))}
-                               component="button">
+                return <Button sx={{ pt: 0, pb: 0, textTransform: 'none', minWidth: 'auto', fontSize: '1em' }}
+                    onClick={e => handleClick(e, PathUtils.combine(...(completePathParts.slice(0, i + 1))))}
+                    key={`status-bar-path-part-${i}`}
+                    component="button">
                     {part}
                 </Button>;
             })}
         </Breadcrumbs>
 
         {Boolean(selectedPathStructureContent.length) && <Menu id="path-menu"
-                                                        anchorEl={anchorEl}
-                                                        open={open}
-                                                        onClose={handleClose}
-                                                        anchorOrigin={{
-                                                            vertical: 'top',
-                                                            horizontal: 'left',
-                                                        }}
-                                                        transformOrigin={{
-                                                            vertical: 'bottom',
-                                                            horizontal: 'left',
-                                                        }}
-                                                        MenuListProps={{
-                                                            'aria-labelledby': 'path-menu',
-                                                        }}>
+            anchorEl={anchorEl}
+            open={open}
+            onClose={handleClose}
+            anchorOrigin={{
+                vertical: 'top',
+                horizontal: 'left',
+            }}
+            transformOrigin={{
+                vertical: 'bottom',
+                horizontal: 'left',
+            }}
+            MenuListProps={{
+                'aria-labelledby': 'path-menu',
+            }}>
             {selectedPathStructureContent.map(sps => {
                 return <MenuItem onClick={() => handleItemClick(sps as FileSystemFileHandle, selectedPath!)}>
                     <ListItemIcon>
                         <FileIcon handle={sps}
-                                  sx={{mr: '0.25em'}}
-                                  size='small'/>
+                            sx={{ mr: '0.25em' }}
+                            size='small' />
                     </ListItemIcon>
                     <ListItemText>{sps.name}</ListItemText>
                 </MenuItem>
