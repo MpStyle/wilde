@@ -15,10 +15,10 @@ export const eventListenerSlice = createSlice({
     name: 'appEventListener',
     initialState,
     reducers: {
-        addEventListener: (state, action: PayloadAction<{ eventName: EventName, callback: Listener }>) => {
+        addAppEventListener: (state, action: PayloadAction<{ eventName: EventName, callback: Listener }>) => {
             state[action.payload.eventName].push(action.payload.callback);
         },
-        removeEventListener: (state, action: PayloadAction<{ eventName: EventName, callback: Listener }>) => {
+        removeAppEventListener: (state, action: PayloadAction<{ eventName: EventName, callback: Listener }>) => {
             const callbacks = state[action.payload.eventName];
 
             if (callbacks) {
@@ -35,6 +35,6 @@ export const eventListenerSlice = createSlice({
     }
 });
 
-export const { addEventListener, removeEventListener } = eventListenerSlice.actions
+export const { addAppEventListener: addEventListener, removeAppEventListener: removeEventListener } = eventListenerSlice.actions
 
 export const eventListenerReducer = eventListenerSlice.reducer;

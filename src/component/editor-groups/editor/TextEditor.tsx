@@ -4,7 +4,7 @@ import { EditorProps } from "../book/EditorProps";
 import { FileUtils } from "../../../book/FileUtils";
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 import { useDispatch } from "react-redux";
-import { addEventListener, removeEventListener } from "../../../slice/AppEventListenerSlice";
+import { addAppEventListener, removeAppEventListener } from "../../../slice/AppEventListenerSlice";
 
 export const TextEditor: FunctionComponent<EditorProps> = props => {
     const [editor, setEditor] = useState<monaco.editor.IStandaloneCodeEditor | null>(null);
@@ -34,10 +34,10 @@ export const TextEditor: FunctionComponent<EditorProps> = props => {
             }
         }
 
-        dispatch(addEventListener({ eventName: 'onSave', callback: onSave }));
+        dispatch(addAppEventListener({ eventName: 'onSave', callback: onSave }));
 
         return () => {
-            dispatch(removeEventListener({ eventName: 'onSave', callback: onSave }));
+            dispatch(removeAppEventListener({ eventName: 'onSave', callback: onSave }));
         };
     });
 

@@ -1,6 +1,6 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
 import { FunctionComponent, useEffect, useState } from "react";
-import { addEventListener, removeEventListener } from "../../../slice/AppEventListenerSlice";
+import { addAppEventListener, removeAppEventListener } from "../../../slice/AppEventListenerSlice";
 import { useDispatch } from "react-redux";
 import { closeProjectDirectory } from "../../../slice/ProjectDirectorySlice";
 
@@ -14,10 +14,10 @@ export const CloseDirectoryDialog: FunctionComponent = () => {
             setOpen(true);
         }
 
-        dispatch(addEventListener({ eventName: 'onCloseDirectory', callback: onCloseDirectory }));
+        dispatch(addAppEventListener({ eventName: 'onCloseDirectory', callback: onCloseDirectory }));
 
         return () => {
-            dispatch(removeEventListener({ eventName: 'onCloseDirectory', callback: onCloseDirectory }));
+            dispatch(removeAppEventListener({ eventName: 'onCloseDirectory', callback: onCloseDirectory }));
         };
     });
 
