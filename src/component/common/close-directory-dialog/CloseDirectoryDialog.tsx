@@ -8,7 +8,7 @@ export const CloseDirectoryDialog: FunctionComponent = () => {
     const [open, setOpen] = useState<boolean>(false);
     const dispatch = useDispatch();
 
-    // onClose event listener
+    // onCloseDirectory event listener
     useEffect(() => {
         const onCloseDirectory = () => {
             setOpen(true);
