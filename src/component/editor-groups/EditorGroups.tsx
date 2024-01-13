@@ -1,22 +1,22 @@
-import React, { Fragment, FunctionComponent } from "react";
-import Tabs from '@mui/material/Tabs';
+import { Box, useTheme } from "@mui/material";
 import Tab from '@mui/material/Tab';
+import Tabs from '@mui/material/Tabs';
+import React, { FunctionComponent } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { AppState } from "../../store/AppStore";
-import { EditorProxy } from "./EditorProxy";
 import { PathUtils } from "../../book/PathUtils";
-import { EditorTabLabel } from "./EditorTabLabel";
-import { EditorTabPanel } from "./EditorTabPanel";
-import { EditorGroupsContextMenu } from "./EditorGroupsContextMenu";
 import {
+    EditorInfo,
     closeAllEditors,
     closeEditor,
     closeOthersEditors,
     currentEditor,
-    editorContentIsChanged,
-    EditorInfo
+    editorContentIsChanged
 } from "../../slice/OpenEditorsSlice";
-import { Box, useTheme } from "@mui/material";
+import { AppState } from "../../store/AppStore";
+import { EditorGroupsContextMenu } from "./EditorGroupsContextMenu";
+import { EditorProxy } from "./EditorProxy";
+import { EditorTabLabel } from "./EditorTabLabel";
+import { EditorTabPanel } from "./EditorTabPanel";
 
 export const EditorGroups: FunctionComponent = () => {
     const editors = useSelector((state: AppState) => state.openEditors);

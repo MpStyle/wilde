@@ -1,10 +1,8 @@
-import { Box, useTheme } from "@mui/material";
+import { Box } from "@mui/material";
 import { FunctionComponent } from 'react';
 import { DirectoryExplorer } from './DirectoryExplorer';
 
 export const Sidebar: FunctionComponent = () => {
-    const theme = useTheme();
-
     return <Box id='Sidebar'
         sx={{
             height: '100%',
