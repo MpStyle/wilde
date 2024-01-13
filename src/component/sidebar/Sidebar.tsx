@@ -1,6 +1,6 @@
 import { Box, useTheme } from "@mui/material";
 import { FunctionComponent } from 'react';
-import { DirectoryExplorer } from './directory-explorer/DirectoryExplorer';
+import { DirectoryExplorer } from './DirectoryExplorer';
 
 export const Sidebar: FunctionComponent = () => {
     const theme = useTheme();

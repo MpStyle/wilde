@@ -16,12 +16,14 @@ import {
     editorContentIsChanged,
     EditorInfo
 } from "../../slice/OpenEditorsSlice";
-
+import { Box, useTheme } from "@mui/material";
 
 export const EditorGroups: FunctionComponent = () => {
     const editors = useSelector((state: AppState) => state.openEditors);
     const rootDirectory = useSelector((appState: AppState) => appState.projectFolder.rootDirectory);
     const dispatch = useDispatch();
+    const showBackground = useSelector((appState: AppState) => !appState.openEditors.openEditors || !appState.openEditors.openEditors.length);
+    const theme = useTheme();
 
     const handleChange = (_: React.SyntheticEvent, newValue: number) => {
         dispatch(currentEditor(editors.openEditors[newValue]));
@@ -51,7 +53,30 @@ export const EditorGroups: FunctionComponent = () => {
     }
 
 
-    return <Fragment>
+    return <Box sx={{
+        flexGrow: 1,
+        height: '100%',
+        overflow: 'hidden',
+        backgroundImage: showBackground ? 'url("images/wilde-logo.png")' : null,
+        backgroundSize: '75%',
+        [theme.breakpoints.up('sm')]: {
+            backgroundSize: '50%',
+        },
+        [theme.breakpoints.up('md')]: {
+            backgroundSize: '45%',
+        },
+        [theme.breakpoints.up('lg')]: {
+            backgroundSize: '35%',
+        },
+        [theme.breakpoints.up('lg')]: {
+            backgroundSize: '25%',
+        },
+        [theme.breakpoints.up('xl')]: {
+            backgroundSize: '15%',
+        },
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat'
+    }}>
         <Tabs value={editors.openEditors.findIndex(oe => isCurrentEditor(oe))}
             onChange={handleChange}
             variant="scrollable"
@@ -116,6 +141,6 @@ export const EditorGroups: FunctionComponent = () => {
 
                 closeContextMenu();
             }} />
-    </Fragment>
+    </Box>
 }
 

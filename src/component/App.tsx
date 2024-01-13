@@ -1,8 +1,8 @@
 import { Box, useTheme } from "@mui/material";
 import { FunctionComponent, useEffect } from 'react';
-import { Editors } from "./Editors";
-import { Sidebar } from "./Sidebar";
+import { Sidebar } from "./sidebar/Sidebar";
 import { StatusBar } from "./status-bar/StatusBar";
+import { EditorGroups } from "./editor-groups/EditorGroups";
 
 export const App: FunctionComponent = () => {
     const theme = useTheme();
@@ -40,7 +40,7 @@ export const App: FunctionComponent = () => {
             },
         }}>
             <Sidebar />
-            <Editors />
+            <EditorGroups />
         </Box>
         <Box sx={{
             height: statusBarHeight,
