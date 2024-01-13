@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from "react";
 import { Box } from "@mui/material";
-import { Loader } from "../../core/Loader";
+import { Loader } from "../../core/loader/Loader";
 
 export const EditorLoader: FunctionComponent = () => {
     return <Box sx={{
