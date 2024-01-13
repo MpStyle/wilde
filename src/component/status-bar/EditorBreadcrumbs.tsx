@@ -1,6 +1,6 @@
 import React, { Fragment, FunctionComponent, useState } from "react";
 import { Box, Breadcrumbs, Button, ListItemIcon, ListItemText, Menu, MenuItem } from "@mui/material";
-import { FileIcon } from "../core/file-icon/FileIcon";
+import { FileIcon } from "../common/file-icon/FileIcon";
 import { PathUtils } from "../../book/PathUtils";
 import { useDispatch, useSelector } from "react-redux";
 import { AppState } from "../../store/AppStore";

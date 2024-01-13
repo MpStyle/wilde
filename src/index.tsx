@@ -6,8 +6,8 @@ import { Provider } from "react-redux";
 import { appStore } from "./store/AppStore";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import * as serviceWorker from './serviceWorker';
-import { ShortcutManager } from './component/core/shortcut-manager/ShortcutManager';
-import { CloseDirectoryDialog } from './component/core/close-directory-dialog/CloseDirectoryDialog';
+import { ShortcutManager } from './component/common/shortcut-manager/ShortcutManager';
+import { CloseDirectoryDialog } from './component/common/close-directory-dialog/CloseDirectoryDialog';
 
 const theme = createTheme({
     palette: {

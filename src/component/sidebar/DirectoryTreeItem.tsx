@@ -4,7 +4,7 @@ import { areEqual } from "react-window";
 import { TreeNode } from "../../entity/TreeNode";
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import { FileIcon } from "../core/file-icon/FileIcon";
+import { FileIcon } from "../common/file-icon/FileIcon";
 import { useDirectoryExplorerActions } from "./DirectoryExplorerContext";
 import { PathUtils } from "../../book/PathUtils";
 

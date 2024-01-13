@@ -1,5 +1,5 @@
 import React, { FunctionComponent } from "react";
-import { FileIcon } from "../core/file-icon/FileIcon";
+import { FileIcon } from "../common/file-icon/FileIcon";
 import { alpha, Box, IconButton, Typography, useTheme } from "@mui/material";
 import { PathUtils } from "../../book/PathUtils";
 import { closeEditor, EditorInfo } from "../../slice/OpenEditorsSlice";

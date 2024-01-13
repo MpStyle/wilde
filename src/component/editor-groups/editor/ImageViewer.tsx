@@ -1,7 +1,7 @@
 import { Fragment, FunctionComponent, useEffect, useState } from "react";
 import { Box } from "@mui/material";
 import { ByteUtils } from "../../../book/ByteUtils";
-import { Loader } from "../../core/loader/Loader";
+import { Loader } from "../../common/loader/Loader";
 import { EditorProps } from "../book/EditorProps";
 
 export const ImageViewer: FunctionComponent<EditorProps> = props => {
