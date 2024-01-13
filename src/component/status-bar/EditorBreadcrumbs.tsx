@@ -20,9 +20,8 @@ export const EditorBreadcrumbs: FunctionComponent = () => {
         return null;
     }
 
-    const completePath = PathUtils.combine(currentEditor.path, currentEditor.handle.name);
-    const currentEditorPath = completePath.replace(".", rootDirectoryName);
-    const completePathParts = completePath.split(PathUtils.separator);
+    const currentEditorPath = currentEditor.path.replace(".", rootDirectoryName);
+    const completePathParts = currentEditor.path.split(PathUtils.separator);
     const currentEditorPathParts = currentEditorPath.split(PathUtils.separator);
     const selectedPathStructure = selectedPath && directoryStructure.hasOwnProperty(selectedPath) ? directoryStructure[selectedPath] : undefined;
     const selectedPathStructureContent = (selectedPathStructure?.content ?? []).filter(c => c.kind === 'file');
