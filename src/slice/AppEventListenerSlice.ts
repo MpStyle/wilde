@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-type EventName = "onSave";
+export type EventName = "onSave" | "onCloseDirectory";
 
 type Listener = () => void;
 
@@ -8,6 +8,7 @@ type Listeners = Record<EventName, Listener[]>;
 
 const initialState: Listeners = {
     onSave: [],
+    onCloseDirectory: []
 };
 
 export const eventListenerSlice = createSlice({
@@ -32,7 +33,7 @@ export const eventListenerSlice = createSlice({
             }
         },
     }
-})
+});
 
 export const { addEventListener, removeEventListener } = eventListenerSlice.actions
 
