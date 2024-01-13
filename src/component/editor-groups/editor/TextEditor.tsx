@@ -3,12 +3,13 @@ import { Box } from "@mui/material";
 import { EditorProps } from "../book/EditorProps";
 import { FileUtils } from "../../../book/FileUtils";
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
-import { useWildeContext } from "../../core/wilde-context/WildeContext";
+import { useDispatch } from "react-redux";
+import { addEventListener, removeEventListener } from "../../../slice/AppEventListenerSlice";
 
 export const TextEditor: FunctionComponent<EditorProps> = props => {
     const [editor, setEditor] = useState<monaco.editor.IStandaloneCodeEditor | null>(null);
     const monacoEl = useRef(null);
-    const wildeContext = useWildeContext();
+    const dispatch = useDispatch();
 
     const getLanguage = () => {
         const extension = FileUtils.getExtension(props.handle.name);
@@ -33,10 +34,10 @@ export const TextEditor: FunctionComponent<EditorProps> = props => {
             }
         }
 
-        wildeContext.addEventListener('onSave', onSave);
+        dispatch(addEventListener({ eventName: 'onSave', callback: onSave }));
 
         return () => {
-            wildeContext.removeEventListener('onSave', onSave);
+            dispatch(removeEventListener({ eventName: 'onSave', callback: onSave }));
         };
     });
 

@@ -7,7 +7,6 @@ import { appStore } from "./store/AppStore";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import * as serviceWorker from './serviceWorker';
 import { ShortcutManager } from './component/core/shortcut-manager/ShortcutManager';
-import { WildeProvider } from './component/core/wilde-context/WildeContext';
 
 const theme = createTheme({
     palette: {
@@ -27,10 +26,8 @@ root.render(
     <React.StrictMode>
         <ThemeProvider theme={theme}>
             <Provider store={appStore}>
-                <WildeProvider>
-                    <ShortcutManager />
-                    <App />
-                </WildeProvider>
+                <ShortcutManager />
+                <App />
             </Provider>
         </ThemeProvider>
     </React.StrictMode>

@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import { useWildeContext } from '../wilde-context/WildeContext';
+import { FunctionComponent, useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppState } from '../../../store/AppStore';
 
-export const ShortcutManager: React.FC = () => {
+export const ShortcutManager: FunctionComponent = () => {
     const [pressedKeys, setPressedKeys] = useState<string[]>([]);
-    const wildeContext = useWildeContext();
+    const listeners = useSelector((appState: AppState) => appState.eventListeners);
 
     useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {
@@ -37,10 +38,16 @@ export const ShortcutManager: React.FC = () => {
 
     useEffect(() => {
         const isCtrlPressed = pressedKeys.includes('Control') || pressedKeys.includes('Meta');
-        const isSPressed = pressedKeys.includes('s') || pressedKeys.includes('S');
+        const isSPressed = pressedKeys.includes('s');
 
         if (isCtrlPressed && isSPressed) {
-            wildeContext.saveAllEditors();
+            const listener = listeners['onSave'];
+
+            if (listener) {
+                for (let index = 0; index < listener.length; index++) {
+                    listener[index]();
+                }
+            }
         }
     }, [pressedKeys]);
 
