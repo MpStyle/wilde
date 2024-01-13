@@ -1,10 +1,9 @@
 import { FunctionComponent, useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
-import { AppState } from '../../../store/AppStore';
+import { useWilde } from '../../../hook/WildeHook';
 
 export const ShortcutManager: FunctionComponent = () => {
     const [pressedKeys, setPressedKeys] = useState<string[]>([]);
-    const listeners = useSelector((appState: AppState) => appState.eventListeners);
+    const wilde = useWilde();
 
     useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {
@@ -41,13 +40,7 @@ export const ShortcutManager: FunctionComponent = () => {
         const isSPressed = pressedKeys.includes('s');
 
         if (isCtrlPressed && isSPressed) {
-            const listener = listeners['onSave'];
-
-            if (listener) {
-                for (let index = 0; index < listener.length; index++) {
-                    listener[index]();
-                }
-            }
+            wilde.saveAll();
         }
     }, [pressedKeys]);
 
