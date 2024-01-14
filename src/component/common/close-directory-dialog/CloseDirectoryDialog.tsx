@@ -1,12 +1,13 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
 import { FunctionComponent, useEffect, useState } from "react";
-import { addAppEventListener, removeAppEventListener } from "../../../slice/AppEventListenerSlice";
 import { useDispatch } from "react-redux";
 import { closeProjectDirectory } from "../../../slice/ProjectDirectorySlice";
+import { useWilde } from "../../../hook/WildeHook";
 
 export const CloseDirectoryDialog: FunctionComponent = () => {
     const [open, setOpen] = useState<boolean>(false);
     const dispatch = useDispatch();
+    const wilde = useWilde();
 
     // onCloseDirectory event listener
     useEffect(() => {
@@ -14,10 +15,10 @@ export const CloseDirectoryDialog: FunctionComponent = () => {
             setOpen(true);
         }
 
-        dispatch(addAppEventListener({ eventName: 'onCloseDirectory', callback: onCloseDirectory }));
+        wilde.addEventListener('onCloseDirectory', onCloseDirectory);
 
         return () => {
-            dispatch(removeAppEventListener({ eventName: 'onCloseDirectory', callback: onCloseDirectory }));
+            wilde.removeEventListener('onCloseDirectory', onCloseDirectory);
         };
     });
 

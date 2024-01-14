@@ -1,15 +1,14 @@
-import { FunctionComponent, useEffect, useRef, useState } from "react";
 import { Box } from "@mui/material";
-import { EditorProps } from "../book/EditorProps";
-import { FileUtils } from "../../../book/FileUtils";
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
-import { useDispatch } from "react-redux";
-import { addAppEventListener, removeAppEventListener } from "../../../slice/AppEventListenerSlice";
+import { FunctionComponent, useEffect, useRef, useState } from "react";
+import { FileUtils } from "../../../book/FileUtils";
+import { useWilde } from "../../../hook/WildeHook";
+import { EditorProps } from "../book/EditorProps";
 
 export const TextEditor: FunctionComponent<EditorProps> = props => {
     const [editor, setEditor] = useState<monaco.editor.IStandaloneCodeEditor | null>(null);
     const monacoEl = useRef(null);
-    const dispatch = useDispatch();
+    const wilde = useWilde();
 
     const getLanguage = () => {
         const extension = FileUtils.getExtension(props.handle.name);
@@ -34,10 +33,10 @@ export const TextEditor: FunctionComponent<EditorProps> = props => {
             }
         }
 
-        dispatch(addAppEventListener({ eventName: 'onSaveAll', callback: onSaveAll }));
+        wilde.addEventListener('onSaveAll', onSaveAll);
 
         return () => {
-            dispatch(removeAppEventListener({ eventName: 'onSaveAll', callback: onSaveAll }));
+            wilde.removeEventListener('onSaveAll', onSaveAll);
         };
     });
 
