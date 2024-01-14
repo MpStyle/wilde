@@ -47,7 +47,7 @@ export const DirectoryExplorer: FunctionComponent<ProjectExplorerProps> = () => 
             {rootDirectory && <Fragment>
                 <IconButton title="New File..."
                     size="small"
-                    onClick={() => actions.openNewFileDialog({
+                    onClick={() => wilde.newFile({
                         path: '.',
                         handle: rootDirectory
                     })}>

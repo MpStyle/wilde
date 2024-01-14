@@ -9,6 +9,7 @@ import * as serviceWorker from './serviceWorker';
 import { ShortcutManager } from './component/common/shortcut-manager/ShortcutManager';
 import { CloseDirectoryDialog } from './component/common/close-directory-dialog/CloseDirectoryDialog';
 import { NewDirectoryDialog } from './component/common/new-directory-dialog/NewDirectoryDialog';
+import { NewFileDialog } from './component/common/new-file-dialog/NewFileDialog';
 
 const theme = createTheme({
     palette: {
@@ -35,6 +36,8 @@ root.render(
                 <CloseDirectoryDialog />
 
                 <NewDirectoryDialog />
+
+                <NewFileDialog />
             </Provider>
         </ThemeProvider>
     </React.StrictMode>

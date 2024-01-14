@@ -11,14 +11,11 @@ export interface DirectoryExplorerOptions {
 
 interface DirectoryExplorerContextActions {
     openContextMenu: (event: React.MouseEvent, options: DirectoryExplorerOptions) => void;
-    openNewFileDialog: (options?: DirectoryExplorerOptions) => void;
 }
 
 const DirectoryExplorerContext = createContext<DirectoryExplorerContextActions>({
     openContextMenu: () => {
     },
-    openNewFileDialog: () => {
-    }
 });
 
 export const useDirectoryExplorerActions = () => useContext(DirectoryExplorerContext);
@@ -42,21 +39,6 @@ export const DirectoryExplorerProvider: FunctionComponent<PropsWithChildren> = p
     const closeContextMenu = () => setContextMenu(null);
     //#endregion
 
-    //#region New file
-    const [isNewFileDialogOpen, setIsNewFileDialogOpen] = useState(false);
-
-    const openNewFileDialog = (options?: DirectoryExplorerOptions) => {
-        if (options) {
-            setSelectedTreeItem({ path: options.path, handle: options.handle });
-        }
-
-        closeContextMenu();
-        setIsNewFileDialogOpen(true);
-    }
-
-    const closeNewFileDialog = () => setIsNewFileDialogOpen(false);
-    //#endregion
-
     //#region Delete file
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
@@ -70,8 +52,7 @@ export const DirectoryExplorerProvider: FunctionComponent<PropsWithChildren> = p
 
     return <Fragment>
         <DirectoryExplorerContext.Provider value={{
-            openContextMenu,
-            openNewFileDialog
+            openContextMenu
         }}>
             {props.children}
         </DirectoryExplorerContext.Provider>
@@ -82,12 +63,7 @@ export const DirectoryExplorerProvider: FunctionComponent<PropsWithChildren> = p
                 selectedTreeItem={selectedTreeItem}
                 onClose={closeContextMenu}
                 selectedTreeItemKind={selectedTreeItem.handle.kind}
-                openNewFileDialog={openNewFileDialog}
                 openDeleteDialog={openDeleteDialog} />
-
-            <NewFileDialog open={isNewFileDialogOpen}
-                onClose={closeNewFileDialog}
-                selectedTreeItem={selectedTreeItem} />
 
             <DeleteFileDialog open={isDeleteDialogOpen}
                 onClose={closeDeleteDialog}
