@@ -1,27 +1,27 @@
-import React, {FunctionComponent, useState} from 'react';
-import {FixedSizeList as List} from 'react-window';
+import React, { FunctionComponent, useState } from 'react';
+import { FixedSizeList as List } from 'react-window';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import memoizeOne from 'memoize-one';
-import {useDispatch, useSelector} from "react-redux";
-import {AppDispatch, AppState} from "../../store/AppStore";
-import {scanProjectDirectory} from "../../slice/ProjectDirectorySlice";
-import {openEditor} from "../../slice/OpenEditorsSlice";
-import {FileSystemHandle} from "../../entity/FileSystemHandle";
-import {TreeNode} from "../../entity/TreeNode";
-import {DirectoryTreeItem} from "./DirectoryTreeItem";
-import {FileSorter} from "../../book/FileSorter";
-import {PathUtils} from "../../book/PathUtils";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, AppState } from "../../store/AppStore";
+import { scanProjectDirectory } from "../../slice/ProjectDirectorySlice";
+import { openEditor } from "../../slice/OpenEditorsSlice";
+import { FileSystemHandle } from "../../entity/FileSystemHandle";
+import { TreeNode } from "./entity/TreeNode";
+import { DirectoryTreeItem } from "./DirectoryTreeItem";
+import { FileSorter } from "../../book/FileSorter";
+import { PathUtils } from "../../book/PathUtils";
 
 const getItemData = memoizeOne(
     (onOpen: (node: TreeNode) => void,
-     flattenedData: TreeNode[],
-     selectedTreeItem: string | undefined,
-     setSelectedTreeItem: (treeItemPath: string) => void) => ({
-        onOpen,
-        flattenedData,
-        selectedTreeItem,
-        setSelectedTreeItem,
-    }));
+        flattenedData: TreeNode[],
+        selectedTreeItem: string | undefined,
+        setSelectedTreeItem: (treeItemPath: string) => void) => ({
+            onOpen,
+            flattenedData,
+            selectedTreeItem,
+            setSelectedTreeItem,
+        }));
 
 export const DirectoryTree: FunctionComponent<SpeedTreeProps> = props => {
     const directoryStructure = useSelector((appState: AppState) => appState.projectFolder.directoryStructure);
@@ -55,13 +55,13 @@ export const DirectoryTree: FunctionComponent<SpeedTreeProps> = props => {
         const nodePath = PathUtils.combine(node.path, node.handle.name);
 
         if (node.handle.kind === 'file') {
-            dispatch(openEditor({path: nodePath, handle: node.handle}));
+            dispatch(openEditor({ path: nodePath, handle: node.handle }));
             return;
         }
 
         if (node.collapsed) {
             if (!directoryStructure.hasOwnProperty(nodePath)) {
-                dispatch(scanProjectDirectory({path: nodePath, dirHandle: node.handle as FileSystemDirectoryHandle}));
+                dispatch(scanProjectDirectory({ path: nodePath, dirHandle: node.handle as FileSystemDirectoryHandle }));
             }
 
             return props.setOpenedNodeIds([...props.openedNodeIds, nodePath]);
@@ -74,13 +74,13 @@ export const DirectoryTree: FunctionComponent<SpeedTreeProps> = props => {
     const itemData = getItemData(onOpen, flattenedData, selectedTreeItem, setSelectedTreeItem);
 
     return <AutoSizer>
-        {({height, width}: { height: string | number, width: string | number }) =>
+        {({ height, width }: { height: string | number, width: string | number }) =>
             <List height={height}
-                  width={width}
-                  itemCount={flattenedData.length}
-                  itemSize={28}
-                  itemKey={index => PathUtils.combine(flattenedData[index].path, (flattenedData[index].handle?.name ?? 'loading...'))}
-                  itemData={itemData}>
+                width={width}
+                itemCount={flattenedData.length}
+                itemSize={28}
+                itemKey={index => PathUtils.combine(flattenedData[index].path, (flattenedData[index].handle?.name ?? 'loading...'))}
+                itemData={itemData}>
                 {DirectoryTreeItem}
             </List>}
     </AutoSizer>;

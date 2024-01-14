@@ -1,7 +1,7 @@
 import React, { CSSProperties, memo } from "react";
 import { Box, Typography, useTheme } from "@mui/material";
 import { areEqual } from "react-window";
-import { TreeNode } from "../../entity/TreeNode";
+import { TreeNode } from "./entity/TreeNode";
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { FileIcon } from "../common/file-icon/FileIcon";

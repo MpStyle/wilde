@@ -1,6 +1,12 @@
-import {createAsyncThunk, createSlice} from '@reduxjs/toolkit'
-import {DirectoryStructure} from "../entity/DirectoryStructure";
-import {PathUtils} from "../book/PathUtils";
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import { PathUtils } from "../book/PathUtils";
+
+type DirectoryStructure = {
+    [path: string]: {
+        handle: FileSystemDirectoryHandle,
+        content: (FileSystemDirectoryHandle | FileSystemFileHandle)[]
+    }
+};
 
 export interface ProjectFolderState {
     directoryStructure: DirectoryStructure;
@@ -19,7 +25,7 @@ const scanDirectory = async (path: string, dirHandle: FileSystemDirectoryHandle)
         values.push(value);
     }
 
-    return {path, handle: dirHandle, handles: values};
+    return { path, handle: dirHandle, handles: values };
 };
 
 export const scanProjectDirectory = createAsyncThunk(
@@ -33,7 +39,7 @@ export const openProjectDirectory = createAsyncThunk(
     'projectDirectory/openProjectDirectory',
     async (dirHandle: FileSystemDirectoryHandle) => {
         const scanResult = await scanDirectory(".", dirHandle);
-        return {...scanResult, root: dirHandle};
+        return { ...scanResult, root: dirHandle };
     }
 )
 
@@ -44,7 +50,7 @@ export const refreshProjectDirectory = createAsyncThunk(
             let result: DirectoryStructure = {};
             const scanResult = await scanDirectory(path, handle);
 
-            result[path] = {content: scanResult.handles, handle};
+            result[path] = { content: scanResult.handles, handle };
 
             for (let subHandle of scanResult.handles) {
                 const subPath = PathUtils.combine(path, subHandle.name);
@@ -96,6 +102,6 @@ export const projectDirectorySlice = createSlice({
     }
 })
 
-export const {closeProjectDirectory} = projectDirectorySlice.actions
+export const { closeProjectDirectory } = projectDirectorySlice.actions
 
 export const projectFolderReducer = projectDirectorySlice.reducer;

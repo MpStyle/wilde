@@ -1,4 +1,4 @@
-import {FileSystemHandle} from "./FileSystemHandle";
+import { FileSystemHandle } from "../../../entity/FileSystemHandle";
 
 export type TreeNode = {
     handle: FileSystemHandle,
