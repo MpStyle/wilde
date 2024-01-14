@@ -1,16 +1,19 @@
+import { FileHandleInfo } from "../entity/FileHandleInfo";
 
 export type WildeEvent = {};
 
 // ---------------
 
 //#region Events definitions
-export interface OnSaveEvent extends WildeEvent { }
-export interface OnCloseDirectoryEvent extends WildeEvent { }
+export interface OnNewDirectoryEvent extends WildeEvent {
+    parentFileHandleInfo: FileHandleInfo;
+}
 //#endregion
 
 type AppEventMap = {
-    onSaveAll: OnSaveEvent,
-    onCloseDirectory: OnCloseDirectoryEvent
+    onSaveAll: WildeEvent,
+    onCloseDirectory: WildeEvent,
+    onNewDirectory: OnNewDirectoryEvent,
 }
 
 // ---------------
@@ -23,11 +26,12 @@ type State = {
 
 const state: State = {
     onCloseDirectory: [],
-    onSaveAll: []
+    onSaveAll: [],
+    onNewDirectory: []
 };
 
 export const useWilde = () => {
-    const emitEvent = <K extends keyof AppEventMap>(eventName: K, event: AppEventMap[K] = {}) => {
+    const emitEvent = <K extends keyof AppEventMap>(eventName: K, event: AppEventMap[K]) => {
         const onCloseListeners = state[eventName];
         for (let index = 0; index < onCloseListeners.length; index++) {
             onCloseListeners[index](event);
@@ -52,8 +56,9 @@ export const useWilde = () => {
     };
 
     return {
-        closeDirectory: () => emitEvent('onCloseDirectory'),
-        saveAll: () => emitEvent('onSaveAll'),
+        closeDirectory: () => emitEvent('onCloseDirectory', {}),
+        saveAll: () => emitEvent('onSaveAll', {}),
+        newDirectory: (parentFileHandleInfo: FileHandleInfo) => emitEvent('onNewDirectory', { parentFileHandleInfo }),
         addEventListener,
         removeEventListener
     }

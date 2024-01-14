@@ -1,8 +1,8 @@
 import React, { createContext, Fragment, FunctionComponent, PropsWithChildren, useContext, useState } from "react";
-import { DirectoryExplorerContextMenu } from "./DirectoryExplorerContextMenu";
-import { NewDirectoryDialog } from "../common/new-directory-dialog/NewDirectoryDialog";
-import { NewFileDialog } from "../common/new-file-dialog/NewFileDialog";
+import { FileHandleInfo } from "../../entity/FileHandleInfo";
 import { DeleteFileDialog } from "../common/delete-file-dialog/DeleteFileDialog";
+import { NewFileDialog } from "../common/new-file-dialog/NewFileDialog";
+import { DirectoryExplorerContextMenu } from "./DirectoryExplorerContextMenu";
 
 export interface DirectoryExplorerOptions {
     path: string;
@@ -11,14 +11,11 @@ export interface DirectoryExplorerOptions {
 
 interface DirectoryExplorerContextActions {
     openContextMenu: (event: React.MouseEvent, options: DirectoryExplorerOptions) => void;
-    openNewDirectoryDialog: (options?: DirectoryExplorerOptions) => void;
     openNewFileDialog: (options?: DirectoryExplorerOptions) => void;
 }
 
 const DirectoryExplorerContext = createContext<DirectoryExplorerContextActions>({
     openContextMenu: () => {
-    },
-    openNewDirectoryDialog: () => {
     },
     openNewFileDialog: () => {
     }
@@ -27,10 +24,7 @@ const DirectoryExplorerContext = createContext<DirectoryExplorerContextActions>(
 export const useDirectoryExplorerActions = () => useContext(DirectoryExplorerContext);
 
 export const DirectoryExplorerProvider: FunctionComponent<PropsWithChildren> = props => {
-    const [selectedTreeItem, setSelectedTreeItem] = useState<{
-        path: string,
-        handle: FileSystemHandle
-    } | null>(null);
+    const [selectedTreeItem, setSelectedTreeItem] = useState<FileHandleInfo | null>(null);
 
     //#region Context menu
     const [contextMenu, setContextMenu] = React.useState<{
@@ -46,20 +40,6 @@ export const DirectoryExplorerProvider: FunctionComponent<PropsWithChildren> = p
         setContextMenu(contextMenu === null ? { mouseX: event.clientX + 2, mouseY: event.clientY - 6, } : null);
     };
     const closeContextMenu = () => setContextMenu(null);
-    //#endregion
-
-    //#region New directory
-    const [isNewDirectoryDialogOpen, setIsNewDirectoryDialogOpen] = useState(false);
-
-    const openNewDirectoryDialog = (options?: DirectoryExplorerOptions) => {
-        if (options) {
-            setSelectedTreeItem({ path: options.path, handle: options.handle });
-        }
-
-        closeContextMenu();
-        setIsNewDirectoryDialogOpen(true);
-    }
-    const closeNewDirectoryDialog = () => setIsNewDirectoryDialogOpen(false);
     //#endregion
 
     //#region New file
@@ -91,7 +71,6 @@ export const DirectoryExplorerProvider: FunctionComponent<PropsWithChildren> = p
     return <Fragment>
         <DirectoryExplorerContext.Provider value={{
             openContextMenu,
-            openNewDirectoryDialog,
             openNewFileDialog
         }}>
             {props.children}
@@ -100,15 +79,11 @@ export const DirectoryExplorerProvider: FunctionComponent<PropsWithChildren> = p
         {!!selectedTreeItem && <Fragment>
             <DirectoryExplorerContextMenu open={isContextMenuOpen}
                 position={contextMenu}
+                selectedTreeItem={selectedTreeItem}
                 onClose={closeContextMenu}
                 selectedTreeItemKind={selectedTreeItem.handle.kind}
                 openNewFileDialog={openNewFileDialog}
-                openNewDirectoryDialog={openNewDirectoryDialog}
                 openDeleteDialog={openDeleteDialog} />
-
-            <NewDirectoryDialog open={isNewDirectoryDialogOpen}
-                onClose={closeNewDirectoryDialog}
-                selectedTreeItem={selectedTreeItem} />
 
             <NewFileDialog open={isNewFileDialogOpen}
                 onClose={closeNewFileDialog}

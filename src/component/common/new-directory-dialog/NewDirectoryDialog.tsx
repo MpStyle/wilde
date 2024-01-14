@@ -1,35 +1,61 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material";
-import React, { FunctionComponent, useState } from "react";
+import React, { FunctionComponent, useEffect, useState } from "react";
 import { scanProjectDirectory } from "../../../slice/ProjectDirectorySlice";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../../store/AppStore";
 import { DirectoryUtils } from "../../../book/DirectoryUtils";
+import { OnNewDirectoryEvent, useWilde } from "../../../hook/WildeHook";
+import { FileHandleInfo } from "../../../entity/FileHandleInfo";
 
-export const NewDirectoryDialog: FunctionComponent<NewDirectoryDialogProps> = props => {
+export const NewDirectoryDialog: FunctionComponent = () => {
     const [newDirectoryName, setNewDirectoryName] = useState<string>('');
+    const [parentFileHandleInfo, setParentFileHandleInfo] = useState<FileHandleInfo | null>(null);
+    const [open, setOpen] = useState<boolean>(false);
     const [alreadyExists, setAlreadyExists] = useState<boolean>(false);
     const dispatch = useDispatch<AppDispatch>();
-    const { onClose, open, selectedTreeItem } = props;
+    const wilde = useWilde();
+
+    // onNewDirectory event listener
+    useEffect(() => {
+        const onNewDirectory = (event: OnNewDirectoryEvent) => {
+            setOpen(true);
+            setParentFileHandleInfo(event.parentFileHandleInfo);
+        }
+
+        wilde.addEventListener('onNewDirectory', onNewDirectory);
+
+        return () => {
+            wilde.removeEventListener('onNewDirectory', onNewDirectory);
+        };
+    });
+
+    if (!parentFileHandleInfo) {
+        return null;
+    }
 
     const directoryAlreadyExists = async (newName: string) => {
-        const result = await (DirectoryUtils.exists(selectedTreeItem.handle as FileSystemDirectoryHandle, newName)) && newName !== selectedTreeItem.handle.name;
+        const result = await (DirectoryUtils.exists(parentFileHandleInfo.handle as FileSystemDirectoryHandle, newName)) && newName !== parentFileHandleInfo.handle.name;
         setAlreadyExists(result);
+    }
+
+    const onClose = () => {
+        setOpen(false);
     }
 
     const createNewDirectory = () => {
         setNewDirectoryName('');
         onClose();
 
-        if (selectedTreeItem.handle.kind !== 'directory') {
+        if (parentFileHandleInfo.handle.kind !== 'directory') {
             return;
         }
 
-        const directoryHandle = selectedTreeItem.handle as FileSystemDirectoryHandle;
+        const directoryHandle = parentFileHandleInfo.handle as FileSystemDirectoryHandle;
 
         directoryHandle.getDirectoryHandle(newDirectoryName, { create: true })
             .then(_ => {
                 dispatch(scanProjectDirectory({
-                    path: selectedTreeItem.path,
+                    path: parentFileHandleInfo.path,
                     dirHandle: directoryHandle
                 }));
 
@@ -73,10 +99,4 @@ export const NewDirectoryDialog: FunctionComponent<NewDirectoryDialogProps> = pr
             </Button>
         </DialogActions>
     </Dialog>;
-}
-
-export interface NewDirectoryDialogProps {
-    open: boolean;
-    onClose: () => void;
-    selectedTreeItem: { path: string, handle: FileSystemHandle };
 }
