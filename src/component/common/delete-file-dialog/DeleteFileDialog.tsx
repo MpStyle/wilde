@@ -1,37 +1,57 @@
-import React, { FunctionComponent } from "react";
+import React, { FunctionComponent, useEffect, useState } from "react";
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
 import { DirectoryUtils } from "../../../book/DirectoryUtils";
 import { scanProjectDirectory } from "../../../slice/ProjectDirectorySlice";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, AppState } from "../../../store/AppStore";
+import { OnDeleteFileEvent, useWilde } from "../../../hook/WildeHook";
+import { FileHandleInfo } from "../../../entity/FileHandleInfo";
 
-export const DeleteFileDialog: FunctionComponent<DeleteDialogProps> = props => {
+export const DeleteFileDialog: FunctionComponent = () => {
+    const [open, setOpen] = useState<boolean>(false);
+    const [fileHandleInfo, setFileHandleInfo] = useState<FileHandleInfo | null>(null);
     const directoryStructure = useSelector((appState: AppState) => appState.projectFolder.directoryStructure);
     const dispatch = useDispatch<AppDispatch>();
-    const { selectedTreeItem, open, onClose } = props;
+    const wilde = useWilde();
+
+    // onDeleteFile event listener
+    useEffect(() => {
+        const onDeleteFile = (event: OnDeleteFileEvent) => {
+            setOpen(true);
+            setFileHandleInfo(event.fileHandleInfo);
+        }
+
+        wilde.addEventListener('onDeleteFile', onDeleteFile);
+
+        return () => {
+            wilde.removeEventListener('onDeleteFile', onDeleteFile);
+        };
+    });
+
+    if (!fileHandleInfo) {
+        return null;
+    }
+
+    const onClose = () => setOpen(false);
 
     const deleteFile = async () => {
         onClose();
 
-        if (!selectedTreeItem) {
-            return;
-        }
-
-        const parentPath = DirectoryUtils.getParent(selectedTreeItem.path);
+        const parentPath = DirectoryUtils.getParent(fileHandleInfo.path);
         const parentHandle = directoryStructure[parentPath].handle;
 
-        parentHandle.removeEntry(selectedTreeItem.handle.name, { recursive: true })
+        parentHandle.removeEntry(fileHandleInfo.handle.name, { recursive: true })
             .then(_ => {
                 dispatch(scanProjectDirectory({ path: parentPath, dirHandle: parentHandle }))
             });
     }
 
     return <Dialog open={open} onClose={onClose}>
-        <DialogTitle>Delete {selectedTreeItem?.handle.kind === 'directory' ? 'folder' : 'file'}</DialogTitle>
+        <DialogTitle>Delete {fileHandleInfo?.handle.kind === 'directory' ? 'folder' : 'file'}</DialogTitle>
         <DialogContent>
             <DialogContentText>
                 Do you want to
-                delete {selectedTreeItem?.handle.kind === 'directory' ? 'folder' : 'file'} "{selectedTreeItem?.path}"?
+                delete {fileHandleInfo?.handle.kind === 'directory' ? 'folder' : 'file'} "{fileHandleInfo?.path}"?
             </DialogContentText>
         </DialogContent>
         <DialogActions>
@@ -39,10 +59,4 @@ export const DeleteFileDialog: FunctionComponent<DeleteDialogProps> = props => {
             <Button onClick={() => deleteFile()}>Delete</Button>
         </DialogActions>
     </Dialog>;
-}
-
-export interface DeleteDialogProps {
-    open: boolean;
-    onClose: () => void;
-    selectedTreeItem: { path: string, handle: FileSystemHandle } | null;
 }

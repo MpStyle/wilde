@@ -8,7 +8,6 @@ export const DirectoryExplorerContextMenu: FunctionComponent<DirectoryExplorerCo
         onClose,
         open,
         selectedTreeItemKind,
-        openDeleteDialog,
         position,
         selectedTreeItem
     } = props;
@@ -23,10 +22,27 @@ export const DirectoryExplorerContextMenu: FunctionComponent<DirectoryExplorerCo
                 : undefined
         }>
         {selectedTreeItemKind === 'directory' &&
-            <MenuItem onClick={() => wilde.newFile(selectedTreeItem)}>New File...</MenuItem>}
+            <MenuItem onClick={() => {
+                onClose();
+                wilde.newFile(selectedTreeItem);
+            }}>
+                New File...
+            </MenuItem>}
+
         {selectedTreeItemKind === 'directory' &&
-            <MenuItem onClick={() => wilde.newDirectory(selectedTreeItem)}>New folder...</MenuItem>}
-        <MenuItem onClick={() => openDeleteDialog()}>Delete</MenuItem>
+            <MenuItem onClick={() => {
+                onClose();
+                wilde.newDirectory(selectedTreeItem);
+            }}>
+                New folder...
+            </MenuItem>}
+
+        <MenuItem onClick={() => {
+            onClose();
+            wilde.deleteFile(selectedTreeItem)
+        }}>
+            Delete
+        </MenuItem>
     </Menu>
 }
 
@@ -38,6 +54,5 @@ export interface DirectoryExplorerContextMenuProps {
     } | null;
     onClose: () => void;
     selectedTreeItemKind?: 'directory' | 'file';
-    openDeleteDialog: () => void;
     selectedTreeItem: FileHandleInfo;
 }

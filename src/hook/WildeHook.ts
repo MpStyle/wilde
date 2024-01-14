@@ -12,6 +12,10 @@ export interface OnNewDirectoryEvent extends WildeEvent {
 export interface OnNewFileEvent extends WildeEvent {
     parentFileHandleInfo: FileHandleInfo;
 }
+
+export interface OnDeleteFileEvent extends WildeEvent {
+    fileHandleInfo: FileHandleInfo;
+}
 //#endregion
 
 type AppEventMap = {
@@ -19,6 +23,7 @@ type AppEventMap = {
     onCloseDirectory: WildeEvent,
     onNewDirectory: OnNewDirectoryEvent,
     onNewFile: OnNewFileEvent,
+    onDeleteFile: OnDeleteFileEvent,
 }
 
 // ---------------
@@ -34,6 +39,7 @@ const state: State = {
     onSaveAll: [],
     onNewDirectory: [],
     onNewFile: [],
+    onDeleteFile: []
 };
 
 export const useWilde = () => {
@@ -66,6 +72,7 @@ export const useWilde = () => {
         saveAll: () => emitEvent('onSaveAll', {}),
         newDirectory: (parentFileHandleInfo: FileHandleInfo) => emitEvent('onNewDirectory', { parentFileHandleInfo }),
         newFile: (parentFileHandleInfo: FileHandleInfo) => emitEvent('onNewFile', { parentFileHandleInfo }),
+        deleteFile: (fileHandleInfo: FileHandleInfo) => emitEvent('onDeleteFile', { fileHandleInfo }),
         addEventListener,
         removeEventListener
     }

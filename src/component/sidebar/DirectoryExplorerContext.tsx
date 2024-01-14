@@ -39,17 +39,6 @@ export const DirectoryExplorerProvider: FunctionComponent<PropsWithChildren> = p
     const closeContextMenu = () => setContextMenu(null);
     //#endregion
 
-    //#region Delete file
-    const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-
-    const openDeleteDialog = () => {
-        closeContextMenu();
-        setIsDeleteDialogOpen(true);
-    }
-
-    const closeDeleteDialog = () => setIsDeleteDialogOpen(false);
-    //#endregion
-
     return <Fragment>
         <DirectoryExplorerContext.Provider value={{
             openContextMenu
@@ -62,12 +51,9 @@ export const DirectoryExplorerProvider: FunctionComponent<PropsWithChildren> = p
                 position={contextMenu}
                 selectedTreeItem={selectedTreeItem}
                 onClose={closeContextMenu}
-                selectedTreeItemKind={selectedTreeItem.handle.kind}
-                openDeleteDialog={openDeleteDialog} />
+                selectedTreeItemKind={selectedTreeItem.handle.kind} />
 
-            <DeleteFileDialog open={isDeleteDialogOpen}
-                onClose={closeDeleteDialog}
-                selectedTreeItem={selectedTreeItem} />
+
         </Fragment>}
     </Fragment>;
 }

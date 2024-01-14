@@ -10,6 +10,7 @@ import { ShortcutManager } from './component/common/shortcut-manager/ShortcutMan
 import { CloseDirectoryDialog } from './component/common/close-directory-dialog/CloseDirectoryDialog';
 import { NewDirectoryDialog } from './component/common/new-directory-dialog/NewDirectoryDialog';
 import { NewFileDialog } from './component/common/new-file-dialog/NewFileDialog';
+import { DeleteFileDialog } from './component/common/delete-file-dialog/DeleteFileDialog';
 
 const theme = createTheme({
     palette: {
@@ -38,6 +39,8 @@ root.render(
                 <NewDirectoryDialog />
 
                 <NewFileDialog />
+
+                <DeleteFileDialog />
             </Provider>
         </ThemeProvider>
     </React.StrictMode>
