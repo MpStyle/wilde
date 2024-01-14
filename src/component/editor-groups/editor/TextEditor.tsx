@@ -27,17 +27,17 @@ export const TextEditor: FunctionComponent<EditorProps> = props => {
 
     // onSave event listener
     useEffect(() => {
-        const onSave = () => {
+        const onSaveAll = () => {
             if (editor) {
                 FileUtils.writeContent(props.handle, editor.getValue())
                 props.onContentSave();
             }
         }
 
-        dispatch(addAppEventListener({ eventName: 'onSave', callback: onSave }));
+        dispatch(addAppEventListener({ eventName: 'onSaveAll', callback: onSaveAll }));
 
         return () => {
-            dispatch(removeAppEventListener({ eventName: 'onSave', callback: onSave }));
+            dispatch(removeAppEventListener({ eventName: 'onSaveAll', callback: onSaveAll }));
         };
     });
 

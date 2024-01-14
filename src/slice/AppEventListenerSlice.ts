@@ -1,24 +1,42 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-export type EventName = "onSave" | "onCloseDirectory";
+export type WildeEvent = {};
 
-type Listener = () => void;
+// ---------------
 
-type Listeners = Record<EventName, Listener[]>;
+//#region Events definitions
+export interface OnSaveEvent extends WildeEvent { }
+export interface OnCloseDirectoryEvent extends WildeEvent { }
+//#endregion
 
-const initialState: Listeners = {
-    onSave: [],
-    onCloseDirectory: []
+type StateDefinition = {
+    onSaveAll: OnSaveEvent,
+    onCloseDirectory: OnCloseDirectoryEvent
+}
+
+// ---------------
+
+export type EventName = keyof StateDefinition;
+
+type EventCallback<K extends keyof StateDefinition = EventName> = { eventName: K, callback: (event: StateDefinition[K]) => void };
+
+type State = {
+    [K in keyof StateDefinition]: Array<(event: StateDefinition[K]) => void>;
+};
+
+const initialState: State = {
+    onCloseDirectory: [],
+    onSaveAll: []
 };
 
 export const eventListenerSlice = createSlice({
     name: 'appEventListener',
     initialState,
     reducers: {
-        addAppEventListener: (state, action: PayloadAction<{ eventName: EventName, callback: Listener }>) => {
+        addAppEventListener: (state, action: PayloadAction<EventCallback>) => {
             state[action.payload.eventName].push(action.payload.callback);
         },
-        removeAppEventListener: (state, action: PayloadAction<{ eventName: EventName, callback: Listener }>) => {
+        removeAppEventListener: (state, action: PayloadAction<EventCallback>) => {
             const callbacks = state[action.payload.eventName];
 
             if (callbacks) {
@@ -35,6 +53,6 @@ export const eventListenerSlice = createSlice({
     }
 });
 
-export const { addAppEventListener: addEventListener, removeAppEventListener: removeEventListener } = eventListenerSlice.actions
+export const { addAppEventListener, removeAppEventListener } = eventListenerSlice.actions
 
 export const eventListenerReducer = eventListenerSlice.reducer;
