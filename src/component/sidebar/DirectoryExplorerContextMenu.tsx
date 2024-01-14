@@ -1,15 +1,14 @@
-import React, { FunctionComponent } from "react";
 import { Menu, MenuItem } from "@mui/material";
-import { useWilde } from "../../hook/WildeHook";
+import { FunctionComponent } from "react";
 import { FileHandleInfo } from "../../entity/FileHandleInfo";
+import { useWilde } from "../../hook/WildeHook";
 
 export const DirectoryExplorerContextMenu: FunctionComponent<DirectoryExplorerContextMenuProps> = props => {
     const {
         onClose,
         open,
-        selectedTreeItemKind,
+        selectedFileHandleInfo,
         position,
-        selectedTreeItem
     } = props;
     const wilde = useWilde();
 
@@ -21,25 +20,25 @@ export const DirectoryExplorerContextMenu: FunctionComponent<DirectoryExplorerCo
                 ? { top: position.mouseY, left: position.mouseX }
                 : undefined
         }>
-        {selectedTreeItemKind === 'directory' &&
+        {selectedFileHandleInfo.handle.kind === 'directory' &&
             <MenuItem onClick={() => {
                 onClose();
-                wilde.newFile(selectedTreeItem);
+                wilde.newFile(selectedFileHandleInfo);
             }}>
                 New File...
             </MenuItem>}
 
-        {selectedTreeItemKind === 'directory' &&
+        {selectedFileHandleInfo.handle.kind === 'directory' &&
             <MenuItem onClick={() => {
                 onClose();
-                wilde.newDirectory(selectedTreeItem);
+                wilde.newDirectory(selectedFileHandleInfo);
             }}>
                 New folder...
             </MenuItem>}
 
         <MenuItem onClick={() => {
             onClose();
-            wilde.deleteFile(selectedTreeItem)
+            wilde.deleteFile(selectedFileHandleInfo)
         }}>
             Delete
         </MenuItem>
@@ -53,6 +52,5 @@ export interface DirectoryExplorerContextMenuProps {
         mouseY: number;
     } | null;
     onClose: () => void;
-    selectedTreeItemKind?: 'directory' | 'file';
-    selectedTreeItem: FileHandleInfo;
+    selectedFileHandleInfo: FileHandleInfo;
 }

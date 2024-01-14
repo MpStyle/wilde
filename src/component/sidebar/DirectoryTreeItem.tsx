@@ -5,28 +5,22 @@ import { TreeNode } from "./entity/TreeNode";
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { FileIcon } from "../common/file-icon/FileIcon";
-import { useDirectoryExplorerActions } from "./DirectoryExplorerContext";
 import { PathUtils } from "../../book/PathUtils";
+import { FileHandleInfo } from "../../entity/FileHandleInfo";
 
 export const DirectoryTreeItem = memo((props: SpeedTreeItemProps) => {
     const node = props.data.flattenedData[props.index];
     const left = node.depth * 20;
-    const actions = useDirectoryExplorerActions();
-    const isSelected = props.data.selectedTreeItem === PathUtils.combine(node.path, node.handle.name);
+    const isSelected = props.data.selectedFileHandleInfo?.path === PathUtils.combine(node.path, node.handle.name);
     const theme = useTheme();
 
     return <Box style={props.style}
         onClick={() => {
             props.data.onOpen(node);
-
-            const path = PathUtils.combine(node.path, node.handle.name);
-            props.data.setSelectedTreeItem(path);
+            props.data.setSelectedFileHandleInfo(node);
         }}
         onContextMenu={e => {
-            const path = PathUtils.combine(node.path, node.handle.name);
-            props.data.setSelectedTreeItem(path);
-
-            actions.openContextMenu(e, {
+            props.data.openContextMenu(e, {
                 path: PathUtils.combine(node.path, node.handle.name),
                 handle: node.handle
             });
@@ -74,8 +68,9 @@ export const DirectoryTreeItem = memo((props: SpeedTreeItemProps) => {
 interface RowPropsData {
     onOpen: (node: TreeNode) => void;
     flattenedData: TreeNode[];
-    selectedTreeItem: string | undefined;
-    setSelectedTreeItem: (treeItemPath: string) => void;
+    selectedFileHandleInfo: FileHandleInfo | undefined;
+    setSelectedFileHandleInfo: (fileHandleInfo: FileHandleInfo) => void;
+    openContextMenu: (event: React.MouseEvent, options: FileHandleInfo) => void;
 }
 
 interface SpeedTreeItemProps {

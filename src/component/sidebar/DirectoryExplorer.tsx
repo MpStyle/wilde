@@ -9,11 +9,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { useWilde } from '../../hook/WildeHook';
 import { refreshProjectDirectory } from "../../slice/ProjectDirectorySlice";
 import { AppDispatch, AppState } from "../../store/AppStore";
-import { DirectoryExplorerProvider, useDirectoryExplorerActions } from "./DirectoryExplorerContext";
 import { DirectoryTree } from "./DirectoryTree";
 import { EmptyDirectoryExplorer } from "./EmptyDirectoryExplorer";
 
-export const DirectoryExplorer: FunctionComponent<ProjectExplorerProps> = () => {
+export const DirectoryExplorer: FunctionComponent = () => {
     const [openedNodeIds, setOpenedNodeIds] = useState<string[]>([]);
     const rootDirectory = useSelector((appState: AppState) => appState.projectFolder.rootDirectory);
     const wilde = useWilde();
@@ -39,8 +38,6 @@ export const DirectoryExplorer: FunctionComponent<ProjectExplorerProps> = () => 
     }
 
     const ActionsBar: FunctionComponent = () => {
-        const actions = useDirectoryExplorerActions();
-
         return <ButtonGroup variant="text"
             aria-label="project explorer actions"
             size="small">
@@ -80,7 +77,7 @@ export const DirectoryExplorer: FunctionComponent<ProjectExplorerProps> = () => 
         </ButtonGroup>;
     };
 
-    return <DirectoryExplorerProvider>
+    return <Fragment>
         <Box sx={{ pl: 0.5, pr: 0.5, height: topBarHeight, display: 'flex', alignItems: 'center' }}>
             <Typography title={`Explorer: ${rootDirectory.name}`}
                 sx={{ flex: 1, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
@@ -93,8 +90,5 @@ export const DirectoryExplorer: FunctionComponent<ProjectExplorerProps> = () => 
         <Box sx={{ height: `calc(100% - ${topBarHeight})`, borderTop: `1px solid ${theme.palette.text.disabled}` }}>
             {rootDirectory && <DirectoryTree setOpenedNodeIds={setOpenedNodeIds} openedNodeIds={openedNodeIds} />}
         </Box>
-    </DirectoryExplorerProvider>
-}
-
-export interface ProjectExplorerProps {
+    </Fragment>
 }
