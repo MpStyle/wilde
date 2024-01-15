@@ -46,9 +46,11 @@ export const openEditorsSlice = createSlice({
                 return;
             }
 
+            const updateCurrentEditor = state.currentEditor?.path === action.payload.path;
+
             state.openEditors.splice(editorIndex, 1);
 
-            if (state.openEditors.length) {
+            if (updateCurrentEditor && state.openEditors.length > 0) {
                 state.currentEditor = state.openEditors[0];
             }
         },

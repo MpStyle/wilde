@@ -44,7 +44,7 @@ export const EditorTabLabel: FunctionComponent<EditorTabLabelProps> = props => {
         </Typography>}
         <IconButton component="span"
             sx={{ ml: 1 }}
-            onClick={() => {
+            onClick={e => {
                 if (!props.editor.handle) {
                     return;
                 }
@@ -53,6 +53,8 @@ export const EditorTabLabel: FunctionComponent<EditorTabLabelProps> = props => {
                     path: props.editor.path,
                     handle: props.editor.handle
                 }));
+
+                e.stopPropagation();
             }}>
             <CloseIcon />
         </IconButton>

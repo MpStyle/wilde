@@ -49,9 +49,8 @@ export const EditorGroups: FunctionComponent = () => {
             return false;
         }
 
-        return PathUtils.combine(editor.path, editor.handle.name) === PathUtils.combine(editors.currentEditor.path, editors.currentEditor.handle.name);
+        return PathUtils.combine(editor.path) === PathUtils.combine(editors.currentEditor.path);
     }
-
 
     return <Box sx={{
         flexGrow: 1,
