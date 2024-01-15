@@ -1,4 +1,5 @@
 export const PathUtils = {
+    rootPath: '.',
     separator: '/',
     isValid: (...parts: string[]): boolean => {
         const invalidPathChars = PathUtils.getInvalidPathChars();
