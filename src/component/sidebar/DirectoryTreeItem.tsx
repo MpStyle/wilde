@@ -1,29 +1,35 @@
-import React, { CSSProperties, memo } from "react";
-import { Box, Typography, useTheme } from "@mui/material";
-import { areEqual } from "react-window";
-import { TreeNode } from "./entity/TreeNode";
-import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import { FileIcon } from "../common/file-icon/FileIcon";
+import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
+import { Box, Typography, useTheme } from "@mui/material";
+import React, { CSSProperties, memo } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { areEqual } from "react-window";
 import { PathUtils } from "../../book/PathUtils";
-import { FileHandleInfo } from "../../entity/FileHandleInfo";
+import { setSelectedProjectFile } from "../../slice/ProjectDirectorySlice";
+import { AppState } from "../../store/AppStore";
+import { FileIcon } from "../common/file-icon/FileIcon";
+import { TreeNode } from "./entity/TreeNode";
 
 export const DirectoryTreeItem = memo((props: SpeedTreeItemProps) => {
+    const selectedProjectFile = useSelector((appState: AppState) => appState.projectFolder.selectedProjectFile);
+    const theme = useTheme();
+    const dispatch = useDispatch();
     const node = props.data.flattenedData[props.index];
     const left = node.depth * 20;
-    const isSelected = props.data.selectedFileHandleInfo?.path === PathUtils.combine(node.path, node.handle.name);
-    const theme = useTheme();
+    const isSelected = selectedProjectFile?.path === PathUtils.combine(node.path, node.handle.name);
+    const treeNodeToFileHandleInfo = (treeNode: TreeNode) => ({
+        path: PathUtils.combine(treeNode.path, treeNode.handle.name),
+        handle: treeNode.handle
+    })
 
     return <Box style={props.style}
-        onClick={() => {
+        onClick={(e) => {
             props.data.onOpen(node);
-            props.data.setSelectedFileHandleInfo(node);
+            dispatch(setSelectedProjectFile(treeNodeToFileHandleInfo(node)));
         }}
         onContextMenu={e => {
-            props.data.openContextMenu(e, {
-                path: PathUtils.combine(node.path, node.handle.name),
-                handle: node.handle
-            });
+            props.data.openContextMenu(e);
+            dispatch(setSelectedProjectFile(treeNodeToFileHandleInfo(node)));
         }}
         sx={{
             display: 'flex',
@@ -68,9 +74,7 @@ export const DirectoryTreeItem = memo((props: SpeedTreeItemProps) => {
 interface RowPropsData {
     onOpen: (node: TreeNode) => void;
     flattenedData: TreeNode[];
-    selectedFileHandleInfo: FileHandleInfo | undefined;
-    setSelectedFileHandleInfo: (fileHandleInfo: FileHandleInfo) => void;
-    openContextMenu: (event: React.MouseEvent, options: FileHandleInfo) => void;
+    openContextMenu: (event: React.MouseEvent) => void;
 }
 
 interface SpeedTreeItemProps {

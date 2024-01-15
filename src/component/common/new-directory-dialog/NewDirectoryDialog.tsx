@@ -1,15 +1,14 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material";
-import React, { FunctionComponent, useEffect, useState } from "react";
-import { scanProjectDirectory } from "../../../slice/ProjectDirectorySlice";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "../../../store/AppStore";
+import { FunctionComponent, useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { DirectoryUtils } from "../../../book/DirectoryUtils";
-import { OnNewDirectoryEvent, useWilde } from "../../../hook/WildeHook";
-import { FileHandleInfo } from "../../../entity/FileHandleInfo";
+import { useWilde } from "../../../hook/WildeHook";
+import { scanProjectDirectory } from "../../../slice/ProjectDirectorySlice";
+import { AppDispatch, AppState } from "../../../store/AppStore";
 
 export const NewDirectoryDialog: FunctionComponent = () => {
+    const parentFileHandleInfo = useSelector((appState: AppState) => appState.projectFolder.selectedProjectFile);
     const [newDirectoryName, setNewDirectoryName] = useState<string>('');
-    const [parentFileHandleInfo, setParentFileHandleInfo] = useState<FileHandleInfo | null>(null);
     const [open, setOpen] = useState<boolean>(false);
     const [alreadyExists, setAlreadyExists] = useState<boolean>(false);
     const dispatch = useDispatch<AppDispatch>();
@@ -17,9 +16,8 @@ export const NewDirectoryDialog: FunctionComponent = () => {
 
     // onNewDirectory event listener
     useEffect(() => {
-        const onNewDirectory = (event: OnNewDirectoryEvent) => {
+        const onNewDirectory = () => {
             setOpen(true);
-            setParentFileHandleInfo(event.parentFileHandleInfo);
         }
 
         wilde.addEventListener('onNewDirectory', onNewDirectory);

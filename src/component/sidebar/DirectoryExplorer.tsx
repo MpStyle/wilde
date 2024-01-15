@@ -1,38 +1,32 @@
-import React, { Fragment, FunctionComponent, useState } from 'react';
-import { FixedSizeList as List } from 'react-window';
-import AutoSizer from 'react-virtualized-auto-sizer';
 import memoizeOne from 'memoize-one';
+import React, { Fragment, FunctionComponent } from 'react';
 import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, AppState } from "../../store/AppStore";
-import { scanProjectDirectory } from "../../slice/ProjectDirectorySlice";
-import { openEditor } from "../../slice/OpenEditorsSlice";
-import { FileSystemHandle } from "../../entity/FileSystemHandle";
-import { TreeNode } from "./entity/TreeNode";
-import { DirectoryTreeItem } from "./DirectoryTreeItem";
+import AutoSizer from 'react-virtualized-auto-sizer';
+import { FixedSizeList as List } from 'react-window';
 import { FileSorter } from "../../book/FileSorter";
 import { PathUtils } from "../../book/PathUtils";
+import { FileSystemHandle } from "../../entity/FileSystemHandle";
+import { openEditor } from "../../slice/OpenEditorsSlice";
+import { scanProjectDirectory, setSelectedProjectFile } from "../../slice/ProjectDirectorySlice";
+import { AppDispatch, AppState } from "../../store/AppStore";
 import { DirectoryExplorerContextMenu } from './DirectoryExplorerContextMenu';
-import { FileHandleInfo } from '../../entity/FileHandleInfo';
+import { DirectoryTreeItem } from "./DirectoryTreeItem";
+import { TreeNode } from "./entity/TreeNode";
 
 const getItemData = memoizeOne(
     (
         onOpen: (node: TreeNode) => void,
         flattenedData: TreeNode[],
-        selectedFileHandleInfo: FileHandleInfo | undefined,
-        setSelectedFileHandleInfo: (fileHandleInfo: FileHandleInfo | undefined) => void,
-        openContextMenu: (event: React.MouseEvent, options: FileHandleInfo) => void
+        openContextMenu: (event: React.MouseEvent) => void
     ) => ({
         onOpen,
         flattenedData,
-        selectedFileHandleInfo,
-        setSelectedFileHandleInfo,
         openContextMenu
     }));
 
 export const DirectoryExplorer: FunctionComponent<SpeedTreeProps> = props => {
     const rootDirectory = useSelector((appState: AppState) => appState.projectFolder.rootDirectory);
     const directoryStructure = useSelector((appState: AppState) => appState.projectFolder.directoryStructure);
-    const [selectedFileHandleInfo, setSelectedFileHandleInfo] = useState<FileHandleInfo | undefined>(undefined);
     const dispatch = useDispatch<AppDispatch>();
     const [contextMenu, setContextMenu] = React.useState<{
         mouseX: number;
@@ -87,20 +81,26 @@ export const DirectoryExplorer: FunctionComponent<SpeedTreeProps> = props => {
         }
     };
 
-    const openContextMenu = (event: React.MouseEvent, options: FileHandleInfo) => {
+    const openContextMenu = (event: React.MouseEvent) => {
         event.preventDefault();
-        setSelectedFileHandleInfo(options);
         setContextMenu(contextMenu === null ? { mouseX: event.clientX + 2, mouseY: event.clientY - 6, } : null);
     };
 
-    const flattenedData = toFlat(directoryStructure["."].content, 0, ".");
-    const itemData = getItemData(onOpen, flattenedData, selectedFileHandleInfo, setSelectedFileHandleInfo, openContextMenu);
+    const flattenedData = toFlat(directoryStructure[PathUtils.rootPath].content, 0, PathUtils.rootPath);
+    const itemData = getItemData(onOpen, flattenedData, openContextMenu);
+    const fixedListClass = "fixed-list";
 
     return <Fragment>
-        <AutoSizer>
+        <AutoSizer id='DirectoryExplorer' onClick={(event) => {
+            const classList = (event.target as any).classList;
+            if (Array.from(classList).includes(fixedListClass)) {
+                dispatch(setSelectedProjectFile({ path: PathUtils.rootPath, handle: rootDirectory }));
+            }
+        }}>
             {({ height, width }: { height: string | number, width: string | number }) =>
                 <List height={height}
                     width={width}
+                    className={fixedListClass}
                     itemCount={flattenedData.length}
                     itemSize={28}
                     itemKey={index => PathUtils.combine(flattenedData[index].path, (flattenedData[index].handle?.name ?? 'loading...'))}
@@ -109,9 +109,8 @@ export const DirectoryExplorer: FunctionComponent<SpeedTreeProps> = props => {
                 </List>}
         </AutoSizer>
 
-        {(contextMenu && selectedFileHandleInfo) && <DirectoryExplorerContextMenu open={isContextMenuOpen}
+        {Boolean(contextMenu) && <DirectoryExplorerContextMenu open={isContextMenuOpen}
             position={contextMenu}
-            selectedFileHandleInfo={selectedFileHandleInfo}
             onClose={() => setContextMenu(null)} />}
     </Fragment>;
 };

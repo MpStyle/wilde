@@ -1,29 +1,16 @@
-import { FileHandleInfo } from "../entity/FileHandleInfo";
-
 export type WildeEvent = {};
 
 // ---------------
 
 //#region Events definitions
-export interface OnNewDirectoryEvent extends WildeEvent {
-    parentFileHandleInfo: FileHandleInfo;
-}
-
-export interface OnNewFileEvent extends WildeEvent {
-    parentFileHandleInfo: FileHandleInfo;
-}
-
-export interface OnDeleteFileEvent extends WildeEvent {
-    fileHandleInfo: FileHandleInfo;
-}
 //#endregion
 
 type AppEventMap = {
     onSaveAll: WildeEvent,
     onCloseDirectory: WildeEvent,
-    onNewDirectory: OnNewDirectoryEvent,
-    onNewFile: OnNewFileEvent,
-    onDeleteFile: OnDeleteFileEvent,
+    onNewDirectory: WildeEvent,
+    onNewFile: WildeEvent,
+    onDeleteFile: WildeEvent,
 }
 
 // ---------------
@@ -70,9 +57,9 @@ export const useWilde = () => {
     return {
         closeDirectory: () => emitEvent('onCloseDirectory', {}),
         saveAll: () => emitEvent('onSaveAll', {}),
-        newDirectory: (parentFileHandleInfo: FileHandleInfo) => emitEvent('onNewDirectory', { parentFileHandleInfo }),
-        newFile: (parentFileHandleInfo: FileHandleInfo) => emitEvent('onNewFile', { parentFileHandleInfo }),
-        deleteFile: (fileHandleInfo: FileHandleInfo) => emitEvent('onDeleteFile', { fileHandleInfo }),
+        newDirectory: () => emitEvent('onNewDirectory', {}),
+        newFile: () => emitEvent('onNewFile', {}),
+        deleteFile: () => emitEvent('onDeleteFile', {}),
         addEventListener,
         removeEventListener
     }

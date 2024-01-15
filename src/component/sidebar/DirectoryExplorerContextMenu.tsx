@@ -1,16 +1,21 @@
 import { Menu, MenuItem } from "@mui/material";
 import { FunctionComponent } from "react";
-import { FileHandleInfo } from "../../entity/FileHandleInfo";
+import { useSelector } from "react-redux";
 import { useWilde } from "../../hook/WildeHook";
+import { AppState } from "../../store/AppStore";
 
 export const DirectoryExplorerContextMenu: FunctionComponent<DirectoryExplorerContextMenuProps> = props => {
+    const selectedProjectFile = useSelector((appState: AppState) => appState.projectFolder.selectedProjectFile);
     const {
         onClose,
         open,
-        selectedFileHandleInfo,
         position,
     } = props;
     const wilde = useWilde();
+
+    if (!selectedProjectFile) {
+        return null;
+    }
 
     return <Menu open={open}
         onClose={onClose}
@@ -20,25 +25,25 @@ export const DirectoryExplorerContextMenu: FunctionComponent<DirectoryExplorerCo
                 ? { top: position.mouseY, left: position.mouseX }
                 : undefined
         }>
-        {selectedFileHandleInfo.handle.kind === 'directory' &&
+        {selectedProjectFile.handle.kind === 'directory' &&
             <MenuItem onClick={() => {
                 onClose();
-                wilde.newFile(selectedFileHandleInfo);
+                wilde.newFile();
             }}>
                 New File...
             </MenuItem>}
 
-        {selectedFileHandleInfo.handle.kind === 'directory' &&
+        {selectedProjectFile.handle.kind === 'directory' &&
             <MenuItem onClick={() => {
                 onClose();
-                wilde.newDirectory(selectedFileHandleInfo);
+                wilde.newDirectory();
             }}>
                 New folder...
             </MenuItem>}
 
         <MenuItem onClick={() => {
             onClose();
-            wilde.deleteFile(selectedFileHandleInfo)
+            wilde.deleteFile()
         }}>
             Delete
         </MenuItem>
@@ -52,5 +57,4 @@ export interface DirectoryExplorerContextMenuProps {
         mouseY: number;
     } | null;
     onClose: () => void;
-    selectedFileHandleInfo: FileHandleInfo;
 }

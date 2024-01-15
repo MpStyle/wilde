@@ -1,15 +1,14 @@
-import React, { FunctionComponent, useEffect, useState } from "react";
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material";
-import { scanProjectDirectory } from "../../../slice/ProjectDirectorySlice";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "../../../store/AppStore";
+import { FunctionComponent, useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { FileUtils } from "../../../book/FileUtils";
-import { OnNewFileEvent, useWilde } from "../../../hook/WildeHook";
-import { FileHandleInfo } from "../../../entity/FileHandleInfo";
+import { useWilde } from "../../../hook/WildeHook";
+import { scanProjectDirectory } from "../../../slice/ProjectDirectorySlice";
+import { AppDispatch, AppState } from "../../../store/AppStore";
 
 export const NewFileDialog: FunctionComponent = () => {
+    const parentFileHandleInfo = useSelector((appState: AppState) => appState.projectFolder.selectedProjectFile);
     const [newFileName, setNewFileName] = useState<string>('');
-    const [parentFileHandleInfo, setParentFileHandleInfo] = useState<FileHandleInfo | null>(null);
     const [alreadyExists, setAlreadyExists] = useState<boolean>(false);
     const [open, setOpen] = useState<boolean>(false);
     const dispatch = useDispatch<AppDispatch>();
@@ -17,9 +16,8 @@ export const NewFileDialog: FunctionComponent = () => {
 
     // onNewFile event listener
     useEffect(() => {
-        const onNewFile = (event: OnNewFileEvent) => {
+        const onNewFile = () => {
             setOpen(true);
-            setParentFileHandleInfo(event.parentFileHandleInfo);
         }
 
         wilde.addEventListener('onNewFile', onNewFile);

@@ -1,10 +1,10 @@
 import { Box, Typography, useTheme } from "@mui/material";
 import { FunctionComponent, useState } from 'react';
-import { DirectoryExplorer } from './DirectoryExplorer';
 import { useSelector } from "react-redux";
 import { AppState } from "../../store/AppStore";
-import { EmptyDirectoryExplorer } from "./EmptySidebar";
 import { ActionsBar } from "./ActionsBar";
+import { DirectoryExplorer } from './DirectoryExplorer';
+import { EmptyDirectoryExplorer } from "./EmptySidebar";
 
 export const topBarHeight = '48px';
 

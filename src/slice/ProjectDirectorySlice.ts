@@ -1,5 +1,6 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { PathUtils } from "../book/PathUtils";
+import { FileHandleInfo } from '../entity/FileHandleInfo';
 
 type DirectoryStructure = {
     [path: string]: {
@@ -9,11 +10,13 @@ type DirectoryStructure = {
 };
 
 export interface ProjectFolderState {
+    selectedProjectFile: FileHandleInfo | undefined;
     directoryStructure: DirectoryStructure;
     rootDirectory: FileSystemDirectoryHandle | undefined;
 }
 
 const initialState: ProjectFolderState = {
+    selectedProjectFile: undefined,
     directoryStructure: {},
     rootDirectory: undefined,
 }
@@ -38,7 +41,7 @@ export const scanProjectDirectory = createAsyncThunk(
 export const openProjectDirectory = createAsyncThunk(
     'projectDirectory/openProjectDirectory',
     async (dirHandle: FileSystemDirectoryHandle) => {
-        const scanResult = await scanDirectory(".", dirHandle);
+        const scanResult = await scanDirectory(PathUtils.rootPath, dirHandle);
         return { ...scanResult, root: dirHandle };
     }
 )
@@ -68,7 +71,7 @@ export const refreshProjectDirectory = createAsyncThunk(
             return result;
         }
 
-        return directoryStructureBuilder(".", args.rootHandle);
+        return directoryStructureBuilder(PathUtils.rootPath, args.rootHandle);
     }
 )
 
@@ -79,6 +82,9 @@ export const projectDirectorySlice = createSlice({
         closeProjectDirectory: (state) => {
             state.directoryStructure = {};
             state.rootDirectory = undefined;
+        },
+        setSelectedProjectFile: (state, action: PayloadAction<FileHandleInfo>) => {
+            state.selectedProjectFile = action.payload;
         }
     },
     extraReducers: (builder) => {
@@ -95,6 +101,10 @@ export const projectDirectorySlice = createSlice({
                     handle: action.payload.handle
                 };
                 state.rootDirectory = action.payload.root;
+                state.selectedProjectFile = {
+                    handle: action.payload.root,
+                    path: '.'
+                };
             })
             .addCase(refreshProjectDirectory.fulfilled, (state, action) => {
                 state.directoryStructure = action.payload;
@@ -102,6 +112,6 @@ export const projectDirectorySlice = createSlice({
     }
 })
 
-export const { closeProjectDirectory } = projectDirectorySlice.actions
+export const { closeProjectDirectory, setSelectedProjectFile } = projectDirectorySlice.actions
 
 export const projectFolderReducer = projectDirectorySlice.reducer;
