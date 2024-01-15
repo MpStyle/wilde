@@ -77,7 +77,7 @@ export const EditorGroups: FunctionComponent = () => {
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat'
     }}>
-        <Tabs value={editors.openEditors.findIndex(oe => isCurrentEditor(oe))}
+        {Boolean(editors.openEditors.length) && <Tabs value={editors.openEditors.findIndex(oe => isCurrentEditor(oe))}
             onChange={handleChange}
             variant="scrollable"
             aria-label="Open editors"
@@ -101,7 +101,7 @@ export const EditorGroups: FunctionComponent = () => {
                         showPathInTab={showPathInTab}
                         isSelected={isCurrentEditor(editor)} />} />;
             })}
-        </Tabs>
+        </Tabs>}
         {editors.openEditors.map((editor, i) => {
             if (!editor) {
                 return null;
