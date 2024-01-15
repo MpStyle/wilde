@@ -1,4 +1,4 @@
-import { Box, useTheme } from "@mui/material";
+import { Box, Stack, useTheme } from "@mui/material";
 import { FunctionComponent, useEffect } from 'react';
 import { Sidebar } from "./sidebar/Sidebar";
 import { StatusBar } from "./status-bar/StatusBar";
@@ -26,13 +26,17 @@ export const App: FunctionComponent = () => {
         }
     }, []);
 
-    return <Box id="App"
+    return <Stack direction="column"
+        id="App"
         sx={{
             height: '100%',
-            overflow: 'hidden'
+            overflow: 'hidden',
+            '& > :last-child': {
+                borderTop: `1px solid ${theme.palette.text.disabled}`
+            },
         }}>
-        <Box sx={{
-            display: 'flex',
+
+        <Stack direction="row" sx={{
             height: `calc(100% - ${statusBarHeight})`,
             overflowX: 'hidden',
             '& > :first-child': {
@@ -41,14 +45,8 @@ export const App: FunctionComponent = () => {
         }}>
             <Sidebar />
             <EditorGroups />
-        </Box>
-        <Box sx={{
-            height: statusBarHeight,
-            pl: '1em',
-            pr: '1em',
-            borderTop: `1px solid ${theme.palette.text.disabled}`
-        }}>
-            <StatusBar />
-        </Box>
-    </Box>;
+        </Stack>
+
+        <StatusBar />
+    </Stack>;
 }
