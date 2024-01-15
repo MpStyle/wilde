@@ -103,7 +103,7 @@ export const projectDirectorySlice = createSlice({
                 state.rootDirectory = action.payload.root;
                 state.selectedProjectFile = {
                     handle: action.payload.root,
-                    path: '.'
+                    path: PathUtils.rootPath
                 };
             })
             .addCase(refreshProjectDirectory.fulfilled, (state, action) => {
