@@ -2,7 +2,6 @@ import { Stack, useTheme } from "@mui/material";
 import { FunctionComponent, useEffect } from 'react';
 import { useSelector } from "react-redux";
 import { AppState } from "../store/AppStore";
-import { ActivityBar } from "./activity-bar/ActivityBar";
 import { EditorGroups } from "./editor-groups/EditorGroups";
 import { Sidebar } from "./sidebar/Sidebar";
 import { StatusBar } from "./status-bar/StatusBar";
@@ -44,7 +43,6 @@ export const App: FunctionComponent = () => {
             height: `calc(100% - ${statusBarHeight})`,
             overflowX: 'hidden',
         }}>
-            {false && <ActivityBar />}
             <Sidebar />
             <EditorGroups />
         </Stack>
