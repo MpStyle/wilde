@@ -6,6 +6,7 @@ import { AppState } from "../../store/AppStore";
 
 export const DirectoryExplorerContextMenu: FunctionComponent<DirectoryExplorerContextMenuProps> = props => {
     const selectedProjectFile = useSelector((appState: AppState) => appState.projectFolder.selectedProjectFile);
+    const rootDirectory = useSelector((appState: AppState) => appState.projectFolder.rootDirectory);
     const {
         onClose,
         open,
@@ -41,12 +42,13 @@ export const DirectoryExplorerContextMenu: FunctionComponent<DirectoryExplorerCo
                 New folder...
             </MenuItem>}
 
-        <MenuItem onClick={() => {
-            onClose();
-            wilde.deleteFile()
-        }}>
-            Delete
-        </MenuItem>
+        {selectedProjectFile.handle !== rootDirectory &&
+            <MenuItem onClick={() => {
+                onClose();
+                wilde.deleteFile()
+            }}>
+                Delete
+            </MenuItem>}
     </Menu>
 }
 
