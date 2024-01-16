@@ -8,6 +8,7 @@ import { AppDispatch, AppState } from "../../../store/AppStore";
 
 export const NewDirectoryDialog: FunctionComponent = () => {
     const parentFileHandleInfo = useSelector((appState: AppState) => appState.projectFolder.selectedProjectFile);
+    const directoryStructure = useSelector((appState: AppState) => appState.projectFolder.directoryStructure);
     const [newDirectoryName, setNewDirectoryName] = useState<string>('');
     const [open, setOpen] = useState<boolean>(false);
     const [alreadyExists, setAlreadyExists] = useState<boolean>(false);
@@ -31,8 +32,11 @@ export const NewDirectoryDialog: FunctionComponent = () => {
         return null;
     }
 
+    const parentPath = parentFileHandleInfo.handle.kind === 'directory' ? parentFileHandleInfo.path : DirectoryUtils.getParent(parentFileHandleInfo.path);
+    const parentDirectoryHandle = (parentFileHandleInfo.handle.kind === 'directory' ? parentFileHandleInfo.handle : directoryStructure[parentPath].handle) as FileSystemDirectoryHandle;
+
     const directoryAlreadyExists = async (newName: string) => {
-        const result = await (DirectoryUtils.exists(parentFileHandleInfo.handle as FileSystemDirectoryHandle, newName)) && newName !== parentFileHandleInfo.handle.name;
+        const result = await (DirectoryUtils.exists(parentDirectoryHandle, newName)) && newName !== parentDirectoryHandle.name;
         setAlreadyExists(result);
     }
 
@@ -44,17 +48,11 @@ export const NewDirectoryDialog: FunctionComponent = () => {
         setNewDirectoryName('');
         onClose();
 
-        if (parentFileHandleInfo.handle.kind !== 'directory') {
-            return;
-        }
-
-        const directoryHandle = parentFileHandleInfo.handle as FileSystemDirectoryHandle;
-
-        directoryHandle.getDirectoryHandle(newDirectoryName, { create: true })
+        parentDirectoryHandle.getDirectoryHandle(newDirectoryName, { create: true })
             .then(_ => {
                 dispatch(scanProjectDirectory({
-                    path: parentFileHandleInfo.path,
-                    dirHandle: directoryHandle
+                    path: parentPath,
+                    dirHandle: parentDirectoryHandle
                 }));
 
                 setNewDirectoryName('');
