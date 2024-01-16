@@ -5,7 +5,6 @@ import AutoSizer from 'react-virtualized-auto-sizer';
 import { FixedSizeList as List } from 'react-window';
 import { FileSorter } from "../../book/FileSorter";
 import { PathUtils } from "../../book/PathUtils";
-import { FileSystemHandle } from "../../entity/FileSystemHandle";
 import { openEditor } from "../../slice/OpenEditorsSlice";
 import { scanProjectDirectory, setSelectedProjectFile } from "../../slice/ProjectDirectorySlice";
 import { AppDispatch, AppState } from "../../store/AppStore";
@@ -39,7 +38,7 @@ export const DirectoryExplorer: FunctionComponent<SpeedTreeProps> = props => {
 
     const isContextMenuOpen = contextMenu !== null;
 
-    const toFlat = (items: FileSystemHandle[], depth: number, path: string): TreeNode[] => {
+    const toFlat = (items: FileSystemHandleUnion[], depth: number, path: string): TreeNode[] => {
         const result: TreeNode[] = [];
         const sortedItems = [...items].sort(FileSorter.byTypeByName);
 
@@ -63,6 +62,14 @@ export const DirectoryExplorer: FunctionComponent<SpeedTreeProps> = props => {
     }
 
     const onOpen = (node: TreeNode) => {
+        if (node.handle === rootDirectory) {
+            if (node.collapsed) {
+                return props.setOpenedNodeIds([...props.openedNodeIds, rootDirectory.name]);
+            } else {
+                return props.setOpenedNodeIds(props.openedNodeIds.filter(id => id !== rootDirectory.name));
+            }
+        }
+
         const nodePath = PathUtils.combine(node.path, node.handle.name);
 
         if (node.handle.kind === 'file') {
@@ -86,24 +93,36 @@ export const DirectoryExplorer: FunctionComponent<SpeedTreeProps> = props => {
         setContextMenu(contextMenu === null ? { mouseX: event.clientX + 2, mouseY: event.clientY - 6, } : null);
     };
 
-    const flattenedData = toFlat(directoryStructure[PathUtils.rootPath].content, 0, PathUtils.rootPath);
+    const flattenedData = toFlat(directoryStructure[PathUtils.rootPath].content, 1, PathUtils.rootPath);
+    flattenedData.unshift({
+        handle: rootDirectory,
+        collapsed: false,
+        depth: 0,
+        hasChildren: rootDirectory.kind === 'directory',
+        path: PathUtils.rootPath
+    });
+
     const itemData = getItemData(onOpen, flattenedData, openContextMenu);
     const fixedListClass = "fixed-list";
 
     return <Fragment>
-        <AutoSizer id='DirectoryExplorer' onClick={(event) => {
-            const classList = (event.target as any).classList;
-            if (Array.from(classList).includes(fixedListClass)) {
-                dispatch(setSelectedProjectFile({ path: PathUtils.rootPath, handle: rootDirectory }));
-            }
-        }}>
+        <AutoSizer id='DirectoryExplorer'
+            onClick={(event) => {
+                const classList = (event.target as any).classList;
+                if (Array.from(classList).includes(fixedListClass)) {
+                    dispatch(setSelectedProjectFile({ path: PathUtils.rootPath, handle: rootDirectory }));
+                }
+            }}>
             {({ height, width }: { height: string | number, width: string | number }) =>
                 <List height={height}
                     width={width}
                     className={fixedListClass}
                     itemCount={flattenedData.length}
                     itemSize={28}
-                    itemKey={index => PathUtils.combine(flattenedData[index].path, (flattenedData[index].handle?.name ?? 'loading...'))}
+                    itemKey={index =>
+                        index === 0 ?
+                            rootDirectory.name :
+                            (PathUtils.combine(flattenedData[index].path, (flattenedData[index].handle?.name ?? 'loading...')))}
                     itemData={itemData}>
                     {DirectoryTreeItem}
                 </List>}

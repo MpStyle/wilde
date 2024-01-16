@@ -1,8 +1,8 @@
-import {FunctionComponent} from "react";
-import {Box, Button, Typography} from "@mui/material";
-import {closeProjectDirectory, openProjectDirectory} from "../../slice/ProjectDirectorySlice";
-import {useDispatch} from "react-redux";
-import {AppDispatch} from "../../store/AppStore";
+import { FunctionComponent } from "react";
+import { Box, Button, Typography } from "@mui/material";
+import { closeProjectDirectory, openProjectDirectory } from "../../slice/ProjectDirectorySlice";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../../store/AppStore";
 
 export const EmptyDirectoryExplorer: FunctionComponent = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -17,12 +17,12 @@ export const EmptyDirectoryExplorer: FunctionComponent = () => {
         }
     }
 
-    return <Box sx={{padding: 1}}>
+    return <Box sx={{ p: 1 }}>
         <Typography>No folder has been opened yet.</Typography>
-        <Box sx={{textAlign: 'center', m: '10px 0'}}>
+        <Box sx={{ textAlign: 'center', m: '10px 0' }}>
             <Button title="Open folder"
-                    variant="contained"
-                    onClick={() => selectProjectDirectory()}>
+                variant="contained"
+                onClick={() => selectProjectDirectory()}>
                 Open folder
             </Button>
         </Box>
