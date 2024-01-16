@@ -1,12 +1,16 @@
-import { Box, Stack, useTheme } from "@mui/material";
+import { Stack, useTheme } from "@mui/material";
 import { FunctionComponent, useEffect } from 'react';
+import { useSelector } from "react-redux";
+import { AppState } from "../store/AppStore";
+import { ActivityBar } from "./activity-bar/ActivityBar";
+import { EditorGroups } from "./editor-groups/EditorGroups";
 import { Sidebar } from "./sidebar/Sidebar";
 import { StatusBar } from "./status-bar/StatusBar";
-import { EditorGroups } from "./editor-groups/EditorGroups";
 
 export const App: FunctionComponent = () => {
+    const rootDirectory = useSelector((appState: AppState) => appState.projectFolder.rootDirectory);
     const theme = useTheme();
-    const statusBarHeight = '28px';
+    const statusBarHeight = rootDirectory ? '28px' : '0px';
 
     useEffect(() => {
         if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
@@ -32,21 +36,19 @@ export const App: FunctionComponent = () => {
             height: '100%',
             overflow: 'hidden',
             '& > :last-child': {
-                borderTop: `1px solid ${theme.palette.text.disabled}`
+                borderTop: `1px solid ${theme.palette.grey[400]}`
             },
         }}>
 
         <Stack direction="row" sx={{
             height: `calc(100% - ${statusBarHeight})`,
             overflowX: 'hidden',
-            '& > :first-child': {
-                borderRight: `1px solid ${theme.palette.text.disabled}`
-            },
         }}>
+            {false && <ActivityBar />}
             <Sidebar />
             <EditorGroups />
         </Stack>
 
-        <StatusBar />
+        {Boolean(rootDirectory) && <StatusBar />}
     </Stack>;
 }
