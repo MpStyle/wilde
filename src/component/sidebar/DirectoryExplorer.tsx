@@ -116,6 +116,7 @@ export const DirectoryExplorer: FunctionComponent<SpeedTreeProps> = props => {
             {({ height, width }: { height: string | number, width: string | number }) =>
                 <List height={height}
                     width={width}
+                    style={{ overflowX: 'hidden' }}
                     className={fixedListClass}
                     itemCount={flattenedData.length}
                     itemSize={28}

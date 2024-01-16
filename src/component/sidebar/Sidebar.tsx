@@ -21,7 +21,9 @@ export const Sidebar: FunctionComponent = () => {
 
         return <Fragment>
             <Box sx={{
-                height: topBarHeight, display: 'flex', alignItems: 'center',
+                height: topBarHeight,
+                display: 'flex',
+                alignItems: 'center',
                 pl: 1,
                 pr: 1,
             }}>
@@ -47,6 +49,7 @@ export const Sidebar: FunctionComponent = () => {
             height: '100%',
             overflow: 'hidden',
             width: '260px',
+            minWidth: '260px',
             maxWidth: '550px',
             backgroundColor: theme.palette.grey[200],
             '& > *': {

@@ -48,10 +48,11 @@ export const DirectoryTreeItem = memo((props: SpeedTreeItemProps) => {
             },
         }}>
         <Box component="div"
+            title={`${node.path}${PathUtils.separator}${node.handle.name}`.replace(`${PathUtils.rootPath}${PathUtils.separator}`, `${rootDirectory?.name}${PathUtils.separator}`)}
             sx={{
                 position: 'absolute',
                 left: `${left}px`,
-                width: `calc(100% - ${left}px)`,
+                width: `calc(100% - ${left}px - ${theme.spacing(1)})`,
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'left',
@@ -73,7 +74,9 @@ export const DirectoryTreeItem = memo((props: SpeedTreeItemProps) => {
                 sx={{
                     fontWeight: 'inherit',
                     flexGrow: 1,
-                    whiteSpace: 'nowrap'
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
                 }}>
                 {node.handle.name}
             </Typography>
