@@ -31,7 +31,7 @@ export const openEditorsSlice = createSlice({
             state.currentEditor = action.payload;
         },
         openEditor: (state, action: PayloadAction<EditorInfo>) => {
-            if (state.openEditors.findIndex(oe => oe.handle === action.payload.handle && oe.path === action.payload.path) !== -1) {
+            if (state.openEditors.findIndex(oe => oe.handle === action.payload.handle) !== -1) {
                 state.currentEditor = action.payload;
                 return;
             }
@@ -40,25 +40,29 @@ export const openEditorsSlice = createSlice({
             state.currentEditor = action.payload;
         },
         closeEditor: (state, action: PayloadAction<EditorInfo>) => {
-            const editorIndex = state.openEditors.findIndex(oe => oe.handle === action.payload.handle && oe.path === action.payload.path);
+            const editorIndex = state.openEditors.findIndex(oe => oe.handle === action.payload.handle);
 
             if (editorIndex === -1) {
                 return;
             }
 
-            const updateCurrentEditor = state.currentEditor?.path === action.payload.path;
+            const updateCurrentEditor = state.currentEditor?.handle === action.payload.handle;
 
             state.openEditors.splice(editorIndex, 1);
 
             if (updateCurrentEditor && state.openEditors.length > 0) {
                 state.currentEditor = state.openEditors[0];
             }
+
+            if (state.openEditors.length === 0) {
+                state.currentEditor = undefined;
+            }
         },
         closeAllEditors: (state) => {
             state.openEditors = [];
         },
         closeOthersEditors: (state, action: PayloadAction<EditorInfo>) => {
-            const editorIndex = state.openEditors.findIndex(oe => oe.handle === action.payload.handle && oe.path === action.payload.path);
+            const editorIndex = state.openEditors.findIndex(oe => oe.handle === action.payload.handle);
 
             if (editorIndex === -1) {
                 return;
