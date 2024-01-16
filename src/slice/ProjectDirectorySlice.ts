@@ -5,7 +5,7 @@ import { FileHandleInfo } from '../entity/FileHandleInfo';
 type DirectoryStructure = {
     [path: string]: {
         handle: FileSystemDirectoryHandle,
-        content: (FileSystemDirectoryHandle | FileSystemFileHandle)[]
+        content: FileSystemHandleUnion[]
     }
 };
 
@@ -22,7 +22,7 @@ const initialState: ProjectFolderState = {
 }
 
 const scanDirectory = async (path: string, dirHandle: FileSystemDirectoryHandle) => {
-    const values: (FileSystemDirectoryHandle | FileSystemFileHandle)[] = [];
+    const values: FileSystemHandleUnion[] = [];
 
     for await (const value of dirHandle.values()) {
         values.push(value);
