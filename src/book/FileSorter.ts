@@ -1,9 +1,7 @@
-import {FileSystemHandle} from "../entity/FileSystemHandle";
-
 export type SortResult = -1 | 0 | 1;
 
 export const FileSorter = {
-    byTypeByName: (a: FileSystemHandle, b: FileSystemHandle): SortResult => {
+    byTypeByName: (a: FileSystemHandleUnion, b: FileSystemHandleUnion): SortResult => {
         if (a.kind < b.kind) {
             return -1;
         }
