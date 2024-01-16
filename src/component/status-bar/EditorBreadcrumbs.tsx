@@ -16,17 +16,9 @@ export const EditorBreadcrumbs: FunctionComponent = () => {
     const [selectedPath, setSelectedPath] = useState<string | undefined>(undefined);
     const dispatch = useDispatch()
 
-    if (!rootDirectoryName || !currentEditor) {
+    if (!rootDirectoryName) {
         return null;
     }
-
-    const currentEditorPath = currentEditor.path.replace(PathUtils.rootPath, rootDirectoryName);
-    const completePathParts = currentEditor.path.split(PathUtils.separator);
-    const currentEditorPathParts = currentEditorPath.split(PathUtils.separator);
-    const selectedPathStructure = selectedPath && directoryStructure.hasOwnProperty(selectedPath) ? directoryStructure[selectedPath] : undefined;
-    const selectedPathStructureContent = (selectedPathStructure?.content ?? []).filter(c => c.kind === 'file');
-
-    selectedPathStructureContent.sort(FileSorter.byTypeByName);
 
     const open = Boolean(anchorEl);
     const handleClick = (event: React.MouseEvent<HTMLSpanElement>, path: string) => {
@@ -42,31 +34,53 @@ export const EditorBreadcrumbs: FunctionComponent = () => {
         setAnchorEl(null);
     }
 
+    const breadcrumbsParts = () => {
+        if (!currentEditor) {
+            return <Button sx={{ pt: 0, pb: 0, textTransform: 'none', minWidth: 'auto', fontSize: '1em' }}
+                onClick={e => handleClick(e, PathUtils.rootPath)}
+                key={`breadcrumbs-path-part-0`}
+                component="button">
+                {rootDirectoryName}
+            </Button>;
+        }
+
+        const currentEditorPath = currentEditor.path.replace(PathUtils.rootPath, rootDirectoryName);
+        const completePathParts = currentEditor.path.split(PathUtils.separator);
+        const currentEditorPathParts = currentEditorPath.split(PathUtils.separator);
+
+        return currentEditorPathParts.map((part, i) => {
+            const isLast = i === currentEditorPathParts.length - 1;
+
+            if (isLast) {
+                return <Box component='span'
+                    key={`breadcrumbs-path-part-${i}`}
+                    sx={{
+                        display: 'flex',
+                        alignItems: 'center'
+                    }}>
+                    <FileIcon handle={currentEditor?.handle}
+                        sx={{ mr: '0.25em' }}
+                        size='small' /> {part}
+                </Box>
+            }
+
+            return <Button sx={{ pt: 0, pb: 0, textTransform: 'none', minWidth: 'auto', fontSize: '1em' }}
+                onClick={e => handleClick(e, PathUtils.combine(...(completePathParts.slice(0, i + 1))))}
+                key={`breadcrumbs-path-part-${i}`}
+                component="button">
+                {part}
+            </Button>;
+        });
+    }
+
+    const selectedPathStructure = selectedPath && directoryStructure.hasOwnProperty(selectedPath) ? directoryStructure[selectedPath] : undefined;
+    const selectedPathStructureContent = (selectedPathStructure?.content ?? []).filter(c => c.kind === 'file');
+
+    selectedPathStructureContent.sort(FileSorter.byTypeByName);
+
     return <Fragment>
         <Breadcrumbs aria-label="breadcrumb" separator={<NavigateNextIcon fontSize="small" />}>
-            {currentEditorPathParts.map((part, i) => {
-                const isLast = i === currentEditorPathParts.length - 1;
-
-                if (isLast) {
-                    return <Box component='span'
-                        key={`status-bar-path-part-${i}`}
-                        sx={{
-                            display: 'flex',
-                            alignItems: 'center'
-                        }}>
-                        <FileIcon handle={currentEditor?.handle}
-                            sx={{ mr: '0.25em' }}
-                            size='small' /> {part}
-                    </Box>
-                }
-
-                return <Button sx={{ pt: 0, pb: 0, textTransform: 'none', minWidth: 'auto', fontSize: '1em' }}
-                    onClick={e => handleClick(e, PathUtils.combine(...(completePathParts.slice(0, i + 1))))}
-                    key={`status-bar-path-part-${i}`}
-                    component="button">
-                    {part}
-                </Button>;
-            })}
+            {breadcrumbsParts()}
         </Breadcrumbs>
 
         {Boolean(selectedPathStructureContent.length) && <Menu id="path-menu"
