@@ -49,7 +49,7 @@ export const EditorGroups: FunctionComponent = () => {
             return false;
         }
 
-        return PathUtils.combine(editor.path) === PathUtils.combine(editors.currentEditor.path);
+        return editor.handle === editors.currentEditor.handle;
     }
 
     return <Box sx={{
