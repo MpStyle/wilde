@@ -1,7 +1,5 @@
-import { FileSystemHandle } from "../../../entity/FileSystemHandle";
-
 export type TreeNode = {
-    handle: FileSystemHandle,
+    handle: FileSystemHandleUnion,
     depth: number,
     path: string,
     hasChildren: boolean,
