@@ -5,6 +5,8 @@ __!!!WORK IN PROGRESS PROJECT!!!__
 ![Wilde logo](docs/images/wilde-logo.png)
 
 Wilde is a web integrated local desktop environment. \
+An IDE designed primarily to work on the web. It wasn't conceived as an Electron-like desktop application and later distributed on the web, but rather, it was born and growed-up within a browser tab.
+
 Last version of Wilde is deployed [here](https://mpstyle.github.io/wilde/);
 
 ![Wilde screenshot](docs/images/wilde-instance.png)
@@ -30,8 +32,8 @@ Wilde uses:
 - Color highlight on monaco editor
 - Add capability to resize sidebar
 - Add capability to open a file
-- Add shortcut open a folder
-- Add shortcut open a file
+- Add keyboard shortcut to open a folder
+- Add keyboard shortcut to open a file
 - Add confimation dialog when try to close an modified editor
 - Add hamburger menu to use as window menu
 - Add git color highlight on filenames
@@ -44,3 +46,6 @@ Wilde uses:
 - Load theme using system preference
 - Load custom theme from local storage or IndexDB
 - Add welcome editor
+- Show the name of the current editor in the page title
+- Add dark theme
+- Add LICENSE file
