@@ -5,9 +5,11 @@ import { FileUtils } from "../../../book/FileUtils";
 import { useWilde } from "../../../hook/WildeHook";
 import { scanProjectDirectory } from "../../../slice/ProjectDirectorySlice";
 import { AppDispatch, AppState } from "../../../store/AppStore";
+import { DirectoryUtils } from "../../../book/DirectoryUtils";
 
 export const NewFileDialog: FunctionComponent = () => {
     const parentFileHandleInfo = useSelector((appState: AppState) => appState.projectFolder.selectedProjectFile);
+    const directoryStructure = useSelector((appState: AppState) => appState.projectFolder.directoryStructure);
     const [newFileName, setNewFileName] = useState<string>('');
     const [alreadyExists, setAlreadyExists] = useState<boolean>(false);
     const [open, setOpen] = useState<boolean>(false);
@@ -31,8 +33,11 @@ export const NewFileDialog: FunctionComponent = () => {
         return null;
     }
 
+    const parentPath = parentFileHandleInfo.handle.kind === 'directory' ? parentFileHandleInfo.path : DirectoryUtils.getParent(parentFileHandleInfo.path);
+    const parentDirectoryHandle = (parentFileHandleInfo.handle.kind === 'directory' ? parentFileHandleInfo.handle : directoryStructure[parentPath].handle) as FileSystemDirectoryHandle;
+
     const fileAlreadyExists = async (newName: string) => {
-        const result = await (FileUtils.exists(parentFileHandleInfo.handle as FileSystemDirectoryHandle, newName)) && newName !== parentFileHandleInfo.handle.name;
+        const result = await (FileUtils.exists(parentDirectoryHandle, newName)) && newName !== parentDirectoryHandle.name;
         setAlreadyExists(result);
     }
 
@@ -43,17 +48,11 @@ export const NewFileDialog: FunctionComponent = () => {
     const createNewFile = () => {
         onClose();
 
-        if (parentFileHandleInfo.handle.kind !== 'directory') {
-            return;
-        }
-
-        const directoryHandle = parentFileHandleInfo.handle as FileSystemDirectoryHandle;
-
-        directoryHandle.getFileHandle(newFileName, { create: true })
+        parentDirectoryHandle.getFileHandle(newFileName, { create: true })
             .then(_ => {
                 dispatch(scanProjectDirectory({
-                    path: parentFileHandleInfo.path,
-                    dirHandle: directoryHandle
+                    path: parentPath,
+                    dirHandle: parentDirectoryHandle
                 }));
 
                 setNewFileName('');
