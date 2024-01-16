@@ -1,1 +1,0 @@
-export type FileSystemHandle = FileSystemDirectoryHandle | FileSystemFileHandle;
