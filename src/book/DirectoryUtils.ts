@@ -1,3 +1,5 @@
+import { PathUtils } from "./PathUtils";
+
 export const DirectoryUtils = {
     getParent: (filePath: string): string => {
         if (!filePath) {
@@ -5,13 +7,13 @@ export const DirectoryUtils = {
         }
 
         const normalizedPath = filePath.replace(/\\/g, '/');
-        const pathParts = normalizedPath.split('/');
+        const pathParts = normalizedPath.split(PathUtils.separator);
 
         pathParts.pop();
 
-        const parentDirectoryPath = pathParts.join('/');
+        const parentDirectoryPath = pathParts.join(PathUtils.separator);
 
-        if (normalizedPath.startsWith('/')) {
+        if (normalizedPath.startsWith(PathUtils.separator)) {
             return `/${parentDirectoryPath}`;
         }
 
