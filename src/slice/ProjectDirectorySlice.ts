@@ -2,11 +2,14 @@ import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { PathUtils } from "../book/PathUtils";
 import { FileHandleInfo } from '../entity/FileHandleInfo';
 
-type DirectoryStructure = {
-    [path: string]: {
-        handle: FileSystemDirectoryHandle,
-        content: FileSystemHandleUnion[]
-    }
+export type DirectoryInfo = {
+    handle: FileSystemDirectoryHandle,
+    content: FileSystemHandleUnion[],
+    isScanning: boolean
+};
+
+export type DirectoryStructure = {
+    [path: string]: DirectoryInfo
 };
 
 export interface ProjectFolderState {
@@ -53,7 +56,7 @@ export const refreshProjectDirectory = createAsyncThunk(
             let result: DirectoryStructure = {};
             const scanResult = await scanDirectory(path, handle);
 
-            result[path] = { content: scanResult.handles, handle };
+            result[path] = { content: scanResult.handles, handle, isScanning: false };
 
             for (let subHandle of scanResult.handles) {
                 const subPath = PathUtils.combine(path, subHandle.name);
@@ -89,16 +92,36 @@ export const projectDirectorySlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
+            .addCase(scanProjectDirectory.pending, (state, action) => {
+                const currentState = state.directoryStructure[action.meta.arg.path] ?? {};
+
+                state.directoryStructure[action.meta.arg.path] = {
+                    content: currentState?.content ?? [],
+                    handle: currentState?.handle,
+                    isScanning: true,
+                };
+            })
             .addCase(scanProjectDirectory.fulfilled, (state, action) => {
                 state.directoryStructure[action.payload.path] = {
                     content: action.payload.handles,
-                    handle: action.payload.handle
+                    handle: action.payload.handle,
+                    isScanning: false,
+                };
+            })
+            .addCase(openProjectDirectory.pending, (state) => {
+                const currentState = state.directoryStructure[PathUtils.rootPath] ?? {};
+
+                state.directoryStructure[PathUtils.rootPath] = {
+                    content: currentState?.content ?? [],
+                    handle: currentState?.handle,
+                    isScanning: true,
                 };
             })
             .addCase(openProjectDirectory.fulfilled, (state, action) => {
                 state.directoryStructure[action.payload.path] = {
                     content: action.payload.handles,
-                    handle: action.payload.handle
+                    handle: action.payload.handle,
+                    isScanning: false
                 };
                 state.rootDirectory = action.payload.root;
                 state.selectedProjectFile = {
