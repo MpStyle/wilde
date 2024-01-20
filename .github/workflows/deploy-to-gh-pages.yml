@@ -25,11 +25,11 @@ jobs:
       - run: git --work-tree build add --all
         shell: bash
       - name: Writing release tag to minor-version.txt file...
-        run: echo "${{ github.event.release.tag_name }}" > public/minor-version.txt
+        run: echo "${{ github.event.release.tag_name }}" > minor-version.txt
         shell: bash
       - name: Creating deploy commit...
         run: |
-          git add -f public/minor-version.txt
+          git add -f minor-version.txt
           git commit -m "Automatic deploy - `date +'%Y-%m-%d %H:%M:%S'`"
         shell: bash
       - name: Deploying to GitHub Pages
