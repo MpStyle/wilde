@@ -40,7 +40,7 @@ export const EditorBreadcrumb: FunctionComponent<EditorBreadcrumbProps> = props 
         <Box
             onKeyDown={handleItemKeyDown}
             ref={boxRef}
-            sx={{ pt: 0, pb: 0, textTransform: 'none', minWidth: 'auto', fontSize: '1em' }}
+            sx={{ pt: 0, pb: 0, textTransform: 'none', minWidth: 'auto', fontSize: '1em', display: 'flex' }}
             onClick={open}
             component={hasMenu ? Button : 'span'}>
             <FileIcon handle={props.handle}
