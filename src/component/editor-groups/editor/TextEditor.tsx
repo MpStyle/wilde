@@ -3,15 +3,15 @@ import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 import { FunctionComponent, useEffect, useRef, useState } from "react";
 import { FileUtils } from "../../../book/FileUtils";
 import { useWilde } from "../../../hook/WildeHook";
-import { EditorProps } from "../book/EditorProps";
+import { FileEditorProps } from "../book/EditorProps";
 
-export const TextEditor: FunctionComponent<EditorProps> = props => {
+export const TextEditor: FunctionComponent<FileEditorProps> = props => {
     const [editor, setEditor] = useState<monaco.editor.IStandaloneCodeEditor | null>(null);
     const monacoEl = useRef(null);
     const wilde = useWilde();
 
     const getLanguage = () => {
-        const extension = FileUtils.getExtension(props.handle.name);
+        const extension = FileUtils.getExtension(props.editor.handle.name);
         switch (extension) {
             case 'ts': return 'typescript';
             case 'js': return 'javascript';
@@ -28,7 +28,7 @@ export const TextEditor: FunctionComponent<EditorProps> = props => {
     useEffect(() => {
         const onSaveAll = () => {
             if (editor) {
-                FileUtils.writeContent(props.handle, editor.getValue())
+                FileUtils.writeContent(props.editor.handle, editor.getValue())
                 props.onContentSave();
             }
         }
@@ -43,7 +43,7 @@ export const TextEditor: FunctionComponent<EditorProps> = props => {
     // Load editor and its content
     useEffect(() => {
         const loadContent = async () => {
-            const file = await props.handle.getFile();
+            const file = await props.editor.handle.getFile();
             const fileContent = await file.text();
 
             setEditor((editor) => {
@@ -55,7 +55,7 @@ export const TextEditor: FunctionComponent<EditorProps> = props => {
                     automaticLayout: true,
                 });
 
-                newEditor.onDidChangeModelContent((e) => {
+                newEditor.onDidChangeModelContent(() => {
                     props.onContentChange();
                 })
 
@@ -73,7 +73,7 @@ export const TextEditor: FunctionComponent<EditorProps> = props => {
     return <Box
         ref={monacoEl}
         sx={{
-            width: '100vw',
+            width: '100%',
             height: `calc(100% - 48px - 8px)`,
         }}>
     </Box>;

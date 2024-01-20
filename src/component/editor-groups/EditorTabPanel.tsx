@@ -1,6 +1,6 @@
 import {Box, useTheme} from "@mui/material";
 import React from "react";
-import {EditorInfo} from "../../slice/OpenEditorsSlice";
+import {EditorInfoUnion} from "../../slice/OpenEditorsSlice";
 
 export const EditorTabPanel = (props: EditorTabPanelProps) => {
     const {children, editor, index, hidden, ...other} = props;
@@ -20,5 +20,5 @@ export interface EditorTabPanelProps {
     children?: React.ReactNode;
     hidden: boolean;
     index: number;
-    editor: EditorInfo;
+    editor: EditorInfoUnion;
 }

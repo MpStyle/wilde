@@ -44,7 +44,7 @@ export const DeleteFileDialog: FunctionComponent = () => {
         parentHandle.removeEntry(fileHandleInfo.handle.name, { recursive: true })
             .then(_ => {
                 if (fileHandleInfo.handle.kind === 'file') {
-                    dispatch(closeEditor({ path: fileHandleInfo.path, handle: fileHandleInfo.handle as FileSystemFileHandle }))
+                    dispatch(closeEditor({ path: fileHandleInfo.path }))
                 }
 
                 dispatch(scanProjectDirectory({ path: parentPath, dirHandle: parentHandle }))

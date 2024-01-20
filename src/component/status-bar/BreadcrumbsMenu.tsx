@@ -1,4 +1,3 @@
-import { useTheme } from '@mui/material';
 import Menu, { MenuProps } from '@mui/material/Menu';
 import { FunctionComponent, KeyboardEventHandler, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -27,7 +26,6 @@ export const BreadcrumbsMenu: FunctionComponent<BreadcrumbsMenuProps> = props =>
     const directoryInfo = directoryStructure.hasOwnProperty(path) ? directoryStructure[path] : {} as DirectoryInfo;
     const directoryContent = [...(directoryInfo.content ?? [])];
     const isScanning = directoryInfo.isScanning ?? false;
-    const theme = useTheme();
 
     directoryContent.sort(FileSorter.byTypeByName);
 

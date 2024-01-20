@@ -1,11 +1,11 @@
 import NavigateNextIcon from '@mui/icons-material/NavigateNext'
-import { Box, MenuItem, MenuItemProps, MenuProps, Typography } from '@mui/material'
-import { FunctionComponent, KeyboardEventHandler, useCallback, useId, useRef, useState } from 'react'
-import { FileIcon } from '../common/file-icon/FileIcon'
-import { BreadcrumbsMenu } from './BreadcrumbsMenu'
-import { useDispatch } from 'react-redux'
-import { AppDispatch } from '../../store/AppStore'
-import { openEditor } from '../../slice/OpenEditorsSlice'
+import {Box, MenuItem, MenuItemProps, MenuProps, Typography} from '@mui/material'
+import {FunctionComponent, KeyboardEventHandler, useCallback, useRef, useState} from 'react'
+import {FileIcon} from '../common/file-icon/FileIcon'
+import {BreadcrumbsMenu} from './BreadcrumbsMenu'
+import {useDispatch} from 'react-redux'
+import {AppDispatch} from '../../store/AppStore'
+import {fileEditorInfoBuilder, openEditor} from '../../slice/OpenEditorsSlice'
 
 type BreadcrumbsMenuItemProps = {
     button?: true
@@ -42,7 +42,7 @@ export const BreadcrumbsMenuItem: FunctionComponent<BreadcrumbsMenuItemProps> = 
         onMouseLeave={close}
         onClick={() => {
             if (handle.kind === 'file') {
-                dispatch(openEditor({ handle, path }));
+                dispatch(openEditor(fileEditorInfoBuilder(path, handle)));
                 onFileClick();
             }
         }}>

@@ -1,26 +1,24 @@
-import { Box, useTheme } from "@mui/material";
+import {Box, useTheme} from "@mui/material";
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
-import React, { FunctionComponent } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { PathUtils } from "../../book/PathUtils";
+import React, {FunctionComponent} from "react";
+import {useDispatch, useSelector} from "react-redux";
 import {
-    EditorInfo,
     closeAllEditors,
     closeEditor,
     closeOthersEditors,
     currentEditor,
-    editorContentIsChanged
+    editorContentIsChanged,
+    EditorInfoUnion
 } from "../../slice/OpenEditorsSlice";
-import { AppState } from "../../store/AppStore";
-import { EditorGroupsContextMenu } from "./EditorGroupsContextMenu";
-import { EditorProxy } from "./EditorProxy";
-import { EditorTabLabel } from "./EditorTabLabel";
-import { EditorTabPanel } from "./EditorTabPanel";
+import {AppState} from "../../store/AppStore";
+import {EditorGroupsContextMenu} from "./EditorGroupsContextMenu";
+import {EditorProxy} from "./EditorProxy";
+import {EditorTabLabel} from "./EditorTabLabel";
+import {EditorTabPanel} from "./EditorTabPanel";
 
 export const EditorGroups: FunctionComponent = () => {
     const editors = useSelector((state: AppState) => state.openEditors);
-    const rootDirectory = useSelector((appState: AppState) => appState.projectFolder.rootDirectory);
     const dispatch = useDispatch();
     const showBackground = useSelector((appState: AppState) => !appState.openEditors.openEditors || !appState.openEditors.openEditors.length);
     const theme = useTheme();
@@ -44,12 +42,12 @@ export const EditorGroups: FunctionComponent = () => {
     const closeContextMenu = () => setContextMenu(null);
     //#endregion
 
-    const isCurrentEditor = (editor: EditorInfo) => {
+    const isCurrentEditor = (editor: EditorInfoUnion) => {
         if (!editors.currentEditor) {
             return false;
         }
 
-        return editor.handle === editors.currentEditor.handle;
+        return editor.path === editors.currentEditor.path;
     }
 
     return <Box sx={{
@@ -82,18 +80,12 @@ export const EditorGroups: FunctionComponent = () => {
             aria-label="Open editors"
             TabIndicatorProps={{ sx: { height: 3 } }}>
             {editors.openEditors.map((editor, i) => {
-                if (!editor.handle) {
-                    return null;
-                }
-
-                const path = PathUtils.combine(editor.path, editor.handle.name).replace(`${PathUtils.rootPath}${PathUtils.separator}`, `${rootDirectory!.name}${PathUtils.separator}`)
-
                 // A portion of the path will be displayed if there are multiple files open with the same name
-                const showPathInTab = editors.openEditors.filter(oe => oe.handle.name === editor.handle.name).length > 1;
+                const showPathInTab = editors.openEditors.filter(oe => oe.kind==='file' && editor.kind==='file' && oe.handle.name === editor.handle.name).length > 1;
 
                 return <Tab id={`editor-tab-${i}`}
                     sx={{ pl: 1.4, pr: 0.6, pt: 0.2, pb: 0.2 }}
-                    title={path}
+                    title={editor.path}
                     onContextMenu={(e) => openContextMenu(e)}
                     key={`open-editor-tab-${i}`}
                     label={<EditorTabLabel editor={editor}
@@ -111,7 +103,7 @@ export const EditorGroups: FunctionComponent = () => {
                 key={`open-editor-${i}`}
                 hidden={!isCurrentEditor(editor)}>
                 <EditorProxy
-                    handle={editor.handle}
+                    editor={editor}
                     onContentChange={() => dispatch(editorContentIsChanged({ path: editor.path, isChanged: true }))}
                     onContentRestore={() => dispatch(editorContentIsChanged({ path: editor.path, isChanged: false }))}
                     onContentSave={() => dispatch(editorContentIsChanged({ path: editor.path, isChanged: false }))}

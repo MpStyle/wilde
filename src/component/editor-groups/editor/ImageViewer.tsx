@@ -1,15 +1,15 @@
-import { Fragment, FunctionComponent, useEffect, useState } from "react";
-import { Box } from "@mui/material";
-import { ByteUtils } from "../../../book/ByteUtils";
-import { Loader } from "../../common/loader/Loader";
-import { EditorProps } from "../book/EditorProps";
+import {Fragment, FunctionComponent, useEffect, useState} from "react";
+import {Box} from "@mui/material";
+import {ByteUtils} from "../../../book/ByteUtils";
+import {Loader} from "../../common/loader/Loader";
+import {FileEditorProps} from "../book/EditorProps";
 
-export const ImageViewer: FunctionComponent<EditorProps> = props => {
+export const ImageViewer: FunctionComponent<FileEditorProps> = props => {
     const [state, setState] = useState<ImageViewerState | undefined>(undefined);
 
     useEffect(() => {
         const loadFileInfo = async () => {
-            const file = await props.handle.getFile();
+            const file = await props.editor.handle.getFile();
             const fileContent = await file.arrayBuffer();
             const blob = new Blob([fileContent], { type: "image/jpeg" });
             const urlCreator = window.URL || window.webkitURL;
@@ -54,7 +54,7 @@ export const ImageViewer: FunctionComponent<EditorProps> = props => {
                 textAlign: 'center'
             }}>
                 <img src={state.imageUrl}
-                    alt={props.handle.name} />
+                    alt={props.editor.handle.name} />
             </Box>
         </Fragment>}
         {!state && <Loader message="Loading image, please wait..." />}

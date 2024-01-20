@@ -5,7 +5,7 @@ import AutoSizer from 'react-virtualized-auto-sizer';
 import { FixedSizeList as List } from 'react-window';
 import { FileSorter } from "../../book/FileSorter";
 import { PathUtils } from "../../book/PathUtils";
-import { openEditor } from "../../slice/OpenEditorsSlice";
+import {fileEditorInfoBuilder, openEditor} from "../../slice/OpenEditorsSlice";
 import { scanProjectDirectory, setSelectedProjectFile } from "../../slice/ProjectDirectorySlice";
 import { AppDispatch, AppState } from "../../store/AppStore";
 import { DirectoryExplorerContextMenu } from './DirectoryExplorerContextMenu';
@@ -73,7 +73,7 @@ export const DirectoryExplorer: FunctionComponent<SpeedTreeProps> = props => {
         const nodePath = PathUtils.combine(node.path, node.handle.name);
 
         if (node.handle.kind === 'file') {
-            dispatch(openEditor({ path: nodePath, handle: node.handle }));
+            dispatch(openEditor(fileEditorInfoBuilder(nodePath, node.handle)));
             return;
         }
 

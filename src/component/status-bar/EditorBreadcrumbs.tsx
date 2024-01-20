@@ -1,10 +1,10 @@
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
-import { Breadcrumbs } from "@mui/material";
-import { FunctionComponent, useId } from "react";
-import { useSelector } from "react-redux";
-import { PathUtils } from "../../book/PathUtils";
-import { AppState } from "../../store/AppStore";
-import { EditorBreadcrumb } from './EditorBreadcrumb';
+import {Breadcrumbs} from "@mui/material";
+import {FunctionComponent, useId} from "react";
+import {useSelector} from "react-redux";
+import {PathUtils} from "../../book/PathUtils";
+import {AppState} from "../../store/AppStore";
+import {EditorBreadcrumb} from './EditorBreadcrumb';
 
 export const EditorBreadcrumbs: FunctionComponent = () => {
     const currentEditor = useSelector((appState: AppState) => appState.openEditors.currentEditor);
@@ -32,6 +32,10 @@ export const EditorBreadcrumbs: FunctionComponent = () => {
         return currentEditorPathParts.map((part, i) => {
             const isLast = i === currentEditorPathParts.length - 1;
             const path = PathUtils.combine(...(completePathParts.slice(0, i + 1)));
+
+            if(currentEditor.kind!=='file'){
+                return null;
+            }
 
             let handle: FileSystemHandleUnion | undefined = currentEditor?.handle;
             if (!isLast) {

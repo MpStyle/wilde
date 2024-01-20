@@ -1,5 +1,14 @@
+import {EditorInfoUnion, FileEditorInfo} from "../../../slice/OpenEditorsSlice";
+
 export interface EditorProps {
-    handle: FileSystemFileHandle;
+    editor: EditorInfoUnion;
+    onContentChange: () => void;
+    onContentRestore: () => void;
+    onContentSave: () => void;
+}
+
+export interface FileEditorProps {
+    editor: FileEditorInfo;
     onContentChange: () => void;
     onContentRestore: () => void;
     onContentSave: () => void;
