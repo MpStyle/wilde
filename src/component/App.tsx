@@ -1,7 +1,5 @@
 import { Stack, useTheme } from "@mui/material";
 import { FunctionComponent, useEffect } from 'react';
-import { useSelector } from "react-redux";
-import { AppState } from "../store/AppStore";
 import { EditorGroups } from "./editor-groups/EditorGroups";
 import { Sidebar } from "./sidebar/Sidebar";
 import { StatusBar } from "./status-bar/StatusBar";
