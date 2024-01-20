@@ -11,6 +11,7 @@ import { CloseDirectoryDialog } from './component/common/close-directory-dialog/
 import { NewDirectoryDialog } from './component/common/new-directory-dialog/NewDirectoryDialog';
 import { NewFileDialog } from './component/common/new-file-dialog/NewFileDialog';
 import { DeleteFileDialog } from './component/common/delete-file-dialog/DeleteFileDialog';
+import { AboutWilde } from './component/common/about-wilde/AboutWilde';
 
 const theme = createTheme({
     palette: {
@@ -42,6 +43,8 @@ root.render(
                 <NewFileDialog />
 
                 <DeleteFileDialog />
+
+                <AboutWilde />
             </Provider>
         </ThemeProvider>
     </React.StrictMode>

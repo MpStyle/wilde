@@ -24,6 +24,9 @@ jobs:
         shell: bash
       - run: git --work-tree build add --all
         shell: bash
+      - name: Creating version file...
+        run: date +%s > public/minor-version.txt
+        shell: bash
       - name: Creating deploy commit...
         run: git commit -m "Automatic deploy - `date +'%Y-%m-%d %H:%M:%S'`"
         shell: bash

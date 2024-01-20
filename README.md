@@ -24,6 +24,18 @@ Wilde uses:
 - [MUI](https://mui.com/): for UI component
 - [vscode-icons](https://github.com/vscode-icons/vscode-icons): for icons files
 
+## Environment variables
+
+- REACT_APP_VERSION: defined in `.env`, contains the `name` property value of `package.json`
+- REACT_APP_NAME: defined in `.env`, contains the `version` property value of `package.json`
+- PUBLIC_URL: defined in `.env.production`, contains the URL where the application where deployed
+
+### How to use in code
+
+```typescript
+console.log(`${process.env.REACT_APP_NAME} ${process.env.REACT_APP_VERSION}`)
+```
+
 ## Techniques:
 - [Lazy loading](https://en.wikipedia.org/wiki/Lazy_loading): used to load into the app state only the folders opened by the user.
 - [Windowing](https://www.patterns.dev/vanilla/virtual-lists/): used to render only the visible tree items in the DOM

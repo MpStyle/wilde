@@ -11,6 +11,7 @@ type AppEventMap = {
     onNewDirectory: WildeEvent,
     onNewFile: WildeEvent,
     onDeleteFile: WildeEvent,
+    onShowAbout: WildeEvent,
 }
 
 // ---------------
@@ -26,7 +27,8 @@ const state: State = {
     onSaveAll: [],
     onNewDirectory: [],
     onNewFile: [],
-    onDeleteFile: []
+    onDeleteFile: [],
+    onShowAbout: []
 };
 
 export const useWilde = () => {
@@ -60,6 +62,7 @@ export const useWilde = () => {
         newDirectory: () => emitEvent('onNewDirectory', {}),
         newFile: () => emitEvent('onNewFile', {}),
         deleteFile: () => emitEvent('onDeleteFile', {}),
+        showAbout: () => emitEvent('onShowAbout', {}),
         addEventListener,
         removeEventListener
     }

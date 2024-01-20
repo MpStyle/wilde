@@ -7,9 +7,8 @@ import { Sidebar } from "./sidebar/Sidebar";
 import { StatusBar } from "./status-bar/StatusBar";
 
 export const App: FunctionComponent = () => {
-    const rootDirectory = useSelector((appState: AppState) => appState.projectFolder.rootDirectory);
     const theme = useTheme();
-    const statusBarHeight = rootDirectory ? '28px' : '0px';
+    const statusBarHeight = '28px';
 
     useEffect(() => {
         if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
@@ -47,6 +46,6 @@ export const App: FunctionComponent = () => {
             <EditorGroups />
         </Stack>
 
-        {Boolean(rootDirectory) && <StatusBar />}
+        <StatusBar />
     </Stack>;
 }
