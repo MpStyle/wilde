@@ -4,7 +4,7 @@ import { FunctionComponent, useEffect, useRef, useState } from "react";
 import { FileUtils } from "../../../book/FileUtils";
 import { useWilde } from "../../../hook/WildeHook";
 import { FileEditorProps } from "../book/EditorProps";
-import { tabHeight } from "../book/TabHeight";
+import { tabPanelHeight } from "../book/TabHeight";
 
 export const TextEditor: FunctionComponent<FileEditorProps> = props => {
     const [editor, setEditor] = useState<monaco.editor.IStandaloneCodeEditor | null>(null);
@@ -75,7 +75,7 @@ export const TextEditor: FunctionComponent<FileEditorProps> = props => {
         ref={monacoEl}
         sx={{
             width: '100%',
-            height: `calc(100% - ${tabHeight} - 8px)`,
+            height: tabPanelHeight,
         }}>
     </Box>;
 }
