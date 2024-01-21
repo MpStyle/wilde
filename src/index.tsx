@@ -11,7 +11,7 @@ import { CloseDirectoryDialog } from './component/common/close-directory-dialog/
 import { NewDirectoryDialog } from './component/common/new-directory-dialog/NewDirectoryDialog';
 import { NewFileDialog } from './component/common/new-file-dialog/NewFileDialog';
 import { DeleteFileDialog } from './component/common/delete-file-dialog/DeleteFileDialog';
-import { AboutWilde } from './component/common/about-wilde/AboutWilde';
+import { AboutWildeDialog } from './component/common/about-wilde-dialog/AboutWildeDialog';
 import i18n from './book/i18n';
 import { I18nextProvider } from 'react-i18next';
 
@@ -47,7 +47,7 @@ root.render(
 
                     <DeleteFileDialog />
 
-                    <AboutWilde />
+                    <AboutWildeDialog />
                 </Provider>
             </I18nextProvider>
         </ThemeProvider>

@@ -4,7 +4,7 @@ import { useWilde } from "../../../hook/WildeHook";
 import { useGetMinorVersionQuery } from "../../../slice/VersionSlice";
 import CloseIcon from '@mui/icons-material/Close';
 
-export const AboutWilde: FunctionComponent = () => {
+export const AboutWildeDialog: FunctionComponent = () => {
     const [open, setOpen] = useState<boolean>(false);
     const { data, error, isLoading } = useGetMinorVersionQuery();
     const wilde = useWilde();
