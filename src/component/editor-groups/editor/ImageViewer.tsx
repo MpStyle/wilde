@@ -1,8 +1,9 @@
-import {Fragment, FunctionComponent, useEffect, useState} from "react";
-import {Box} from "@mui/material";
-import {ByteUtils} from "../../../book/ByteUtils";
-import {Loader} from "../../common/loader/Loader";
-import {FileEditorProps} from "../book/EditorProps";
+import { Fragment, FunctionComponent, useEffect, useState } from "react";
+import { Box } from "@mui/material";
+import { ByteUtils } from "../../../book/ByteUtils";
+import { Loader } from "../../common/loader/Loader";
+import { FileEditorProps } from "../book/EditorProps";
+import { tabHeight } from "../book/TabHeight";
 
 export const ImageViewer: FunctionComponent<FileEditorProps> = props => {
     const [state, setState] = useState<ImageViewerState | undefined>(undefined);
@@ -33,7 +34,7 @@ export const ImageViewer: FunctionComponent<FileEditorProps> = props => {
     }, [state])
 
     return <Box sx={{
-        height: `calc(100% - 48px)`,
+        height: `calc(100% - ${tabHeight})`,
         m: 0,
         p: 0,
         overflow: 'hidden'
