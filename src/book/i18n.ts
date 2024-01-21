@@ -15,7 +15,9 @@ i18n
         },
         interpolation: {
             escapeValue: false
-        }
+        },
+        keySeparator: '>',
+        nsSeparator: '|'
     });
 
 
