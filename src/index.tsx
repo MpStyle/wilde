@@ -12,6 +12,8 @@ import { NewDirectoryDialog } from './component/common/new-directory-dialog/NewD
 import { NewFileDialog } from './component/common/new-file-dialog/NewFileDialog';
 import { DeleteFileDialog } from './component/common/delete-file-dialog/DeleteFileDialog';
 import { AboutWilde } from './component/common/about-wilde/AboutWilde';
+import i18n from './book/i18n';
+import { I18nextProvider } from 'react-i18next';
 
 const theme = createTheme({
     palette: {
@@ -31,21 +33,23 @@ const root = ReactDOM.createRoot(
 root.render(
     <React.StrictMode>
         <ThemeProvider theme={theme}>
-            <Provider store={appStore}>
-                <ShortcutManager />
+            <I18nextProvider i18n={i18n}>
+                <Provider store={appStore}>
+                    <ShortcutManager />
 
-                <App />
+                    <App />
 
-                <CloseDirectoryDialog />
+                    <CloseDirectoryDialog />
 
-                <NewDirectoryDialog />
+                    <NewDirectoryDialog />
 
-                <NewFileDialog />
+                    <NewFileDialog />
 
-                <DeleteFileDialog />
+                    <DeleteFileDialog />
 
-                <AboutWilde />
-            </Provider>
+                    <AboutWilde />
+                </Provider>
+            </I18nextProvider>
         </ThemeProvider>
     </React.StrictMode>
 );
