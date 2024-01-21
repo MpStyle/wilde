@@ -1,8 +1,8 @@
-import {Box, useTheme} from "@mui/material";
+import { Box, useTheme } from "@mui/material";
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
-import React, {FunctionComponent} from "react";
-import {useDispatch, useSelector} from "react-redux";
+import React, { FunctionComponent } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {
     closeAllEditors,
     closeEditor,
@@ -11,11 +11,12 @@ import {
     editorContentIsChanged,
     EditorInfoUnion
 } from "../../slice/OpenEditorsSlice";
-import {AppState} from "../../store/AppStore";
-import {EditorGroupsContextMenu} from "./EditorGroupsContextMenu";
-import {EditorProxy} from "./EditorProxy";
-import {EditorTabLabel} from "./EditorTabLabel";
-import {EditorTabPanel} from "./EditorTabPanel";
+import { AppState } from "../../store/AppStore";
+import { EditorGroupsContextMenu } from "./EditorGroupsContextMenu";
+import { EditorProxy } from "./EditorProxy";
+import { EditorTabLabel } from "./EditorTabLabel";
+import { EditorTabPanel } from "./EditorTabPanel";
+import { tabHeight } from "./book/TabHeight";
 
 export const EditorGroups: FunctionComponent = () => {
     const editors = useSelector((state: AppState) => state.openEditors);
@@ -78,13 +79,14 @@ export const EditorGroups: FunctionComponent = () => {
             onChange={handleChange}
             variant="scrollable"
             aria-label="Open editors"
+            sx={{ height: tabHeight, minHeight: tabHeight }}
             TabIndicatorProps={{ sx: { height: 3 } }}>
             {editors.openEditors.map((editor, i) => {
                 // A portion of the path will be displayed if there are multiple files open with the same name
-                const showPathInTab = editors.openEditors.filter(oe => oe.kind==='file' && editor.kind==='file' && oe.handle.name === editor.handle.name).length > 1;
+                const showPathInTab = editors.openEditors.filter(oe => oe.kind === 'file' && editor.kind === 'file' && oe.handle.name === editor.handle.name).length > 1;
 
                 return <Tab id={`editor-tab-${i}`}
-                    sx={{ pl: 1.4, pr: 0.6, pt: 0.2, pb: 0.2 }}
+                    sx={{ pl: 1.4, pr: 0.6, pt: 0, pb: 0, height: tabHeight, minHeight: tabHeight }}
                     title={editor.path}
                     onContextMenu={(e) => openContextMenu(e)}
                     key={`open-editor-tab-${i}`}
