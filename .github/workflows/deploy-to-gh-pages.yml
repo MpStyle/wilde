@@ -27,7 +27,7 @@ jobs:
       - run: git --work-tree build add --all
         shell: bash
       - name: Writing release tag to minor-version.txt file...
-        run: echo "${{ github.event.release.tag_name }}" > minor-version.txt
+        run: echo "${{ github.run_id }}.${{ github.run_number }}.${{ github.run_attempt }}" > minor-version.txt
         shell: bash
       - name: Creating deploy commit...
         run: |
