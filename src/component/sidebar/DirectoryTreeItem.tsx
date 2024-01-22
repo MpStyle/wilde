@@ -9,7 +9,7 @@ import { setSelectedProjectFile } from "../../slice/ProjectDirectorySlice";
 import { AppState } from "../../store/AppStore";
 import { FileIcon } from "../common/file-icon/FileIcon";
 import { TreeNode } from "./entity/TreeNode";
-import HomeIcon from '@mui/icons-material/Home';
+import { WildeAvatar } from '../common/wilde-avatar/WildeAvatar';
 
 export const DirectoryTreeItem = memo((props: SpeedTreeItemProps) => {
     const selectedProjectFile = useSelector((appState: AppState) => appState.projectFolder.selectedProjectFile);
@@ -65,11 +65,7 @@ export const DirectoryTreeItem = memo((props: SpeedTreeItemProps) => {
                     visibility: node.handle.kind === "directory" ? 'visible' : 'hidden'
                 }} />}
             {rootDirectory !== node.handle && <FileIcon sx={{ mr: 1, color: theme.palette.grey[400] }} handle={node.handle} collapsed={node.collapsed} path={node.path} />}
-            {rootDirectory === node.handle && <Box sx={{
-                mr: 0.6,
-                ml: 0.6,
-                color: isSelected ? theme.palette.primary.contrastText : theme.palette.primary.main
-            }} component={HomeIcon} />}
+            {rootDirectory === node.handle && <WildeAvatar sx={{ mr: 0.6, ml: 0.6 }} name={rootDirectory.name} size="small" />}
             <Typography variant="body2"
                 sx={{
                     fontWeight: 'inherit',

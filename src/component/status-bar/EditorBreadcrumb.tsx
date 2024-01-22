@@ -10,6 +10,7 @@ import { FileIcon } from "../common/file-icon/FileIcon";
 import { BreadcrumbsMenuItem } from "./BreadcrumbsMenuItem";
 import { BreadcrumbsMenuLoadingItem } from "./BreadcrumbsMenuLoadingItem";
 import { BreadcrumbsMenuEmptyItem } from "./BreadcrumbsMenuEmptyItem";
+import { WildeAvatar } from "../common/wilde-avatar/WildeAvatar";
 
 export interface EditorBreadcrumbProps {
     path: string;
@@ -19,6 +20,7 @@ export interface EditorBreadcrumbProps {
 
 export const EditorBreadcrumb: FunctionComponent<EditorBreadcrumbProps> = props => {
     const directoryStructure = useSelector((appState: AppState) => appState.projectFolder.directoryStructure);
+    const rootDirectory = useSelector((appState: AppState) => appState.projectFolder.rootDirectory);
     const { path } = props;
     const boxRef = useRef<HTMLElement>(null);
     const [isOpen, setIsOpen] = useState(false);
@@ -43,9 +45,12 @@ export const EditorBreadcrumb: FunctionComponent<EditorBreadcrumbProps> = props 
             sx={{ pt: 0, pb: 0, textTransform: 'none', minWidth: 'auto', fontSize: '1em', display: 'flex' }}
             onClick={open}
             component={hasMenu ? Button : 'span'}>
-            <FileIcon handle={props.handle}
+
+            {rootDirectory === props.handle && <WildeAvatar sx={{ mr: '0.25em' }} name={rootDirectory.name} size="small" />}
+            {rootDirectory !== props.handle && <FileIcon handle={props.handle}
                 sx={{ mr: '0.25em' }}
-                size='small' />
+                size='small' />}
+
             {props.label}
         </Box>
 
