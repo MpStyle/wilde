@@ -1,16 +1,19 @@
-import {createSlice, PayloadAction} from '@reduxjs/toolkit'
-import {closeProjectDirectory} from "./ProjectDirectorySlice";
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { closeProjectDirectory } from "./ProjectDirectorySlice";
 
 interface EditorInfo {
-    path: string;
+    readonly path: string;
     isChange?: boolean;
     readonly kind: "wilde" | "file";
 }
 
-export const WildeProtocol="wilde://";
+export const WildeProtocol = "wilde://";
+
+export type WildeEditorPath = `${typeof WildeProtocol}settings`;
 
 export interface WildeEditorInfo extends EditorInfo {
     readonly kind: "wilde";
+    readonly path: WildeEditorPath;
 }
 
 export interface FileEditorInfo extends EditorInfo {
@@ -22,6 +25,10 @@ export type EditorInfoUnion = WildeEditorInfo | FileEditorInfo;
 
 export const fileEditorInfoBuilder = (path: string, handle: FileSystemFileHandle): FileEditorInfo => ({
     path, handle, kind: "file"
+})
+
+export const wildeEditorInfoBuilder = (path: WildeEditorPath): WildeEditorInfo => ({
+    path, kind: "wilde"
 })
 
 export interface EditorState {
@@ -56,7 +63,7 @@ export const openEditorsSlice = createSlice({
             state.openEditors = [...state.openEditors, action.payload]
             state.currentEditor = action.payload;
         },
-        closeEditor: (state, action: PayloadAction<{path:string}>) => {
+        closeEditor: (state, action: PayloadAction<{ path: string }>) => {
             const editorIndex = state.openEditors.findIndex(oe => oe.path === action.payload.path);
 
             if (editorIndex === -1) {

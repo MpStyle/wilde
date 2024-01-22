@@ -5,9 +5,12 @@ import { FileUtils } from "../../../book/FileUtils";
 import { useWilde } from "../../../hook/WildeHook";
 import { FileEditorProps } from "../book/EditorProps";
 import { tabPanelHeight } from "../book/TabHeight";
+import { useSelector } from "react-redux";
+import { AppState } from "../../../store/AppStore";
 
 export const TextEditor: FunctionComponent<FileEditorProps> = props => {
     const [editor, setEditor] = useState<monaco.editor.IStandaloneCodeEditor | null>(null);
+    const settings = useSelector((appState: AppState) => appState.settings.settings);
     const monacoEl = useRef(null);
     const wilde = useWilde();
 
@@ -28,7 +31,7 @@ export const TextEditor: FunctionComponent<FileEditorProps> = props => {
     // onSave event listener
     useEffect(() => {
         const onSaveAll = () => {
-            if (editor) {
+            if (editor && props.editor.isChange) {
                 FileUtils.writeContent(props.editor.handle, editor.getValue())
                 props.onContentSave();
             }
@@ -36,9 +39,7 @@ export const TextEditor: FunctionComponent<FileEditorProps> = props => {
 
         wilde.addEventListener('onSaveAll', onSaveAll);
 
-        return () => {
-            wilde.removeEventListener('onSaveAll', onSaveAll);
-        };
+        return () => wilde.removeEventListener('onSaveAll', onSaveAll);
     });
 
     // Load editor and its content
@@ -54,6 +55,10 @@ export const TextEditor: FunctionComponent<FileEditorProps> = props => {
                     value: fileContent,
                     language: getLanguage(),
                     automaticLayout: true,
+                    minimap: {
+                        enabled: settings.editor.minimap.enabled,
+                        autohide: settings.editor.minimap.autoHide,
+                    }
                 });
 
                 newEditor.onDidChangeModelContent(() => {

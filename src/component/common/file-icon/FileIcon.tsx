@@ -1,8 +1,10 @@
-import React, { FunctionComponent } from "react";
-import { IconResolver } from "../../../book/IconResolver";
-import { Icon } from "@mui/material";
-import { SxProps } from "@mui/system";
+import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
+import { Avatar, AvatarProps, Icon } from "@mui/material";
 import { Theme } from "@mui/material/styles";
+import { SxProps } from "@mui/system";
+import { FunctionComponent } from "react";
+import { IconResolver } from "../../../book/IconResolver";
+import { WildeProtocol } from "../../../slice/OpenEditorsSlice";
 
 export const FileIcon: FunctionComponent<FileIconProps> = props => {
     return <Icon sx={props.sx} fontSize={props.size}>

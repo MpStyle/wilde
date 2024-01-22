@@ -1,21 +1,58 @@
-import InfoIcon from '@mui/icons-material/Info';
-import { IconButton } from "@mui/material";
+import SettingsIcon from '@mui/icons-material/Settings';
+import { IconButton, Menu, MenuItem } from "@mui/material";
 import Stack from "@mui/material/Stack";
-import { FunctionComponent } from "react";
+import { FunctionComponent, useState } from "react";
+import { useDispatch, useSelector } from 'react-redux';
 import { useWilde } from "../../hook/WildeHook";
+import { AppDispatch, AppState } from '../../store/AppStore';
 import { EditorBreadcrumbs } from "./EditorBreadcrumbs";
-import { useSelector } from 'react-redux';
-import { AppState } from '../../store/AppStore';
+import { openEditor, wildeEditorInfoBuilder } from '../../slice/OpenEditorsSlice';
 
 export const StatusBar: FunctionComponent = () => {
     const rootDirectory = useSelector((appState: AppState) => appState.projectFolder.rootDirectory);
+    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+    const dispatch = useDispatch<AppDispatch>();
     const wilde = useWilde();
+    const open = Boolean(anchorEl);
+
+    const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+        setAnchorEl(event.currentTarget);
+    };
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
 
     return <Stack direction="row" sx={{ alignItems: 'center' }}>
         {Boolean(rootDirectory) && <EditorBreadcrumbs />}
         <div style={{ flex: 1 }} />
-        <IconButton size="small" onClick={() => wilde.showAbout()}>
-            <InfoIcon />
+        <IconButton size="small"
+            id="basic-button"
+            aria-controls={open ? 'settings-menu' : undefined}
+            aria-haspopup="true"
+            aria-expanded={open ? 'true' : undefined}
+            onClick={handleClick}>
+            <SettingsIcon />
         </IconButton>
+
+        <Menu id="settings-menu"
+            anchorEl={anchorEl}
+            open={open}
+            onClose={handleClose}
+            MenuListProps={{
+                'aria-labelledby': 'basic-button',
+            }}>
+            <MenuItem onClick={() => {
+                dispatch(openEditor(wildeEditorInfoBuilder('wilde://settings')));
+                handleClose();
+            }}>
+                Settings
+            </MenuItem>
+            <MenuItem onClick={() => {
+                wilde.showAbout();
+                handleClose();
+            }}>
+                About wilde
+            </MenuItem>
+        </Menu>
     </Stack>
 }

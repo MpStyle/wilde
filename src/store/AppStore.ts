@@ -2,12 +2,14 @@ import { configureStore } from '@reduxjs/toolkit';
 import { openEditorsReducer } from "../slice/OpenEditorsSlice";
 import { projectFolderReducer } from "../slice/ProjectDirectorySlice";
 import { versionApi } from '../slice/VersionSlice';
+import { settingsReducer } from '../slice/SettingsSlice';
 
 export const appStore = configureStore({
     reducer: {
         [versionApi.reducerPath]: versionApi.reducer,
         projectFolder: projectFolderReducer,
-        openEditors: openEditorsReducer
+        openEditors: openEditorsReducer,
+        settings: settingsReducer,
     },
     middleware: (getDefaultMiddleware) => getDefaultMiddleware({
         serializableCheck: false

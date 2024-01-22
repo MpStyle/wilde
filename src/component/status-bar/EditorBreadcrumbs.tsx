@@ -1,10 +1,10 @@
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
-import {Breadcrumbs} from "@mui/material";
-import {FunctionComponent, useId} from "react";
-import {useSelector} from "react-redux";
-import {PathUtils} from "../../book/PathUtils";
-import {AppState} from "../../store/AppStore";
-import {EditorBreadcrumb} from './EditorBreadcrumb';
+import { Breadcrumbs } from "@mui/material";
+import { FunctionComponent, useId } from "react";
+import { useSelector } from "react-redux";
+import { PathUtils } from "../../book/PathUtils";
+import { AppState } from "../../store/AppStore";
+import { EditorBreadcrumb } from './EditorBreadcrumb';
 
 export const EditorBreadcrumbs: FunctionComponent = () => {
     const currentEditor = useSelector((appState: AppState) => appState.openEditors.currentEditor);
@@ -12,7 +12,7 @@ export const EditorBreadcrumbs: FunctionComponent = () => {
     const directoryStructure = useSelector((appState: AppState) => appState.projectFolder.directoryStructure);
     const crumbId = useId();
 
-    if (!rootDirectory) {
+    if (!rootDirectory || currentEditor?.kind === 'wilde') {
         return null;
     }
 
@@ -33,7 +33,7 @@ export const EditorBreadcrumbs: FunctionComponent = () => {
             const isLast = i === currentEditorPathParts.length - 1;
             const path = PathUtils.combine(...(completePathParts.slice(0, i + 1)));
 
-            if(currentEditor.kind!=='file'){
+            if (currentEditor.kind !== 'file') {
                 return null;
             }
 
