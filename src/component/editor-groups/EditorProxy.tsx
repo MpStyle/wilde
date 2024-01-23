@@ -26,13 +26,16 @@ export const EditorProxy: FunctionComponent<EditorProps> = props => {
         }
     }
 
-    const extension = FileUtils.getExtension(props.editor.handle.name);
-
     if (isTextFile === undefined) {
         return <EditorLoader />;
     }
 
+    if (isTextFile === false) {
+        return <BinaryContentWarningMessage />;
+    }
+
     const fileEditorProps = { ...props, editor: props.editor as FileEditorInfo };
+    const extension = FileUtils.getExtension(props.editor.handle.name);
 
     switch (extension) {
         case 'png':
@@ -40,6 +43,6 @@ export const EditorProxy: FunctionComponent<EditorProps> = props => {
         case 'ico':
             return <ImageViewer {...fileEditorProps} />;
         default:
-            return isTextFile ? <TextEditor {...fileEditorProps} /> : <BinaryContentWarningMessage />;
+            return <TextEditor {...fileEditorProps} />;
     }
 }
