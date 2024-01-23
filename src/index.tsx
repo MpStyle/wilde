@@ -16,6 +16,9 @@ import i18n from './book/i18n';
 import { I18nextProvider } from 'react-i18next';
 
 const theme = createTheme({
+    typography: {
+        fontSize: 14
+    },
     palette: {
         primary: {
             main: '#3D44FF',
