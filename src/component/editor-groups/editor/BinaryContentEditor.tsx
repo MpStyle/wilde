@@ -2,7 +2,7 @@ import { FunctionComponent } from "react";
 import { Box } from "@mui/material";
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 
-export const BinaryContentWarningMessage: FunctionComponent = () => {
+export const BinaryContentEditor: FunctionComponent = () => {
     return <Box sx={{
         height: `calc(100% - 48px - 8px)`,
         alignItems: 'center',

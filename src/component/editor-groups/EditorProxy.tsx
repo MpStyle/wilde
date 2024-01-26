@@ -3,7 +3,7 @@ import { TextEditor } from "./editor/TextEditor";
 import { FileUtils } from "../../book/FileUtils";
 import { ImageViewer } from "./editor/ImageViewer";
 import { EditorLoader } from "./common/EditorLoader";
-import { BinaryContentWarningMessage } from "./common/BinaryContentWarningMessage";
+import { BinaryContentEditor } from "./editor/BinaryContentEditor";
 import { EditorProps } from "./book/EditorProps";
 import { FileEditorInfo } from "../../slice/OpenEditorsSlice";
 import { SettingsEditor } from "./editor/SettingsEditor";
@@ -31,7 +31,7 @@ export const EditorProxy: FunctionComponent<EditorProps> = props => {
     }
 
     if (isTextFile === false) {
-        return <BinaryContentWarningMessage />;
+        return <BinaryContentEditor />;
     }
 
     const fileEditorProps = { ...props, editor: props.editor as FileEditorInfo };
