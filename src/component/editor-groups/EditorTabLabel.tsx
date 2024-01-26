@@ -4,9 +4,9 @@ import { FunctionComponent } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { PathUtils } from "../../book/PathUtils";
-import { EditorInfoUnion, WildeProtocol, closeEditor } from "../../slice/OpenEditorsSlice";
+import { EditorInfoUnion, closeEditor } from "../../slice/OpenEditorsSlice";
 import { FileIcon } from "../common/file-icon/FileIcon";
-import { WildeAvatar } from "../common/wilde-avatar/WildeAvatar";
+import { WildeEditorIcon } from "../common/wilde-editor-icon/WildeEditorIcon";
 
 export const EditorTabLabel: FunctionComponent<EditorTabLabelProps> = props => {
     const { t } = useTranslation();
@@ -19,7 +19,7 @@ export const EditorTabLabel: FunctionComponent<EditorTabLabelProps> = props => {
         pr: 0,
     }}>
         <Box sx={{ mr: 1 }} component='span'>
-            {props.editor.kind === 'wilde' && <WildeAvatar size='small' name={props.editor.path.replace(WildeProtocol, '')} />}
+            {props.editor.kind === 'wilde' && <WildeEditorIcon size='small' path={props.editor.path} />}
 
             {props.editor.kind === 'file' && <FileIcon handle={props.editor.handle}
                 path={props.editor.path}
