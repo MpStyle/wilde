@@ -6,7 +6,7 @@ import { EditorLoader } from "./common/EditorLoader";
 import { BinaryContentEditor } from "./editor/BinaryContentEditor";
 import { EditorProps } from "./book/EditorProps";
 import { FileEditorInfo } from "../../slice/OpenEditorsSlice";
-import { SettingsEditor } from "./editor/SettingsEditor";
+import { SettingsEditor } from "./editor/settings-editor/SettingsEditor";
 
 export const EditorProxy: FunctionComponent<EditorProps> = props => {
     const [isTextFile, setIsTextFile] = useState<boolean | undefined>(undefined);

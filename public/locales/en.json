@@ -1,3 +1,7 @@
 {
-    "wilde://settings": "Settings"
+    "wilde://settings": "Settings",
+    "settings-enabled-label": "Enabled",
+    "settings-enabled-description": "Controls whether the minimap is shown",
+    "settings-autohide-label": "Autohide",
+    "settings-autohide-description": "Controls whether the minimap is hidden automatically"
 }
