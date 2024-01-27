@@ -77,6 +77,17 @@ export const openEditorsSlice = createSlice({
             state.openEditors = [...state.openEditors, action.payload]
             state.currentEditor = action.payload;
         },
+        openEditors: (state, action: PayloadAction<EditorInfoUnion[]>) => {
+            for (let i = 0; i < action.payload.length; i++) {
+                const editorIndex = findIndex(state.openEditors, action.payload[i]);
+
+                if (editorIndex === -1) {
+                    state.openEditors = [...state.openEditors, action.payload[i]];
+                }
+            }
+
+            state.currentEditor = action.payload[action.payload.length - 1];
+        },
         closeEditor: (state, action: PayloadAction<EditorInfoUnion>) => {
             const editorIndex = findIndex(state.openEditors, action.payload);
 
@@ -127,6 +138,7 @@ export const openEditorsSlice = createSlice({
 // Action creators are generated for each case reducer function
 export const {
     openEditor,
+    openEditors,
     closeEditor,
     closeAllEditors,
     closeOthersEditors,

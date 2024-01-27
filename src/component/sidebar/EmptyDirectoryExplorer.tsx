@@ -3,11 +3,21 @@ import { Box, Button, Typography } from "@mui/material";
 import { closeProjectDirectory, openProjectDirectory } from "../../slice/ProjectDirectorySlice";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../store/AppStore";
+import { fileEditorInfoBuilder, openEditors } from "../../slice/OpenEditorsSlice";
 
 export const EmptyDirectoryExplorer: FunctionComponent = () => {
     const dispatch = useDispatch<AppDispatch>();
 
-    const selectProjectDirectory = async () => {
+    const selectFile = async () => {
+        try {
+            const fileHandles = await window.showOpenFilePicker({ multiple: true });
+            dispatch(openEditors(fileHandles.map(fileHandle => fileEditorInfoBuilder(fileHandle.name, fileHandle))));
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+    const selectDirectory = async () => {
         try {
             const dirHandle = await window.showDirectoryPicker();
             dispatch(closeProjectDirectory());
@@ -18,11 +28,21 @@ export const EmptyDirectoryExplorer: FunctionComponent = () => {
     }
 
     return <Box sx={{ p: 1 }}>
-        <Typography>No folder has been opened yet.</Typography>
+        <Typography>You can open a file (or some files):</Typography>
+        <Box sx={{ textAlign: 'center', m: '10px 0' }}>
+            <Button title="Open file(s)"
+                variant="contained"
+                fullWidth
+                onClick={() => selectFile()}>
+                Open file(s)
+            </Button>
+        </Box>
+        <Typography>Or a folder:</Typography>
         <Box sx={{ textAlign: 'center', m: '10px 0' }}>
             <Button title="Open folder"
                 variant="contained"
-                onClick={() => selectProjectDirectory()}>
+                fullWidth
+                onClick={() => selectDirectory()}>
                 Open folder
             </Button>
         </Box>
