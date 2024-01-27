@@ -56,8 +56,8 @@ export const TextEditor: FunctionComponent<FileEditorProps> = props => {
                     language: getLanguage(),
                     automaticLayout: true,
                     minimap: {
-                        enabled: settings.editor.minimap.enabled,
-                        autohide: settings.editor.minimap.autoHide,
+                        enabled: settings["editor/minimap/enabled"],
+                        autohide: settings["editor/minimap/autoHide"],
                     }
                 });
 

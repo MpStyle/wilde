@@ -1,25 +1,28 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
-export interface Settings {
-    editor: {
-        minimap: {
-            enabled: boolean;
-            autoHide?: boolean;
-        }
-    }
+export class Settings {
+    'editor/minimap/enabled': boolean;
+    'editor/minimap/autoHide'?: boolean;
 }
+
+export type SettingsType = 'boolean' | 'string' | 'number' | Array<string>;
+
+export type SettingsDefinition = {
+    [K in keyof Settings]: SettingsType;
+};
 
 interface SettingsState {
     settings: Settings;
+    settingsDefinitions: SettingsDefinition;
 }
 
 const initialState: SettingsState = {
     settings: {
-        editor: {
-            minimap: {
-                enabled: true,
-            }
-        }
+        "editor/minimap/enabled": true
+    },
+    settingsDefinitions: {
+        "editor/minimap/enabled": 'boolean',
+        "editor/minimap/autoHide": 'boolean'
     }
 }
 
