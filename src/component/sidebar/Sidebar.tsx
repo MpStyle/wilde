@@ -5,6 +5,7 @@ import { AppState } from "../../store/AppStore";
 import { ActionsBar } from "./ActionsBar";
 import { DirectoryExplorer } from './DirectoryExplorer';
 import { EmptyDirectoryExplorer } from "./EmptyDirectoryExplorer";
+import { useTranslation } from "react-i18next";
 
 export const topBarHeight = '40px';
 
@@ -12,6 +13,7 @@ export const Sidebar: FunctionComponent = () => {
     const rootDirectory = useSelector((appState: AppState) => appState.projectFolder.rootDirectory);
     const [openedNodeIds, setOpenedNodeIds] = useState<string[]>([]);
     const theme = useTheme();
+    const { t } = useTranslation();
     const handleCollapseAllClick = () => setOpenedNodeIds([]);
 
     const sidebarContent = () => {
@@ -28,7 +30,7 @@ export const Sidebar: FunctionComponent = () => {
                 pr: 1,
             }}>
                 <Typography sx={{ flex: 1, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                    Explorer:
+                    {t("Explorer")}:
                 </Typography>
 
                 <ActionsBar handleCollapseAllClick={handleCollapseAllClick} openedNodeIds={openedNodeIds} />
@@ -37,7 +39,7 @@ export const Sidebar: FunctionComponent = () => {
             <Box sx={{
                 borderTop: `1px solid ${theme.palette.grey[400]}`,
                 pt: 1,
-                height: `calc(100% - ${topBarHeight})`,
+                height: `calc(100% - ${topBarHeight} - 8px)`,
             }}>
                 <DirectoryExplorer openedNodeIds={openedNodeIds} setOpenedNodeIds={setOpenedNodeIds} />
             </Box>

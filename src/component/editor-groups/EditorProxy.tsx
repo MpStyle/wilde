@@ -30,12 +30,14 @@ export const EditorProxy: FunctionComponent<EditorProps> = props => {
         return <EditorLoader />;
     }
 
-    if (isTextFile === false) {
+    const extension = FileUtils.getExtension(props.editor.handle.name);
+    const isImage = extension && ['png', 'jpg', 'ico'].includes(extension);
+
+    if (isTextFile === false && !isImage) {
         return <BinaryContentEditor />;
     }
 
     const fileEditorProps = { ...props, editor: props.editor as FileEditorInfo };
-    const extension = FileUtils.getExtension(props.editor.handle.name);
 
     switch (extension) {
         case 'png':
