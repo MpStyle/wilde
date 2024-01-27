@@ -3,7 +3,7 @@ import { closeProjectDirectory } from "./ProjectDirectorySlice";
 
 interface EditorInfo {
     readonly path: string;
-    isChange?: boolean;
+    isChanged?: boolean;
     readonly kind: "wilde" | "file";
 }
 
@@ -31,6 +31,18 @@ export const wildeEditorInfoBuilder = (path: WildeEditorPath): WildeEditorInfo =
     path, kind: "wilde"
 })
 
+const findIndex = (openEditors: EditorInfoUnion[], editor: EditorInfoUnion) => {
+    return openEditors.findIndex(oe => {
+        if (oe.kind === 'wilde') {
+            return oe.path === editor.path;
+        }
+
+        const fileEditor = editor as FileEditorInfo;
+
+        return oe.handle === fileEditor.handle;
+    });
+}
+
 export interface EditorState {
     openEditors: EditorInfoUnion[];
     currentEditor?: EditorInfoUnion | undefined;
@@ -44,18 +56,20 @@ export const openEditorsSlice = createSlice({
     name: 'openEditors',
     initialState,
     reducers: {
-        editorContentIsChanged: (state, action: PayloadAction<{ path: string, isChanged: boolean }>) => {
-            const changedEditor = state.openEditors.find(editor => editor.path === action.payload.path);
+        editorContentIsChanged: (state, action: PayloadAction<EditorInfoUnion>) => {
+            const editorIndex = findIndex(state.openEditors, action.payload);
 
-            if (changedEditor) {
-                changedEditor.isChange = action.payload.isChanged;
+            if (editorIndex !== -1) {
+                state.openEditors[editorIndex] = action.payload;
             }
         },
         currentEditor: (state, action: PayloadAction<EditorInfoUnion>) => {
             state.currentEditor = action.payload;
         },
         openEditor: (state, action: PayloadAction<EditorInfoUnion>) => {
-            if (state.openEditors.findIndex(oe => oe.path === action.payload.path) !== -1) {
+            const editorIndex = findIndex(state.openEditors, action.payload);
+
+            if (editorIndex !== -1) {
                 state.currentEditor = action.payload;
                 return;
             }
@@ -63,8 +77,8 @@ export const openEditorsSlice = createSlice({
             state.openEditors = [...state.openEditors, action.payload]
             state.currentEditor = action.payload;
         },
-        closeEditor: (state, action: PayloadAction<{ path: string }>) => {
-            const editorIndex = state.openEditors.findIndex(oe => oe.path === action.payload.path);
+        closeEditor: (state, action: PayloadAction<EditorInfoUnion>) => {
+            const editorIndex = findIndex(state.openEditors, action.payload);
 
             if (editorIndex === -1) {
                 return;
@@ -84,9 +98,10 @@ export const openEditorsSlice = createSlice({
         },
         closeAllEditors: (state) => {
             state.openEditors = [];
+            state.currentEditor = undefined;
         },
-        closeOthersEditors: (state, action: PayloadAction<EditorInfo>) => {
-            const editorIndex = state.openEditors.findIndex(oe => oe.path === action.payload.path);
+        closeOthersEditors: (state, action: PayloadAction<EditorInfoUnion>) => {
+            const editorIndex = findIndex(state.openEditors, action.payload);
 
             if (editorIndex === -1) {
                 return;
@@ -104,6 +119,7 @@ export const openEditorsSlice = createSlice({
         builder
             .addCase(closeProjectDirectory, (state) => {
                 state.openEditors = [];
+                state.currentEditor = undefined;
             })
     }
 })

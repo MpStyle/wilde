@@ -106,9 +106,9 @@ export const EditorGroups: FunctionComponent = () => {
                 hidden={!isCurrentEditor(editor)}>
                 <EditorProxy
                     editor={editor}
-                    onContentChange={() => dispatch(editorContentIsChanged({ path: editor.path, isChanged: true }))}
-                    onContentRestore={() => dispatch(editorContentIsChanged({ path: editor.path, isChanged: false }))}
-                    onContentSave={() => dispatch(editorContentIsChanged({ path: editor.path, isChanged: false }))}
+                    onContentChange={() => dispatch(editorContentIsChanged({ ...editor, isChanged: true }))}
+                    onContentRestore={() => dispatch(editorContentIsChanged({ ...editor, isChanged: false }))}
+                    onContentSave={() => dispatch(editorContentIsChanged({ ...editor, isChanged: false }))}
                 />
             </EditorTabPanel>
         })}

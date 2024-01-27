@@ -42,7 +42,7 @@ export const EditorTabLabel: FunctionComponent<EditorTabLabelProps> = props => {
                 {t(props.editor.path)}
             </Box>}
 
-            {Boolean(props.editor.isChange) && " (*)"}
+            {Boolean(props.editor.isChanged) && " (*)"}
         </Typography>
 
         {props.showPathInTab && <Typography variant='caption'
@@ -63,9 +63,7 @@ export const EditorTabLabel: FunctionComponent<EditorTabLabelProps> = props => {
         <IconButton component="span"
             sx={{ ml: 1 }}
             onClick={e => {
-                dispatch(closeEditor({
-                    path: props.editor.path,
-                }));
+                dispatch(closeEditor(props.editor));
 
                 e.stopPropagation();
             }}>

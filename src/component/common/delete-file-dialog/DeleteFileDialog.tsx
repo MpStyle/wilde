@@ -6,7 +6,7 @@ import { useWilde } from "../../../hook/WildeHook";
 import { scanProjectDirectory } from "../../../slice/ProjectDirectorySlice";
 import { AppDispatch, AppState } from "../../../store/AppStore";
 import { PathUtils } from "../../../book/PathUtils";
-import { closeEditor } from "../../../slice/OpenEditorsSlice";
+import { closeEditor, fileEditorInfoBuilder } from "../../../slice/OpenEditorsSlice";
 
 export const DeleteFileDialog: FunctionComponent = () => {
     const rootDirectory = useSelector((appState: AppState) => appState.projectFolder.rootDirectory);
@@ -44,7 +44,7 @@ export const DeleteFileDialog: FunctionComponent = () => {
         parentHandle.removeEntry(fileHandleInfo.handle.name, { recursive: true })
             .then(_ => {
                 if (fileHandleInfo.handle.kind === 'file') {
-                    dispatch(closeEditor({ path: fileHandleInfo.path }))
+                    dispatch(closeEditor(fileEditorInfoBuilder(fileHandleInfo.path, fileHandleInfo.handle as FileSystemFileHandle)))
                 }
 
                 dispatch(scanProjectDirectory({ path: parentPath, dirHandle: parentHandle }))

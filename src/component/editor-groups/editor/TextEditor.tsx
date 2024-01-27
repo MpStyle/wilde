@@ -31,7 +31,7 @@ export const TextEditor: FunctionComponent<FileEditorProps> = props => {
     // onSave event listener
     useEffect(() => {
         const onSaveAll = () => {
-            if (editor && props.editor.isChange) {
+            if (editor && props.editor.isChanged) {
                 FileUtils.writeContent(props.editor.handle, editor.getValue())
                 props.onContentSave();
             }
