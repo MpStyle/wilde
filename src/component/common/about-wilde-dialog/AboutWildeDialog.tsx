@@ -1,8 +1,8 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, Stack, Typography } from "@mui/material";
+import CloseIcon from '@mui/icons-material/Close';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Stack, Typography } from "@mui/material";
 import { FunctionComponent, useEffect, useState } from "react";
 import { useWilde } from "../../../hook/WildeHook";
 import { useGetMinorVersionQuery } from "../../../slice/VersionSlice";
-import CloseIcon from '@mui/icons-material/Close';
 
 export const AboutWildeDialog: FunctionComponent = () => {
     const [open, setOpen] = useState<boolean>(false);

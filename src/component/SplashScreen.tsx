@@ -21,7 +21,7 @@ export const SplashScreen: FunctionComponent = () => {
     return <Fragment>
         {!checkCompatibility.isCompatible && <Box sx={{ m: 2, '& li': { mb: 1.5 } }}>
             <Stack direction='row' spacing={3}>
-                <img src="logo100.png" />
+                <img src="logo100.png" alt={t("Wilde logo")} />
                 <Stack direction='column'>
                     <Typography variant="h3">Wilde</Typography>
                     <Typography variant="h5">Compatiblity check:</Typography>

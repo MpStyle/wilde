@@ -1,20 +1,13 @@
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
-import { App } from './component/App';
-import { Provider } from "react-redux";
-import { appStore } from "./store/AppStore";
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-import * as serviceWorker from './serviceWorker';
-import { ShortcutManager } from './component/common/shortcut-manager/ShortcutManager';
-import { CloseDirectoryDialog } from './component/common/close-directory-dialog/CloseDirectoryDialog';
-import { NewDirectoryDialog } from './component/common/new-directory-dialog/NewDirectoryDialog';
-import { NewFileDialog } from './component/common/new-file-dialog/NewFileDialog';
-import { DeleteFileDialog } from './component/common/delete-file-dialog/DeleteFileDialog';
-import { AboutWildeDialog } from './component/common/about-wilde-dialog/AboutWildeDialog';
-import i18n from './book/i18n';
 import { I18nextProvider } from 'react-i18next';
+import { Provider } from "react-redux";
+import i18n from './book/i18n';
 import { SplashScreen } from './component/SplashScreen';
+import './index.css';
+import * as serviceWorker from './serviceWorker';
+import { appStore } from "./store/AppStore";
 
 const theme = createTheme({
     typography: {

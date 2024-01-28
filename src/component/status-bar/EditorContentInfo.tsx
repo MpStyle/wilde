@@ -1,10 +1,10 @@
 import { Box } from "@mui/material";
 import { FunctionComponent, useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { AppState } from "../../store/AppStore";
-import { EditorInfoUnion, WildeEditorPath } from "../../slice/OpenEditorsSlice";
-import { FileUtils } from "../../book/FileUtils";
 import { useTranslation } from "react-i18next";
+import { useSelector } from "react-redux";
+import { FileUtils } from "../../book/FileUtils";
+import { EditorInfoUnion } from "../../slice/OpenEditorsSlice";
+import { AppState } from "../../store/AppStore";
 
 const mimeDescriptionByExtension: { [key: string]: string } = {
     'tsx': 'Typescript JSX',
