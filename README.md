@@ -53,6 +53,9 @@ console.log(`${process.env.REACT_APP_NAME} ${process.env.REACT_APP_VERSION}`)
 - Add search in file
 - Add replace in project
 - Add replace in file
+- Rename file and directory
+- Copy/Cut/Paste file and directory
+- Copy relative path
 - Load custom shortcut from local storage or IndexDB
 - ~~Add check to verify compatibility of browser~~
 - Load theme using system preference
