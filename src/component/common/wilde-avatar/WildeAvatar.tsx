@@ -12,7 +12,7 @@ export const WildeAvatar: FunctionComponent<WildeAvatarProps> = props => {
         switch (props.size) {
             default:
             case 'medium': return {};
-            case 'small': return { width: 20, height: 20, fontSize: '0.8em' }
+            case 'small': return { width: 18, height: 18, fontSize: '0.8em' }
             case 'large': return { width: 28, height: 28, fontSize: '1.2em' }
         }
     }
