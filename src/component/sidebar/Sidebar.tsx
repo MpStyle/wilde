@@ -10,7 +10,7 @@ import { useTranslation } from "react-i18next";
 export const topBarHeight = '40px';
 
 export const Sidebar: FunctionComponent = () => {
-    const rootDirectory = useSelector((appState: AppState) => appState.projectFolder.rootDirectory);
+    const rootDirectory = useSelector((appState: AppState) => appState.openedDirectory.rootDirectory);
     const [openedNodeIds, setOpenedNodeIds] = useState<string[]>([]);
     const theme = useTheme();
     const { t } = useTranslation();

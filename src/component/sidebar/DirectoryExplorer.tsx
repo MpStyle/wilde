@@ -6,7 +6,7 @@ import { FixedSizeList as List } from 'react-window';
 import { FileSorter } from "../../book/FileSorter";
 import { PathUtils } from "../../book/PathUtils";
 import { fileEditorInfoBuilder, openEditor } from "../../slice/OpenEditorsSlice";
-import { scanProjectDirectory, setSelectedProjectFile } from "../../slice/ProjectDirectorySlice";
+import { scanDirectoryRequest, setSelectedFile } from "../../slice/OpenedDirectorySlice";
 import { AppDispatch, AppState } from "../../store/AppStore";
 import { DirectoryExplorerContextMenu } from './DirectoryExplorerContextMenu';
 import { DirectoryTreeItem } from "./DirectoryTreeItem";
@@ -24,8 +24,8 @@ const getItemData = memoizeOne(
     }));
 
 export const DirectoryExplorer: FunctionComponent<SpeedTreeProps> = props => {
-    const rootDirectory = useSelector((appState: AppState) => appState.projectFolder.rootDirectory);
-    const directoryStructure = useSelector((appState: AppState) => appState.projectFolder.directoryStructure);
+    const rootDirectory = useSelector((appState: AppState) => appState.openedDirectory.rootDirectory);
+    const directoryStructure = useSelector((appState: AppState) => appState.openedDirectory.directoryStructure);
     const dispatch = useDispatch<AppDispatch>();
     const [contextMenu, setContextMenu] = React.useState<{
         mouseX: number;
@@ -79,7 +79,7 @@ export const DirectoryExplorer: FunctionComponent<SpeedTreeProps> = props => {
 
         if (node.collapsed) {
             if (!directoryStructure.hasOwnProperty(nodePath)) {
-                dispatch(scanProjectDirectory({ path: nodePath, dirHandle: node.handle as FileSystemDirectoryHandle }));
+                dispatch(scanDirectoryRequest({ path: nodePath, dirHandle: node.handle as FileSystemDirectoryHandle }));
             }
 
             return props.setOpenedNodeIds([...props.openedNodeIds, nodePath]);
@@ -110,7 +110,7 @@ export const DirectoryExplorer: FunctionComponent<SpeedTreeProps> = props => {
             onClick={(event) => {
                 const classList = (event.target as any).classList;
                 if (Array.from(classList).includes(fixedListClass)) {
-                    dispatch(setSelectedProjectFile({ path: PathUtils.rootPath, handle: rootDirectory }));
+                    dispatch(setSelectedFile({ path: PathUtils.rootPath, handle: rootDirectory }));
                 }
             }}>
             {({ height, width }: { height: string | number, width: string | number }) =>

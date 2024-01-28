@@ -4,7 +4,7 @@ import { Fragment, FunctionComponent, KeyboardEventHandler, useCallback, useRef,
 import { useSelector } from "react-redux";
 import { FileSorter } from "../../book/FileSorter";
 import { PathUtils } from "../../book/PathUtils";
-import { DirectoryInfo } from "../../slice/ProjectDirectorySlice";
+import { DirectoryInfo } from "../../slice/OpenedDirectorySlice";
 import { AppState } from "../../store/AppStore";
 import { FileIcon } from "../common/file-icon/FileIcon";
 import { BreadcrumbsMenuItem } from "./BreadcrumbsMenuItem";
@@ -19,8 +19,8 @@ export interface EditorBreadcrumbProps {
 }
 
 export const EditorBreadcrumb: FunctionComponent<EditorBreadcrumbProps> = props => {
-    const directoryStructure = useSelector((appState: AppState) => appState.projectFolder.directoryStructure);
-    const rootDirectory = useSelector((appState: AppState) => appState.projectFolder.rootDirectory);
+    const directoryStructure = useSelector((appState: AppState) => appState.openedDirectory.directoryStructure);
+    const rootDirectory = useSelector((appState: AppState) => appState.openedDirectory.rootDirectory);
     const { path } = props;
     const boxRef = useRef<HTMLElement>(null);
     const [isOpen, setIsOpen] = useState(false);

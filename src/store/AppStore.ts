@@ -1,13 +1,13 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { openEditorsReducer } from "../slice/OpenEditorsSlice";
-import { projectFolderReducer } from "../slice/ProjectDirectorySlice";
+import { openedDirectoryReducer } from "../slice/OpenedDirectorySlice";
 import { versionApi } from '../slice/VersionSlice';
 import { settingsReducer } from '../slice/SettingsSlice';
 
 export const appStore = configureStore({
     reducer: {
         [versionApi.reducerPath]: versionApi.reducer,
-        projectFolder: projectFolderReducer,
+        openedDirectory: openedDirectoryReducer,
         openEditors: openEditorsReducer,
         settings: settingsReducer,
     },

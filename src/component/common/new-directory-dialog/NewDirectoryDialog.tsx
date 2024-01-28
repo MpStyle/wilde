@@ -3,12 +3,12 @@ import { FunctionComponent, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { DirectoryUtils } from "../../../book/DirectoryUtils";
 import { useWilde } from "../../../hook/WildeHook";
-import { scanProjectDirectory } from "../../../slice/ProjectDirectorySlice";
+import { scanDirectoryRequest } from "../../../slice/OpenedDirectorySlice";
 import { AppDispatch, AppState } from "../../../store/AppStore";
 
 export const NewDirectoryDialog: FunctionComponent = () => {
-    const parentFileHandleInfo = useSelector((appState: AppState) => appState.projectFolder.selectedProjectFile);
-    const directoryStructure = useSelector((appState: AppState) => appState.projectFolder.directoryStructure);
+    const parentFileHandleInfo = useSelector((appState: AppState) => appState.openedDirectory.selectedFile);
+    const directoryStructure = useSelector((appState: AppState) => appState.openedDirectory.directoryStructure);
     const [newDirectoryName, setNewDirectoryName] = useState<string>('');
     const [open, setOpen] = useState<boolean>(false);
     const [alreadyExists, setAlreadyExists] = useState<boolean>(false);
@@ -50,7 +50,7 @@ export const NewDirectoryDialog: FunctionComponent = () => {
 
         parentDirectoryHandle.getDirectoryHandle(newDirectoryName, { create: true })
             .then(_ => {
-                dispatch(scanProjectDirectory({
+                dispatch(scanDirectoryRequest({
                     path: parentPath,
                     dirHandle: parentDirectoryHandle
                 }));

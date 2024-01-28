@@ -1,7 +1,7 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
 import { FunctionComponent, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { closeProjectDirectory } from "../../../slice/ProjectDirectorySlice";
+import { closeDirectory } from "../../../slice/OpenedDirectorySlice";
 import { useWilde } from "../../../hook/WildeHook";
 
 export const CloseDirectoryDialog: FunctionComponent = () => {
@@ -25,7 +25,7 @@ export const CloseDirectoryDialog: FunctionComponent = () => {
     const onClose = () => setOpen(false);
     const onConfirm = () => {
         onClose();
-        dispatch(closeProjectDirectory());
+        dispatch(closeDirectory());
     };
 
     return <Dialog open={open} onClose={onClose}>

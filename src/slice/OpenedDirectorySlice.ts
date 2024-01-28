@@ -13,14 +13,14 @@ export type DirectoryStructure = {
     [path: string]: DirectoryInfo
 };
 
-export interface ProjectFolderState {
-    selectedProjectFile: FileHandleInfo | undefined;
+export interface DirectoryState {
+    selectedFile: FileHandleInfo | undefined;
     directoryStructure: DirectoryStructure;
     rootDirectory: FileSystemDirectoryHandle | undefined;
 }
 
-const initialState: ProjectFolderState = {
-    selectedProjectFile: undefined,
+const initialState: DirectoryState = {
+    selectedFile: undefined,
     directoryStructure: {},
     rootDirectory: undefined,
 }
@@ -35,15 +35,15 @@ const scanDirectory = async (path: string, dirHandle: FileSystemDirectoryHandle)
     return { path, handle: dirHandle, handles: values };
 };
 
-export const scanProjectDirectory = createAsyncThunk(
-    'projectDirectory/scanProjectDirectory',
+export const scanDirectoryRequest = createAsyncThunk(
+    'openedDirectory/scanDirectoryRequest',
     async (args: { path: string, dirHandle: FileSystemDirectoryHandle }) => {
         return scanDirectory(args.path, args.dirHandle);
     }
 )
 
-export const openProjectDirectory = createAsyncThunk(
-    'projectDirectory/openProjectDirectory',
+export const openDirectoryRequest = createAsyncThunk(
+    'openedDirectory/openDirectoryRequest',
     async (dirHandle: FileSystemDirectoryHandle) => {
         OpenedDirectoryRepository.upsert({
             name: dirHandle.name,
@@ -55,8 +55,8 @@ export const openProjectDirectory = createAsyncThunk(
     }
 )
 
-export const refreshProjectDirectory = createAsyncThunk(
-    'projectDirectory/refreshProjectDirectory',
+export const refreshDirectoryRequest = createAsyncThunk(
+    'openedDirectory/refreshDirectoryRequest',
     async (args: { rootHandle: FileSystemDirectoryHandle, paths: string[] }) => {
         const directoryStructureBuilder = async (path: string, handle: FileSystemDirectoryHandle) => {
             let result: DirectoryStructure = {};
@@ -84,21 +84,21 @@ export const refreshProjectDirectory = createAsyncThunk(
     }
 )
 
-export const projectDirectorySlice = createSlice({
-    name: 'projectDirectory',
+export const openedDirectorySlice = createSlice({
+    name: 'openedDirectory',
     initialState,
     reducers: {
-        closeProjectDirectory: (state) => {
+        closeDirectory: (state) => {
             state.directoryStructure = {};
             state.rootDirectory = undefined;
         },
-        setSelectedProjectFile: (state, action: PayloadAction<FileHandleInfo>) => {
-            state.selectedProjectFile = action.payload;
+        setSelectedFile: (state, action: PayloadAction<FileHandleInfo>) => {
+            state.selectedFile = action.payload;
         }
     },
     extraReducers: (builder) => {
         builder
-            .addCase(scanProjectDirectory.pending, (state, action) => {
+            .addCase(scanDirectoryRequest.pending, (state, action) => {
                 const currentState = state.directoryStructure[action.meta.arg.path] ?? {};
 
                 state.directoryStructure[action.meta.arg.path] = {
@@ -107,14 +107,14 @@ export const projectDirectorySlice = createSlice({
                     isScanning: true,
                 };
             })
-            .addCase(scanProjectDirectory.fulfilled, (state, action) => {
+            .addCase(scanDirectoryRequest.fulfilled, (state, action) => {
                 state.directoryStructure[action.payload.path] = {
                     content: action.payload.handles,
                     handle: action.payload.handle,
                     isScanning: false,
                 };
             })
-            .addCase(openProjectDirectory.pending, (state) => {
+            .addCase(openDirectoryRequest.pending, (state) => {
                 const currentState = state.directoryStructure[PathUtils.rootPath] ?? {};
 
                 state.directoryStructure[PathUtils.rootPath] = {
@@ -123,24 +123,24 @@ export const projectDirectorySlice = createSlice({
                     isScanning: true,
                 };
             })
-            .addCase(openProjectDirectory.fulfilled, (state, action) => {
+            .addCase(openDirectoryRequest.fulfilled, (state, action) => {
                 state.directoryStructure[action.payload.path] = {
                     content: action.payload.handles,
                     handle: action.payload.handle,
                     isScanning: false
                 };
                 state.rootDirectory = action.payload.root;
-                state.selectedProjectFile = {
+                state.selectedFile = {
                     handle: action.payload.root,
                     path: PathUtils.rootPath
                 };
             })
-            .addCase(refreshProjectDirectory.fulfilled, (state, action) => {
+            .addCase(refreshDirectoryRequest.fulfilled, (state, action) => {
                 state.directoryStructure = action.payload;
             })
     }
 })
 
-export const { closeProjectDirectory, setSelectedProjectFile } = projectDirectorySlice.actions
+export const { closeDirectory, setSelectedFile } = openedDirectorySlice.actions
 
-export const projectFolderReducer = projectDirectorySlice.reducer;
+export const openedDirectoryReducer = openedDirectorySlice.reducer;

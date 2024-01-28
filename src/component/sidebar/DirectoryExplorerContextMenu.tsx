@@ -5,8 +5,8 @@ import { useWilde } from "../../hook/WildeHook";
 import { AppState } from "../../store/AppStore";
 
 export const DirectoryExplorerContextMenu: FunctionComponent<DirectoryExplorerContextMenuProps> = props => {
-    const selectedProjectFile = useSelector((appState: AppState) => appState.projectFolder.selectedProjectFile);
-    const rootDirectory = useSelector((appState: AppState) => appState.projectFolder.rootDirectory);
+    const selectedFile = useSelector((appState: AppState) => appState.openedDirectory.selectedFile);
+    const rootDirectory = useSelector((appState: AppState) => appState.openedDirectory.rootDirectory);
     const {
         onClose,
         open,
@@ -14,7 +14,7 @@ export const DirectoryExplorerContextMenu: FunctionComponent<DirectoryExplorerCo
     } = props;
     const wilde = useWilde();
 
-    if (!selectedProjectFile) {
+    if (!selectedFile) {
         return null;
     }
 
@@ -26,7 +26,7 @@ export const DirectoryExplorerContextMenu: FunctionComponent<DirectoryExplorerCo
                 ? { top: position.mouseY, left: position.mouseX }
                 : undefined
         }>
-        {selectedProjectFile.handle.kind === 'directory' &&
+        {selectedFile.handle.kind === 'directory' &&
             <MenuItem onClick={() => {
                 onClose();
                 wilde.newFile();
@@ -34,7 +34,7 @@ export const DirectoryExplorerContextMenu: FunctionComponent<DirectoryExplorerCo
                 New File...
             </MenuItem>}
 
-        {selectedProjectFile.handle.kind === 'directory' &&
+        {selectedFile.handle.kind === 'directory' &&
             <MenuItem onClick={() => {
                 onClose();
                 wilde.newDirectory();
@@ -42,7 +42,7 @@ export const DirectoryExplorerContextMenu: FunctionComponent<DirectoryExplorerCo
                 New folder...
             </MenuItem>}
 
-        {selectedProjectFile.handle !== rootDirectory &&
+        {selectedFile.handle !== rootDirectory &&
             <MenuItem onClick={() => {
                 onClose();
                 wilde.deleteFile()

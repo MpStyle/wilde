@@ -6,28 +6,28 @@ import CreateNewFolderIcon from '@mui/icons-material/CreateNewFolder';
 import NoteAddIcon from '@mui/icons-material/NoteAdd';
 import UnfoldLessIcon from '@mui/icons-material/UnfoldLess';
 import { useWilde } from "../../hook/WildeHook";
-import { refreshProjectDirectory } from "../../slice/ProjectDirectorySlice";
+import { refreshDirectoryRequest } from "../../slice/OpenedDirectorySlice";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, AppState } from "../../store/AppStore";
 
 export const ActionsBar: FunctionComponent<ActionsBarProps> = props => {
-    const rootDirectory = useSelector((appState: AppState) => appState.projectFolder.rootDirectory);
+    const rootDirectory = useSelector((appState: AppState) => appState.openedDirectory.rootDirectory);
     const dispatch = useDispatch<AppDispatch>();
     const wilde = useWilde();
 
-    const handleRefreshProjectDirectory = async () => {
+    const handleRefreshDirectory = async () => {
         if (!rootDirectory) {
             return;
         }
 
-        dispatch(refreshProjectDirectory({
+        dispatch(refreshDirectoryRequest({
             rootHandle: rootDirectory,
             paths: props.openedNodeIds
         }));
     };
 
     return <ButtonGroup variant="text"
-        aria-label="project explorer actions"
+        aria-label="folder explorer actions"
         size="small">
         {rootDirectory && <Fragment>
             <IconButton title="New File..."
@@ -47,7 +47,7 @@ export const ActionsBar: FunctionComponent<ActionsBarProps> = props => {
             </IconButton>
             <IconButton title="Refresh"
                 size="small"
-                onClick={() => handleRefreshProjectDirectory()}>
+                onClick={() => handleRefreshDirectory()}>
                 <CachedIcon fontSize="small" />
             </IconButton>
             <IconButton title="Close folder"

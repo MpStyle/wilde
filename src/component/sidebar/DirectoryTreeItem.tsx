@@ -5,20 +5,20 @@ import React, { CSSProperties, memo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { areEqual } from "react-window";
 import { PathUtils } from "../../book/PathUtils";
-import { setSelectedProjectFile } from "../../slice/ProjectDirectorySlice";
+import { setSelectedFile } from "../../slice/OpenedDirectorySlice";
 import { AppState } from "../../store/AppStore";
 import { FileIcon } from "../common/file-icon/FileIcon";
 import { TreeNode } from "./entity/TreeNode";
 import { WildeAvatar } from '../common/wilde-avatar/WildeAvatar';
 
 export const DirectoryTreeItem = memo((props: SpeedTreeItemProps) => {
-    const selectedProjectFile = useSelector((appState: AppState) => appState.projectFolder.selectedProjectFile);
-    const rootDirectory = useSelector((appState: AppState) => appState.projectFolder.rootDirectory);
+    const selectedFile = useSelector((appState: AppState) => appState.openedDirectory.selectedFile);
+    const rootDirectory = useSelector((appState: AppState) => appState.openedDirectory.rootDirectory);
     const theme = useTheme();
     const dispatch = useDispatch();
     const node = props.data.flattenedData[props.index];
     const left = node.depth * 8;
-    const isSelected = selectedProjectFile?.handle === node.handle;
+    const isSelected = selectedFile?.handle === node.handle;
     const treeNodeToFileHandleInfo = (treeNode: TreeNode) => ({
         path: PathUtils.combine(treeNode.path, treeNode.handle.name),
         handle: treeNode.handle
@@ -28,11 +28,11 @@ export const DirectoryTreeItem = memo((props: SpeedTreeItemProps) => {
         className="directory-tree-item"
         onClick={(e) => {
             props.data.onOpen(node);
-            dispatch(setSelectedProjectFile(treeNodeToFileHandleInfo(node)));
+            dispatch(setSelectedFile(treeNodeToFileHandleInfo(node)));
         }}
         onContextMenu={e => {
             props.data.openContextMenu(e);
-            dispatch(setSelectedProjectFile(treeNodeToFileHandleInfo(node)));
+            dispatch(setSelectedFile(treeNodeToFileHandleInfo(node)));
         }}
         sx={{
             display: 'flex',

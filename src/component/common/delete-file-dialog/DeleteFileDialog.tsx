@@ -3,15 +3,15 @@ import { FunctionComponent, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { DirectoryUtils } from "../../../book/DirectoryUtils";
 import { useWilde } from "../../../hook/WildeHook";
-import { scanProjectDirectory } from "../../../slice/ProjectDirectorySlice";
+import { scanDirectoryRequest } from "../../../slice/OpenedDirectorySlice";
 import { AppDispatch, AppState } from "../../../store/AppStore";
 import { PathUtils } from "../../../book/PathUtils";
 import { closeEditor, fileEditorInfoBuilder } from "../../../slice/OpenEditorsSlice";
 
 export const DeleteFileDialog: FunctionComponent = () => {
-    const rootDirectory = useSelector((appState: AppState) => appState.projectFolder.rootDirectory);
-    const fileHandleInfo = useSelector((appState: AppState) => appState.projectFolder.selectedProjectFile);
-    const directoryStructure = useSelector((appState: AppState) => appState.projectFolder.directoryStructure);
+    const rootDirectory = useSelector((appState: AppState) => appState.openedDirectory.rootDirectory);
+    const fileHandleInfo = useSelector((appState: AppState) => appState.openedDirectory.selectedFile);
+    const directoryStructure = useSelector((appState: AppState) => appState.openedDirectory.directoryStructure);
     const [open, setOpen] = useState<boolean>(false);
     const dispatch = useDispatch<AppDispatch>();
     const wilde = useWilde();
@@ -47,7 +47,7 @@ export const DeleteFileDialog: FunctionComponent = () => {
                     dispatch(closeEditor(fileEditorInfoBuilder(fileHandleInfo.path, fileHandleInfo.handle as FileSystemFileHandle)))
                 }
 
-                dispatch(scanProjectDirectory({ path: parentPath, dirHandle: parentHandle }))
+                dispatch(scanDirectoryRequest({ path: parentPath, dirHandle: parentHandle }))
             });
     }
 

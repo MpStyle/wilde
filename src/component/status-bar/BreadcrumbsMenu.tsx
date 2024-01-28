@@ -3,7 +3,7 @@ import { FunctionComponent, KeyboardEventHandler, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { FileSorter } from '../../book/FileSorter';
 import { PathUtils } from '../../book/PathUtils';
-import { DirectoryInfo, scanProjectDirectory } from '../../slice/ProjectDirectorySlice';
+import { DirectoryInfo, scanDirectoryRequest } from '../../slice/OpenedDirectorySlice';
 import { AppDispatch, AppState } from '../../store/AppStore';
 import { BreadcrumbsMenuEmptyItem } from './BreadcrumbsMenuEmptyItem';
 import { BreadcrumbsMenuItem } from './BreadcrumbsMenuItem';
@@ -21,7 +21,7 @@ export interface BreadcrumbsMenuProps extends Omit<MenuProps, 'open' | 'onClose'
 
 export const BreadcrumbsMenu: FunctionComponent<BreadcrumbsMenuProps> = props => {
     const { path, dirHandle, menuItemRef, isOpen, setIsOpen, onExited, onFileClick, ...other } = props;
-    const directoryStructure = useSelector((appState: AppState) => appState.projectFolder.directoryStructure);
+    const directoryStructure = useSelector((appState: AppState) => appState.openedDirectory.directoryStructure);
     const dispatch = useDispatch<AppDispatch>();
     const directoryInfo = directoryStructure.hasOwnProperty(path) ? directoryStructure[path] : {} as DirectoryInfo;
     const directoryContent = [...(directoryInfo.content ?? [])];
@@ -31,7 +31,7 @@ export const BreadcrumbsMenu: FunctionComponent<BreadcrumbsMenuProps> = props =>
 
     useEffect(() => {
         if (!directoryStructure.hasOwnProperty(path)) {
-            dispatch(scanProjectDirectory({ path, dirHandle }))
+            dispatch(scanDirectoryRequest({ path, dirHandle }))
         }
     }, [])
 

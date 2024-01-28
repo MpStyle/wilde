@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { closeProjectDirectory } from "./ProjectDirectorySlice";
+import { closeDirectory } from "./OpenedDirectorySlice";
 
 interface EditorInfo {
     readonly path: string;
@@ -128,7 +128,7 @@ export const openEditorsSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
-            .addCase(closeProjectDirectory, (state) => {
+            .addCase(closeDirectory, (state) => {
                 state.openEditors = [];
                 state.currentEditor = undefined;
             })

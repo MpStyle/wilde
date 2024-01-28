@@ -11,7 +11,7 @@ import { EditorContentInfo } from './EditorContentInfo';
 import { useTranslation } from 'react-i18next';
 
 export const StatusBar: FunctionComponent = () => {
-    const rootDirectory = useSelector((appState: AppState) => appState.projectFolder.rootDirectory);
+    const rootDirectory = useSelector((appState: AppState) => appState.openedDirectory.rootDirectory);
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const dispatch = useDispatch<AppDispatch>();
     const { t } = useTranslation();

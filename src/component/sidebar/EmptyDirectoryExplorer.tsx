@@ -1,6 +1,6 @@
 import { Fragment, FunctionComponent, useEffect, useState } from "react";
 import { Box, Button, Divider, Typography, useTheme } from "@mui/material";
-import { closeProjectDirectory, openProjectDirectory } from "../../slice/ProjectDirectorySlice";
+import { closeDirectory, openDirectoryRequest } from "../../slice/OpenedDirectorySlice";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../store/AppStore";
 import { fileEditorInfoBuilder, openEditors } from "../../slice/OpenEditorsSlice";
@@ -36,8 +36,8 @@ export const EmptyDirectoryExplorer: FunctionComponent = () => {
     const selectDirectory = async () => {
         try {
             const dirHandle = await window.showDirectoryPicker();
-            dispatch(closeProjectDirectory());
-            dispatch(openProjectDirectory(dirHandle));
+            dispatch(closeDirectory());
+            dispatch(openDirectoryRequest(dirHandle));
         } catch (e) {
             console.error(e);
         }
@@ -69,7 +69,7 @@ export const EmptyDirectoryExplorer: FunctionComponent = () => {
             <ul style={{ listStyle: 'none', margin: 0, padding: 0, paddingLeft: '1rem' }}>
                 {state.map(openedDir => <li style={{ display: 'block', color: theme.palette.primary.main, fontWeight: 'bold', cursor: 'pointer', paddingBottom: '0.8rem' }}
                     title={`Open "${openedDir.name}" folder`}
-                    onClick={() => dispatch(openProjectDirectory(openedDir.handle))}
+                    onClick={() => dispatch(openDirectoryRequest(openedDir.handle))}
                     key={`recent-opened-directory-${openedDir.name}-${openedDir.inserted ?? 0}`}>
                     {openedDir.name}
                 </li>)}

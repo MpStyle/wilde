@@ -8,8 +8,8 @@ import { EditorBreadcrumb } from './EditorBreadcrumb';
 
 export const EditorBreadcrumbs: FunctionComponent = () => {
     const currentEditor = useSelector((appState: AppState) => appState.openEditors.currentEditor);
-    const rootDirectory = useSelector((appState: AppState) => appState.projectFolder.rootDirectory);
-    const directoryStructure = useSelector((appState: AppState) => appState.projectFolder.directoryStructure);
+    const rootDirectory = useSelector((appState: AppState) => appState.openedDirectory.rootDirectory);
+    const directoryStructure = useSelector((appState: AppState) => appState.openedDirectory.directoryStructure);
     const crumbId = useId();
 
     if (!rootDirectory || currentEditor?.kind === 'wilde') {
