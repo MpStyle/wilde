@@ -1,7 +1,7 @@
 import { Box, useTheme } from "@mui/material";
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
-import React, { FunctionComponent } from "react";
+import React, { FunctionComponent, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
     closeAllEditors,
@@ -17,12 +17,31 @@ import { EditorProxy } from "./EditorProxy";
 import { EditorTabLabel } from "./EditorTabLabel";
 import { EditorTabPanel } from "./EditorTabPanel";
 import { tabHeight } from "./book/TabHeight";
+import { useTranslation } from "react-i18next";
 
 export const EditorGroups: FunctionComponent = () => {
     const editors = useSelector((state: AppState) => state.openEditors);
     const dispatch = useDispatch();
     const showBackground = useSelector((appState: AppState) => !appState.openEditors.openEditors || !appState.openEditors.openEditors.length);
     const theme = useTheme();
+    const { t } = useTranslation();
+
+    useEffect(() => {
+        if (editors.currentEditor) {
+            switch (editors.currentEditor.kind) {
+                case 'wilde':
+                    document.title = `${t(editors.currentEditor.path)} - ${t("pageTitle")}`;
+                    break;
+                case 'file':
+                    document.title = `${editors.currentEditor.handle.name} - ${t("pageTitle")}`;
+                    break;
+            }
+        }
+
+        return () => {
+            document.title = `${t("pageTitle")}`;
+        }
+    }, [editors.currentEditor]);
 
     const handleChange = (_: React.SyntheticEvent, newValue: number) => {
         dispatch(currentEditor(editors.openEditors[newValue]));

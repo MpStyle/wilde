@@ -1,4 +1,6 @@
 {
+    "appName": "Wilde",
+    "pageTitle": "Wilde - IDE",
     "wilde://settings": "Settings",
     "settings-editor-label": "Editor",
     "settings-editor/minimap-label": "Minimap",

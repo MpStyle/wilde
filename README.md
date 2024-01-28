@@ -58,6 +58,6 @@ console.log(`${process.env.REACT_APP_NAME} ${process.env.REACT_APP_VERSION}`)
 - Load theme using system preference
 - Load custom theme from local storage or IndexDB
 - Add welcome editor
-- Show the name of the current editor in the page title
+- ~~Show the name of the current editor in the page title~~
 - Add dark theme
 - ~~Add LICENSE file~~
