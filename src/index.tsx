@@ -14,6 +14,7 @@ import { DeleteFileDialog } from './component/common/delete-file-dialog/DeleteFi
 import { AboutWildeDialog } from './component/common/about-wilde-dialog/AboutWildeDialog';
 import i18n from './book/i18n';
 import { I18nextProvider } from 'react-i18next';
+import { SplashScreen } from './component/SplashScreen';
 
 const theme = createTheme({
     typography: {
@@ -38,19 +39,7 @@ root.render(
         <ThemeProvider theme={theme}>
             <I18nextProvider i18n={i18n}>
                 <Provider store={appStore}>
-                    <ShortcutManager />
-
-                    <App />
-
-                    <CloseDirectoryDialog />
-
-                    <NewDirectoryDialog />
-
-                    <NewFileDialog />
-
-                    <DeleteFileDialog />
-
-                    <AboutWildeDialog />
+                    <SplashScreen />
                 </Provider>
             </I18nextProvider>
         </ThemeProvider>

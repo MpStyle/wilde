@@ -54,7 +54,7 @@ console.log(`${process.env.REACT_APP_NAME} ${process.env.REACT_APP_VERSION}`)
 - Add replace in project
 - Add replace in file
 - Load custom shortcut from local storage or IndexDB
-- Add check to verify compatibility of browser
+- ~~Add check to verify compatibility of browser~~
 - Load theme using system preference
 - Load custom theme from local storage or IndexDB
 - Add welcome editor
