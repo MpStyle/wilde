@@ -1,5 +1,7 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
+const localStorageKey = "wilde-settings";
+
 export class Settings {
     'editor/minimap/enabled': boolean;
     'editor/minimap/autoHide'?: boolean;
@@ -16,10 +18,13 @@ interface SettingsState {
     settingsDefinitions: SettingsDefinition;
 }
 
+const localStorageSettings = localStorage.getItem(localStorageKey);
+const settings = localStorageSettings ? JSON.parse(localStorageSettings) : {
+    "editor/minimap/enabled": true
+}
+
 const initialState: SettingsState = {
-    settings: {
-        "editor/minimap/enabled": true
-    },
+    settings,
     settingsDefinitions: {
         "editor/minimap/enabled": 'boolean',
         "editor/minimap/autoHide": 'boolean'
@@ -32,6 +37,7 @@ export const settingsSlice = createSlice({
     reducers: {
         updateSettings: (state, action: PayloadAction<Settings>) => {
             state.settings = action.payload;
+            localStorage.setItem(localStorageKey, JSON.stringify(state.settings));
         },
     },
 })
