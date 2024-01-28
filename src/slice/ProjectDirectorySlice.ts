@@ -1,6 +1,7 @@
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { PathUtils } from "../book/PathUtils";
 import { FileHandleInfo } from '../entity/FileHandleInfo';
+import { OpenedDirectoryRepository } from '../book/OpenedDirectoryRepository';
 
 export type DirectoryInfo = {
     handle: FileSystemDirectoryHandle,
@@ -44,6 +45,11 @@ export const scanProjectDirectory = createAsyncThunk(
 export const openProjectDirectory = createAsyncThunk(
     'projectDirectory/openProjectDirectory',
     async (dirHandle: FileSystemDirectoryHandle) => {
+        OpenedDirectoryRepository.upsert({
+            name: dirHandle.name,
+            handle: dirHandle
+        });
+
         const scanResult = await scanDirectory(PathUtils.rootPath, dirHandle);
         return { ...scanResult, root: dirHandle };
     }

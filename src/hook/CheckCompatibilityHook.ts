@@ -11,12 +11,16 @@ export const useCheckCompatibility = () => {
     // window.showDirectoryPicker
     const isFileSystemCompatible = typeof window.showOpenFilePicker !== "undefined" && typeof window.showDirectoryPicker !== "undefined";
 
-    const isCompatible = isUrlCreatorCompatible && isEventListenerCompatible && isFileSystemCompatible;
+    // IndexedDB
+    const isIndexedDbCompatible = 'indexedDB' in window;
+
+    const isCompatible = isUrlCreatorCompatible && isEventListenerCompatible && isFileSystemCompatible && isIndexedDbCompatible;
 
     return {
         isUrlCreatorCompatible,
         isEventListenerCompatible,
         isFileSystemCompatible,
+        isIndexedDbCompatible,
         isCompatible
     }
 }

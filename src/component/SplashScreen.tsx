@@ -46,6 +46,12 @@ export const SplashScreen: FunctionComponent = () => {
                         {t("URL creator")}: {t("your borswer does not support URL and webkitURL")}
                     </Incompatible>}
                 </li>
+                <li>
+                    {checkCompatibility.isIndexedDbCompatible && <Compatible>{t("IndexedDb")}</Compatible>}
+                    {!checkCompatibility.isIndexedDbCompatible && <Incompatible>
+                        {t("IndexedDb")}: {t("your borswer does not support IndexedDb")}
+                    </Incompatible>}
+                </li>
             </ul>
             <Typography variant="h6">To ensure a complete experience, we kindly ask you to use a browser that is fully compatible with the features offered by Wilde.</Typography>
         </Box>}
