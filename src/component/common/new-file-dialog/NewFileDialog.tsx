@@ -22,10 +22,10 @@ export const NewFileDialog: FunctionComponent = () => {
             setOpen(true);
         }
 
-        wilde.addEventListener('onNewFile', onNewFile);
+        wilde.subscribeTo(wilde.event.onNewFile, onNewFile);
 
         return () => {
-            wilde.removeEventListener('onNewFile', onNewFile);
+            wilde.unsubscribeFrom(wilde.event.onNewFile, onNewFile);
         };
     });
 

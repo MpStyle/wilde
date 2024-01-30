@@ -29,7 +29,7 @@ export const DirectoryExplorerContextMenu: FunctionComponent<DirectoryExplorerCo
         {selectedFile.handle.kind === 'directory' &&
             <MenuItem onClick={() => {
                 onClose();
-                wilde.newFile();
+                wilde.emit(wilde.event.onNewFile);
             }}>
                 New File...
             </MenuItem>}
@@ -37,7 +37,7 @@ export const DirectoryExplorerContextMenu: FunctionComponent<DirectoryExplorerCo
         {selectedFile.handle.kind === 'directory' &&
             <MenuItem onClick={() => {
                 onClose();
-                wilde.newDirectory();
+                wilde.emit(wilde.event.onNewDirectory);
             }}>
                 New folder...
             </MenuItem>}
@@ -45,7 +45,7 @@ export const DirectoryExplorerContextMenu: FunctionComponent<DirectoryExplorerCo
         {selectedFile.handle !== rootDirectory &&
             <MenuItem onClick={() => {
                 onClose();
-                wilde.deleteFile()
+                wilde.emit(wilde.event.onDeleteFile);
             }}>
                 Delete
             </MenuItem>}

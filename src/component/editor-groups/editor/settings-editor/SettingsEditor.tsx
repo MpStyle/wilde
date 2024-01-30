@@ -43,9 +43,9 @@ export const SettingsEditor: FunctionComponent<EditorProps> = props => {
             props.onContentSave();
         }
 
-        wilde.addEventListener('onSaveAll', onSaveAll);
+        wilde.subscribeTo(wilde.event.onSaveAll, onSaveAll);
 
-        return () => wilde.removeEventListener('onSaveAll', onSaveAll);
+        return () => wilde.unsubscribeFrom(wilde.event.onSaveAll, onSaveAll);
     });
 
     // Iterates throught "settingsDefinitions" to create a flat object with section, subsection and setting type

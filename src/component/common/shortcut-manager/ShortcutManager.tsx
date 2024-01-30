@@ -40,7 +40,7 @@ export const ShortcutManager: FunctionComponent = () => {
         const isSPressed = pressedKeys.includes('s');
 
         if (isCtrlPressed && isSPressed) {
-            wilde.saveAll();
+            wilde.emit(wilde.event.onSaveAll);
         }
     }, [pressedKeys]);
 

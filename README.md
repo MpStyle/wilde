@@ -39,6 +39,7 @@ console.log(`${process.env.REACT_APP_NAME} ${process.env.REACT_APP_VERSION}`)
 ## Techniques:
 - [Lazy loading](https://en.wikipedia.org/wiki/Lazy_loading): used to load into the app state only the folders opened by the user.
 - [Windowing](https://www.patterns.dev/vanilla/virtual-lists/): used to render only the visible tree items in the DOM
+- [Micro front-end communication](https://sharvishi9118.medium.com/cross-micro-frontend-communication-techniques-a10fedc11c59): used to propagate an event through Wilde components
 
 ## TODO list (not in priority order):
 - Color highlight on monaco editor

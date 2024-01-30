@@ -15,10 +15,10 @@ export const AboutWildeDialog: FunctionComponent = () => {
             setOpen(true);
         }
 
-        wilde.addEventListener('onShowAbout', onShowAbout);
+        wilde.subscribeTo(wilde.event.onShowAbout, onShowAbout);
 
         return () => {
-            wilde.removeEventListener('onShowAbout', onShowAbout);
+            wilde.unsubscribeFrom(wilde.event.onShowAbout, onShowAbout);
         };
     });
 

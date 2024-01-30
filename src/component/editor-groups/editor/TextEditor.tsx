@@ -37,9 +37,9 @@ export const TextEditor: FunctionComponent<FileEditorProps> = props => {
             }
         }
 
-        wilde.addEventListener('onSaveAll', onSaveAll);
+        wilde.subscribeTo(wilde.event.onSaveAll, onSaveAll);
 
-        return () => wilde.removeEventListener('onSaveAll', onSaveAll);
+        return () => wilde.unsubscribeFrom(wilde.event.onSaveAll, onSaveAll);
     });
 
     // Load editor and its content

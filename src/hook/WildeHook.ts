@@ -14,56 +14,37 @@ type AppEventMap = {
     onShowAbout: WildeEvent,
 }
 
-// ---------------
+const allEventTypes: (keyof AppEventMap)[] = [
+    'onSaveAll',
+    'onCloseDirectory',
+    'onNewDirectory',
+    'onNewFile',
+    'onDeleteFile',
+    'onShowAbout',
+];
 
-export type EventName = keyof AppEventMap;
-
-type State = {
-    [K in keyof AppEventMap]: Array<(event: AppEventMap[K]) => void>;
+type EventTypeMap = {
+    [Type in keyof AppEventMap]: AppEventMap[Type];
 };
 
-const state: State = {
-    onCloseDirectory: [],
-    onSaveAll: [],
-    onNewDirectory: [],
-    onNewFile: [],
-    onDeleteFile: [],
-    onShowAbout: []
-};
+const mappedEventTypes: EventTypeMap = allEventTypes.reduce((acc, curr) => {
+    acc[curr] = curr;
+    return acc;
+}, {} as EventTypeMap);
 
 export const useWilde = () => {
-    const emitEvent = <K extends keyof AppEventMap>(eventName: K, event: AppEventMap[K]) => {
-        const onCloseListeners = state[eventName];
-        for (let index = 0; index < onCloseListeners.length; index++) {
-            onCloseListeners[index](event);
-        }
-    };
-    const addEventListener = <K extends keyof AppEventMap>(eventName: K, callback: (ev: AppEventMap[K]) => void) => {
-        state[eventName].push(callback);
-    };
-    const removeEventListener = <K extends keyof AppEventMap>(eventName: K, callback: (ev: AppEventMap[K]) => void) => {
-        const callbacks = state[eventName];
-
-        if (callbacks) {
-            const index = callbacks.indexOf(callback);
-            if (index !== -1) {
-                callbacks.splice(index, 1);
-            } else {
-                console.error('Callback not found for the given key.');
-            }
-        } else {
-            console.error('Key not found in the data structure.');
-        }
-    };
-
     return {
-        closeDirectory: () => emitEvent('onCloseDirectory', {}),
-        saveAll: () => emitEvent('onSaveAll', {}),
-        newDirectory: () => emitEvent('onNewDirectory', {}),
-        newFile: () => emitEvent('onNewFile', {}),
-        deleteFile: () => emitEvent('onDeleteFile', {}),
-        showAbout: () => emitEvent('onShowAbout', {}),
-        addEventListener,
-        removeEventListener
-    }
+        subscribeTo: <TEventName extends keyof AppEventMap>(type: EventTypeMap[TEventName], listener: (ev: AppEventMap[TEventName]) => void) => {
+            window.addEventListener(`wilde.${type}`, listener);
+        },
+        unsubscribeFrom: <TEventName extends keyof AppEventMap>(type: EventTypeMap[TEventName], listener: (ev: AppEventMap[TEventName]) => void) => {
+            window.removeEventListener(`wilde.${type}`, listener);
+        },
+        emit: <TEventName extends keyof AppEventMap>(type: EventTypeMap[TEventName], event: AppEventMap[TEventName] = {}) => {
+            window.dispatchEvent(new Event(`wilde.${type}`, event));
+        },
+        event: {
+            ...mappedEventTypes
+        }
+    };
 }

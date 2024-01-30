@@ -15,10 +15,10 @@ export const CloseDirectoryDialog: FunctionComponent = () => {
             setOpen(true);
         }
 
-        wilde.addEventListener('onCloseDirectory', onCloseDirectory);
+        wilde.subscribeTo(wilde.event.onCloseDirectory, onCloseDirectory);
 
         return () => {
-            wilde.removeEventListener('onCloseDirectory', onCloseDirectory);
+            wilde.unsubscribeFrom(wilde.event.onCloseDirectory, onCloseDirectory);
         };
     });
 

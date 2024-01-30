@@ -21,10 +21,10 @@ export const NewDirectoryDialog: FunctionComponent = () => {
             setOpen(true);
         }
 
-        wilde.addEventListener('onNewDirectory', onNewDirectory);
+        wilde.subscribeTo(wilde.event.onNewDirectory, onNewDirectory);
 
         return () => {
-            wilde.removeEventListener('onNewDirectory', onNewDirectory);
+            wilde.unsubscribeFrom(wilde.event.onNewDirectory, onNewDirectory);
         };
     });
 

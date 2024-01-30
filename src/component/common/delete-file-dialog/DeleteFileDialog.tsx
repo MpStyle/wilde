@@ -22,10 +22,10 @@ export const DeleteFileDialog: FunctionComponent = () => {
             setOpen(true);
         }
 
-        wilde.addEventListener('onDeleteFile', onDeleteFile);
+        wilde.subscribeTo(wilde.event.onDeleteFile, onDeleteFile);
 
         return () => {
-            wilde.removeEventListener('onDeleteFile', onDeleteFile);
+            wilde.unsubscribeFrom(wilde.event.onDeleteFile, onDeleteFile);
         };
     });
 
