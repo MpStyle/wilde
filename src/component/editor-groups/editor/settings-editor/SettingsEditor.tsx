@@ -1,3 +1,4 @@
+import ClearIcon from '@mui/icons-material/Clear';
 import { IconButton, Stack, TextField, Typography, alpha, styled, useTheme } from "@mui/material";
 import Box from "@mui/material/Box";
 import cloneDeep from "lodash.clonedeep";
@@ -11,9 +12,7 @@ import { EditorProps } from "../../book/EditorProps";
 import { tabPanelHeight } from "../../book/TabHeight";
 import { BooleanSetting } from "./BooleanSetting";
 import { SelectSetting } from "./SelectSetting";
-import ClearIcon from '@mui/icons-material/Clear';
-import { settingsDefinitions } from "./entity/SettingsDefinition";
-import { FlatSettingsType } from "./entity/FlatSettingsType";
+import { FlatSettingEditorInfo, settingsEditorInfoMap as settingsEditorInfo } from "./entity/SettingsDefinition";
 
 const SettingsEditorBox = styled(Box)(() => ({
     height: tabPanelHeight,
@@ -21,6 +20,10 @@ const SettingsEditorBox = styled(Box)(() => ({
     padding: '0.5em',
     overflow: 'auto',
 }));
+
+const reactKeyBuilder = (key: string) => `settings-${key}-key`;
+const labelKeyBuilder = (key: string) => `settings-${key}-label`;
+const descriptionKeyBuilder = (key: string) => `settings-${key}-description`;
 
 export const SettingsEditor: FunctionComponent<EditorProps> = props => {
     const settings = useSelector((appState: AppState) => appState.settings);
@@ -53,29 +56,23 @@ export const SettingsEditor: FunctionComponent<EditorProps> = props => {
         return () => wilde.unsubscribeFrom(wilde.eventType.onSaveAll, onSaveAll);
     });
 
-    const reactKeyBuilder = (key: string) => `settings-${key}-key`;
-    const labelBuilder = (key: string) => t(`settings-${key}-label`);
-    const descriptionBuilder = (key: string) => t(`settings-${key}-description`);
-
     // Iterates throught "settingsDefinitions" to create a flat object with section, subsection and setting type
-    const flatSettings = Object.entries(settingsDefinitions).reduce((acc, [key, value]) => {
-        const upsert = (key: string, type: FlatSettingsType, tags: string[]) => {
-            if (!acc[key]) {
-                acc[key] = { type, tags: [] };
-            }
-            acc[key].tags = [...acc[key].tags, ...tags];
-        }
+    const flatSettings = Object.entries(settingsEditorInfo).reduce((acc, [key, value]) => {
         const [section, subsection, item] = key.split("/");
+        const label = t(labelKeyBuilder(key));
+        const description = t(descriptionKeyBuilder(key));
+        const newTags = [label, label, description];
 
-        upsert(section, 'section', [labelBuilder(key), descriptionBuilder(key)]);
+        acc[section] = { type: 'section', label, description, tags: newTags.concat(acc[section]?.tags ?? []) };
 
         if (item !== undefined) {
-            upsert(`${section}/${subsection}`, 'subsection', [labelBuilder(key), descriptionBuilder(key)]);
+            acc[`${section}/${subsection}`] = { type: 'subsection', label, description, tags: newTags.concat((acc[`${section}/${subsection}`]?.tags ?? [])) };
         }
 
-        upsert(key, value, [labelBuilder(key), descriptionBuilder(key)]);
+        acc[key] = { ...value, label, description, tags: newTags.concat(acc[key]?.tags ?? []) };
+
         return acc;
-    }, {} as { [key: string]: { type: FlatSettingsType, tags: string[] } });
+    }, {} as { [key: string]: FlatSettingEditorInfo });
     const settingsKeys = Object.keys(flatSettings)
         .sort()
         .filter(sk => searchSettings === '' || flatSettings[sk].tags.filter(tag => tag.toLowerCase().indexOf(searchSettings.toLowerCase()) !== -1).length);
@@ -115,23 +112,21 @@ export const SettingsEditor: FunctionComponent<EditorProps> = props => {
                 const settingKey = key as keyof Settings;
                 const settingDefinition = flatSettings[settingKey];
                 const reactKey = reactKeyBuilder(key);
-                const label = labelBuilder(key);
-                const description = descriptionBuilder(key);
 
                 switch (settingDefinition.type) {
                     case 'section':
                         return <Typography key={reactKey} variant="h5" data-tags={settingDefinition.tags}>
-                            {label}
+                            {settingDefinition.label}
                         </Typography>
                     case 'subsection':
                         return <Typography key={reactKey} variant="h6" data-tags={settingDefinition.tags}>
-                            {label}
+                            {settingDefinition.label}
                         </Typography>
                     case 'boolean':
                         return <BooleanSetting key={reactKey}
                             data-tags={settingDefinition.tags}
-                            label={label}
-                            description={description}
+                            label={settingDefinition.label}
+                            description={settingDefinition.description}
                             sx={{ ml: 1.5 }}
                             value={state[settingKey] as boolean}
                             setValue={(newValue) => {
@@ -140,25 +135,23 @@ export const SettingsEditor: FunctionComponent<EditorProps> = props => {
 
                                 setNewSettings(newState);
                             }} />
-                    default:
-                        if (!Array.isArray(settingDefinition.type)) {
-                            return null;
-                        }
-
+                    case "strings":
                         return <SelectSetting key={reactKey}
                             data-tags={settingDefinition.tags}
                             settingsKey={key}
-                            label={label}
-                            description={description}
+                            label={settingDefinition.label}
+                            description={settingDefinition.description}
                             sx={{ ml: 1.5 }}
                             value={state[settingKey] as string}
-                            options={settingDefinition.type}
+                            options={settingDefinition.options}
                             setValue={(newValue) => {
                                 const newState = cloneDeep(state);
                                 (newState[settingKey] as (string | undefined)) = newValue;
 
                                 setNewSettings(newState);
                             }} />
+                    default:
+                        return null;
                 }
             })}
         </Stack>

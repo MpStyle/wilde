@@ -1,1 +1,0 @@
-export type SettingsOption = { value: string | undefined, name?: string, isDefault?: boolean }

@@ -2,14 +2,14 @@ import { Box, FormHelperText, InputLabel, MenuItem, Select, Stack, SxProps, Them
 import FormControl from "@mui/material/FormControl";
 import { FunctionComponent } from "react";
 import { useTranslation } from "react-i18next";
-import { SettingsOption } from "./entity/SettingsOption";
+import { SettingEditorStringsOption } from "./entity/SettingsDefinition";
 
 export interface SelectSettingProps {
     settingsKey: string;
     label: string;
     description: string;
     value: string | undefined;
-    options: SettingsOption[]
+    options: SettingEditorStringsOption[]
     setValue: (newValue: string | undefined) => void;
     sx?: SxProps<Theme>;
 }
