@@ -40,7 +40,7 @@ export const TextEditor: FunctionComponent<FileEditorProps> = props => {
         wilde.subscribeTo(wilde.eventType.onSaveAll, onSaveAll);
 
         return () => wilde.unsubscribeFrom(wilde.eventType.onSaveAll, onSaveAll);
-    });
+    }, []);
 
     // Load editor and its content
     useEffect(() => {
