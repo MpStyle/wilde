@@ -2,7 +2,7 @@ import { Box, FormHelperText, InputLabel, MenuItem, Select, Stack, SxProps, Them
 import FormControl from "@mui/material/FormControl";
 import { FunctionComponent } from "react";
 import { useTranslation } from "react-i18next";
-import { SettingsOption } from "../../../../slice/SettingsSlice";
+import { SettingsOption } from "./entity/SettingsOption";
 
 export interface SelectSettingProps {
     settingsKey: string;

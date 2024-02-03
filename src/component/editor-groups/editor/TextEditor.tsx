@@ -10,7 +10,7 @@ import { AppState } from "../../../store/AppStore";
 
 export const TextEditor: FunctionComponent<FileEditorProps> = props => {
     const [editor, setEditor] = useState<monaco.editor.IStandaloneCodeEditor | null>(null);
-    const settings = useSelector((appState: AppState) => appState.settings.settings);
+    const settings = useSelector((appState: AppState) => appState.settings);
     const monacoEl = useRef(null);
     const wilde = useWilde();
 

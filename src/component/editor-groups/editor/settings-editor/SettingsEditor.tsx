@@ -5,13 +5,15 @@ import { FunctionComponent, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { useWilde } from "../../../../hook/WildeHook";
-import { Settings, SettingsType, updateSettings } from "../../../../slice/SettingsSlice";
+import { Settings, updateSettings } from "../../../../slice/SettingsSlice";
 import { AppDispatch, AppState } from "../../../../store/AppStore";
 import { EditorProps } from "../../book/EditorProps";
 import { tabPanelHeight } from "../../book/TabHeight";
 import { BooleanSetting } from "./BooleanSetting";
 import { SelectSetting } from "./SelectSetting";
 import ClearIcon from '@mui/icons-material/Clear';
+import { settingsDefinitions } from "./entity/SettingsDefinition";
+import { FlatSettingsType } from "./entity/FlatSettingsType";
 
 const SettingsEditorBox = styled(Box)(() => ({
     height: tabPanelHeight,
@@ -20,11 +22,8 @@ const SettingsEditorBox = styled(Box)(() => ({
     overflow: 'auto',
 }));
 
-type FlatSettingsType = 'section' | 'subsection' | SettingsType;
-
 export const SettingsEditor: FunctionComponent<EditorProps> = props => {
-    const settings = useSelector((appState: AppState) => appState.settings.settings);
-    const settingsDefinitions = useSelector((appState: AppState) => appState.settings.settingsDefinitions);
+    const settings = useSelector((appState: AppState) => appState.settings);
     const [state, setState] = useState<Settings>(settings);
     const [searchSettings, setSearchSettings] = useState<string>('');
     const dispatch = useDispatch<AppDispatch>();

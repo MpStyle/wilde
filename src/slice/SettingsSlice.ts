@@ -9,20 +9,7 @@ export class Settings {
     'editor/language/default'?: string;
 }
 
-export type SettingsOption = { value: string | undefined, name?: string, isDefault?: boolean }
-
-export type SettingsType = 'boolean' | 'string' | 'number' | Array<SettingsOption>;
-
-export type SettingsDefinition = {
-    [K in keyof Settings]: SettingsType;
-};
-
-interface SettingsState {
-    settings: Settings;
-    settingsDefinitions: SettingsDefinition;
-}
-
-const settings = (() => {
+const initialState = (() => {
     const defaultSettings: Settings = {
         "editor/minimap/enabled": true,
     };
@@ -38,22 +25,13 @@ const settings = (() => {
     return { ...defaultSettings, ...userSettings }
 })()
 
-const initialState: SettingsState = {
-    settings,
-    settingsDefinitions: {
-        "editor/minimap/enabled": 'boolean',
-        "editor/minimap/autoHide": 'boolean',
-        'editor/language/default': [{ value: undefined, name: 'Auto detect', isDefault: true }, { value: 'en' }, { value: 'it' }]
-    }
-}
-
 export const settingsSlice = createSlice({
     name: 'settings',
     initialState,
     reducers: {
         updateSettings: (state, action: PayloadAction<Settings>) => {
-            state.settings = action.payload;
-            localStorage.setItem(localStorageKey, JSON.stringify(state.settings));
+            Object.assign(state, action.payload);
+            localStorage.setItem(localStorageKey, JSON.stringify(state));
         },
     },
 })

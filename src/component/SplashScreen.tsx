@@ -18,7 +18,7 @@ const Incompatible: FunctionComponent<PropsWithChildren> = props => <Alert sever
 
 export const SplashScreen: FunctionComponent = () => {
     const checkCompatibility = useCheckCompatibility();
-    const settings = useSelector((appState: AppState) => appState.settings.settings);
+    const settings = useSelector((appState: AppState) => appState.settings);
     const { t, i18n } = useTranslation();
     const editorLanguageDefault = settings["editor/language/default"];
     const { language: currentLanguage, changeLanguage } = i18n;
