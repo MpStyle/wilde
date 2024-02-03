@@ -20,7 +20,7 @@ import { tabHeight } from "./book/TabHeight";
 
 type EditorGroupsBoxProps = { showBackground: boolean };
 
-const EditorGroupsBox = styled(Box)<EditorGroupsBoxProps>((props) => ({
+const EditorGroupsBox = styled(Box, { shouldForwardProp: propsName => propsName !== 'showBackground' })<EditorGroupsBoxProps>((props) => ({
     flexGrow: 1,
     height: '100%',
     overflow: 'hidden',
