@@ -1,4 +1,4 @@
-import { SxProps, Theme } from "@mui/material";
+import { Box, SxProps, Theme } from "@mui/material";
 import Checkbox from "@mui/material/Checkbox";
 import FormControl from "@mui/material/FormControl";
 import FormControlLabel from "@mui/material/FormControlLabel";
@@ -15,13 +15,16 @@ export interface BooleanSettingProps {
 
 export const BooleanSetting: FunctionComponent<BooleanSettingProps> = props => {
     const { t } = useTranslation();
-    return <FormControl fullWidth sx={props.sx}>
-        <FormControlLabel
-            control={
-                <Checkbox checked={props.value}
-                    onChange={e => props.setValue(e.target.checked)} />
-            }
-            label={t(`settings-${props.name}-label`)} />
-        <FormHelperText sx={{ mt: 0 }}>{t(`settings-${props.name}-description`)}</FormHelperText>
-    </FormControl>
+
+    return <Box sx={props.sx}>
+        <FormControl>
+            <FormControlLabel
+                control={
+                    <Checkbox checked={props.value}
+                        onChange={e => props.setValue(e.target.checked)} />
+                }
+                label={t(`settings-${props.name}-label`)} />
+            <FormHelperText sx={{ mt: 0 }}>{t(`settings-${props.name}-description`)}</FormHelperText>
+        </FormControl>
+    </Box>
 }

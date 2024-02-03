@@ -1,4 +1,4 @@
-import { Fragment, FunctionComponent, PropsWithChildren } from "react";
+import { Fragment, FunctionComponent, PropsWithChildren, useEffect } from "react";
 import { useCheckCompatibility } from "../hook/CheckCompatibilityHook";
 import Box from "@mui/material/Box";
 import { App } from "./App";
@@ -10,10 +10,20 @@ import { NewFileDialog } from "./common/new-file-dialog/NewFileDialog";
 import { ShortcutManager } from "./common/shortcut-manager/ShortcutManager";
 import { Alert, Stack, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
+import { useSelector } from "react-redux";
+import { AppState } from "../store/AppStore";
 
 export const SplashScreen: FunctionComponent = () => {
     const checkCompatibility = useCheckCompatibility();
-    const { t } = useTranslation();
+    const settings = useSelector((appState: AppState) => appState.settings.settings);
+    const { t, i18n } = useTranslation();
+
+    // Sets the language in settings
+    useEffect(() => {
+        if (settings["editor/language/default"] !== i18n.language) {
+            i18n.changeLanguage(settings["editor/language/default"]);
+        }
+    }, [settings["editor/language/default"], i18n.language]);
 
     const Compatible: FunctionComponent<PropsWithChildren> = props => <Alert severity="success">{props.children}</Alert>
     const Incompatible: FunctionComponent<PropsWithChildren> = props => <Alert severity="warning">{props.children}</Alert>

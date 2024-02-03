@@ -1,4 +1,4 @@
-import { Typography, styled } from "@mui/material";
+import { Stack, Typography, styled } from "@mui/material";
 import Box from "@mui/material/Box";
 import cloneDeep from "lodash.clonedeep";
 import { FunctionComponent, useEffect, useState } from "react";
@@ -10,6 +10,7 @@ import { AppDispatch, AppState } from "../../../../store/AppStore";
 import { EditorProps } from "../../book/EditorProps";
 import { tabPanelHeight } from "../../book/TabHeight";
 import { BooleanSetting } from "./BooleanSetting";
+import { SelectSetting } from "./SelectSetting";
 
 const SettingsEditorBox = styled(Box)(() => ({
     height: tabPanelHeight,
@@ -63,28 +64,45 @@ export const SettingsEditor: FunctionComponent<EditorProps> = props => {
     const settingsKeys = Object.keys(flatSettings).sort();
 
     return <SettingsEditorBox id="SettingsEditorBox">
-        {settingsKeys.map((key) => {
-            const settingKey = key as keyof Settings;
-            const settingDefinition = flatSettings[settingKey];
+        <Stack direction='column' spacing={1.5}>
+            {settingsKeys.map((key) => {
+                const settingKey = key as keyof Settings;
+                const settingDefinition = flatSettings[settingKey];
 
-            switch (settingDefinition) {
-                case 'section':
-                    return <Typography key={`settings-${key}-item`} variant="h5">{t(`settings-${key}-label`)}</Typography>
-                case 'subsection':
-                    return <Typography key={`settings-${key}-item`} variant="h6">{t(`settings-${key}-label`)}</Typography>
-                case 'boolean':
-                    return <BooleanSetting key={`settings-${key}-item`}
-                        name={settingKey}
-                        sx={{ ml: 1.5 }}
-                        value={state[settingKey] as boolean}
-                        setValue={(newValue) => {
-                            const newState = cloneDeep(state);
-                            newState[settingKey] = newValue;
+                switch (settingDefinition) {
+                    case 'section':
+                        return <Typography key={`settings-${key}-item`} variant="h5">{t(`settings-${key}-label`)}</Typography>
+                    case 'subsection':
+                        return <Typography key={`settings-${key}-item`} variant="h6">{t(`settings-${key}-label`)}</Typography>
+                    case 'boolean':
+                        return <BooleanSetting key={`settings-${key}-item`}
+                            name={settingKey}
+                            sx={{ ml: 1.5 }}
+                            value={state[settingKey] as boolean}
+                            setValue={(newValue) => {
+                                const newState = cloneDeep(state);
+                                (newState[settingKey] as boolean) = newValue;
 
-                            setNewSettings(newState);
-                        }} />
-                default: return null;
-            }
-        })}
+                                setNewSettings(newState);
+                            }} />
+                    default:
+                        if (!Array.isArray(settingDefinition)) {
+                            return null;
+                        }
+
+                        return <SelectSetting key={`settings-${key}-item`}
+                            name={settingKey}
+                            sx={{ ml: 1.5 }}
+                            value={state[settingKey] as string}
+                            options={settingDefinition}
+                            setValue={(newValue) => {
+                                const newState = cloneDeep(state);
+                                (newState[settingKey] as (string | undefined)) = newValue;
+
+                                setNewSettings(newState);
+                            }} />
+                }
+            })}
+        </Stack>
     </SettingsEditorBox>
 }

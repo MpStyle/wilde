@@ -7,5 +7,8 @@
     "settings-editor/minimap/enabled-label": "Enabled",
     "settings-editor/minimap/enabled-description": "Controls whether the minimap is shown",
     "settings-editor/minimap/autoHide-label": "Autohide",
-    "settings-editor/minimap/autoHide-description": "Controls whether the minimap is hidden automatically"
+    "settings-editor/minimap/autoHide-description": "Controls whether the minimap is hidden automatically",
+    "settings-editor/language-label": "Language",
+    "settings-editor/language/default-label": "Default language",
+    "settings-editor/language/default-description": "Controls the language to use when autodetect is not enabled"
 }
