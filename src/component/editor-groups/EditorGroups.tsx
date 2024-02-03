@@ -67,7 +67,7 @@ export const EditorGroups: FunctionComponent = () => {
         return () => {
             document.title = `${t("pageTitle")}`;
         }
-    }, [editors.currentEditor]);
+    }, [editors.currentEditor, t]);
 
     const handleChange = (_: React.SyntheticEvent, newValue: number) => {
         dispatch(currentEditor(editors.openEditors[newValue]));

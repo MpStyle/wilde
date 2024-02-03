@@ -1,6 +1,10 @@
-import { Fragment, FunctionComponent, PropsWithChildren, useEffect } from "react";
-import { useCheckCompatibility } from "../hook/CheckCompatibilityHook";
+import { Alert, Stack, Typography } from "@mui/material";
 import Box from "@mui/material/Box";
+import { Fragment, FunctionComponent, PropsWithChildren, useEffect } from "react";
+import { useTranslation } from "react-i18next";
+import { useSelector } from "react-redux";
+import { useCheckCompatibility } from "../hook/CheckCompatibilityHook";
+import { AppState } from "../store/AppStore";
 import { App } from "./App";
 import { AboutWildeDialog } from "./common/about-wilde-dialog/AboutWildeDialog";
 import { CloseDirectoryDialog } from "./common/close-directory-dialog/CloseDirectoryDialog";
@@ -8,25 +12,23 @@ import { DeleteFileDialog } from "./common/delete-file-dialog/DeleteFileDialog";
 import { NewDirectoryDialog } from "./common/new-directory-dialog/NewDirectoryDialog";
 import { NewFileDialog } from "./common/new-file-dialog/NewFileDialog";
 import { ShortcutManager } from "./common/shortcut-manager/ShortcutManager";
-import { Alert, Stack, Typography } from "@mui/material";
-import { useTranslation } from "react-i18next";
-import { useSelector } from "react-redux";
-import { AppState } from "../store/AppStore";
+
+const Compatible: FunctionComponent<PropsWithChildren> = props => <Alert severity="success">{props.children}</Alert>
+const Incompatible: FunctionComponent<PropsWithChildren> = props => <Alert severity="warning">{props.children}</Alert>
 
 export const SplashScreen: FunctionComponent = () => {
     const checkCompatibility = useCheckCompatibility();
     const settings = useSelector((appState: AppState) => appState.settings.settings);
     const { t, i18n } = useTranslation();
+    const editorLanguageDefault = settings["editor/language/default"];
+    const { language: currentLanguage, changeLanguage } = i18n;
 
     // Sets the language in settings
     useEffect(() => {
-        if (settings["editor/language/default"] !== i18n.language) {
-            i18n.changeLanguage(settings["editor/language/default"]);
+        if (editorLanguageDefault !== currentLanguage) {
+            changeLanguage(editorLanguageDefault);
         }
-    }, [settings["editor/language/default"], i18n.language]);
-
-    const Compatible: FunctionComponent<PropsWithChildren> = props => <Alert severity="success">{props.children}</Alert>
-    const Incompatible: FunctionComponent<PropsWithChildren> = props => <Alert severity="warning">{props.children}</Alert>
+    }, [editorLanguageDefault, currentLanguage, changeLanguage]);
 
     return <Fragment>
         {!checkCompatibility.isCompatible && <Box sx={{ m: 2, '& li': { mb: 1.5 } }}>
