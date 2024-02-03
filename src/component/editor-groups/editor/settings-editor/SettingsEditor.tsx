@@ -29,20 +29,12 @@ export const SettingsEditor: FunctionComponent<EditorProps> = props => {
     const settings = useSelector((appState: AppState) => appState.settings);
     const [state, setState] = useState<Settings>(settings);
     const [searchSettings, setSearchSettings] = useState<string>('');
+    const [flatSettings, setFlatSettings] = useState<{ [key: string]: FlatSettingEditorInfo; }>({});
+    const [settingsKeys, setSettingsKeys] = useState<string[]>([]);
     const dispatch = useDispatch<AppDispatch>();
     const wilde = useWilde();
     const theme = useTheme();
     const { t } = useTranslation();
-    const setNewSettings = (newState: Settings) => {
-        setState(newState);
-
-        if (JSON.stringify(newState) === JSON.stringify(settings)) {
-            props.onContentRestore();
-        }
-        else {
-            props.onContentChange();
-        }
-    }
 
     // onSave event listener
     useEffect(() => {
@@ -54,28 +46,48 @@ export const SettingsEditor: FunctionComponent<EditorProps> = props => {
         wilde.subscribeTo(wilde.eventType.onSaveAll, onSaveAll);
 
         return () => wilde.unsubscribeFrom(wilde.eventType.onSaveAll, onSaveAll);
-    });
+    }, []);
 
-    // Iterates throught "settingsDefinitions" to create a flat object with section, subsection and setting type
-    const flatSettings = Object.entries(settingsEditorInfo).reduce((acc, [key, value]) => {
-        const [section, subsection, item] = key.split("/");
-        const label = t(labelKeyBuilder(key));
-        const description = t(descriptionKeyBuilder(key));
-        const newTags = [label, label, description];
+    useEffect(() => {
+        // Iterates throught "settingsDefinitions" to create a flat object with section, subsection and setting type
+        const flatSettings = Object.entries(settingsEditorInfo).reduce((acc, [key, value]) => {
+            const [section, subsection, item] = key.split("/");
+            const label = t(labelKeyBuilder(key));
+            const description = t(descriptionKeyBuilder(key));
+            const newTags = [label, label, description];
 
-        acc[section] = { type: 'section', label, description, tags: newTags.concat(acc[section]?.tags ?? []) };
+            acc[section] = { type: 'section', label, description, tags: newTags.concat(acc[section]?.tags ?? []) };
 
-        if (item !== undefined) {
-            acc[`${section}/${subsection}`] = { type: 'subsection', label, description, tags: newTags.concat((acc[`${section}/${subsection}`]?.tags ?? [])) };
+            if (item !== undefined) {
+                acc[`${section}/${subsection}`] = { type: 'subsection', label, description, tags: newTags.concat((acc[`${section}/${subsection}`]?.tags ?? [])) };
+            }
+
+            acc[key] = { ...value, label, description, tags: newTags.concat(acc[key]?.tags ?? []) };
+
+            return acc;
+        }, {} as { [key: string]: FlatSettingEditorInfo });
+
+        setFlatSettings(flatSettings);
+    }, []);
+
+    useEffect(() => {
+        const settingsKeys = Object.keys(flatSettings)
+            .sort()
+            .filter(sk => searchSettings === '' || flatSettings[sk].tags.filter(tag => tag.toLowerCase().indexOf(searchSettings.toLowerCase()) !== -1).length);
+
+        setSettingsKeys(settingsKeys);
+    }, [searchSettings, flatSettings]);
+
+    const setNewSettings = (newState: Settings) => {
+        setState(newState);
+
+        if (JSON.stringify(newState) === JSON.stringify(settings)) {
+            props.onContentRestore();
         }
-
-        acc[key] = { ...value, label, description, tags: newTags.concat(acc[key]?.tags ?? []) };
-
-        return acc;
-    }, {} as { [key: string]: FlatSettingEditorInfo });
-    const settingsKeys = Object.keys(flatSettings)
-        .sort()
-        .filter(sk => searchSettings === '' || flatSettings[sk].tags.filter(tag => tag.toLowerCase().indexOf(searchSettings.toLowerCase()) !== -1).length);
+        else {
+            props.onContentChange();
+        }
+    }
 
     return <SettingsEditorBox id="SettingsEditorBox">
         <TextField size="small"
