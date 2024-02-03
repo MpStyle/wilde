@@ -1,23 +1,49 @@
-import { Box, useTheme } from "@mui/material";
+import { Box, styled, useTheme } from "@mui/material";
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
 import React, { FunctionComponent, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import {
+    EditorInfoUnion,
     closeAllEditors,
     closeEditor,
     closeOthersEditors,
     currentEditor,
-    editorContentIsChanged,
-    EditorInfoUnion
+    editorContentIsChanged
 } from "../../slice/OpenEditorsSlice";
 import { AppState } from "../../store/AppStore";
 import { EditorGroupsContextMenu } from "./EditorGroupsContextMenu";
 import { EditorProxy } from "./EditorProxy";
 import { EditorTabLabel } from "./EditorTabLabel";
-import { EditorTabPanel } from "./EditorTabPanel";
 import { tabHeight } from "./book/TabHeight";
-import { useTranslation } from "react-i18next";
+
+type EditorGroupsBoxProps = { showBackground: boolean };
+
+const EditorGroupsBox = styled(Box)<EditorGroupsBoxProps>((props) => ({
+    flexGrow: 1,
+    height: '100%',
+    overflow: 'hidden',
+    backgroundImage: props.showBackground ? 'url("images/wilde-logo.png")' : undefined,
+    backgroundSize: '75%',
+    [props.theme.breakpoints.up('sm')]: {
+        backgroundSize: '50%',
+    },
+    [props.theme.breakpoints.up('md')]: {
+        backgroundSize: '45%',
+    },
+    [props.theme.breakpoints.up('lg')]: {
+        backgroundSize: '35%',
+    },
+    [props.theme.breakpoints.up('lg')]: {
+        backgroundSize: '25%',
+    },
+    [props.theme.breakpoints.up('xl')]: {
+        backgroundSize: '15%',
+    },
+    backgroundPosition: 'center',
+    backgroundRepeat: 'no-repeat'
+}));
 
 export const EditorGroups: FunctionComponent = () => {
     const editors = useSelector((state: AppState) => state.openEditors);
@@ -70,35 +96,12 @@ export const EditorGroups: FunctionComponent = () => {
         return editor.path === editors.currentEditor.path;
     }
 
-    return <Box sx={{
-        flexGrow: 1,
-        height: '100%',
-        overflow: 'hidden',
-        backgroundImage: showBackground ? 'url("images/wilde-logo.png")' : null,
-        backgroundSize: '75%',
-        [theme.breakpoints.up('sm')]: {
-            backgroundSize: '50%',
-        },
-        [theme.breakpoints.up('md')]: {
-            backgroundSize: '45%',
-        },
-        [theme.breakpoints.up('lg')]: {
-            backgroundSize: '35%',
-        },
-        [theme.breakpoints.up('lg')]: {
-            backgroundSize: '25%',
-        },
-        [theme.breakpoints.up('xl')]: {
-            backgroundSize: '15%',
-        },
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat'
-    }}>
+    return <EditorGroupsBox showBackground={showBackground}>
         {Boolean(editors.openEditors.length) && <Tabs value={editors.openEditors.findIndex(oe => isCurrentEditor(oe))}
             onChange={handleChange}
             variant="scrollable"
             aria-label="Open editors"
-            sx={{ height: tabHeight, minHeight: tabHeight }}
+            sx={{ height: tabHeight, minHeight: tabHeight, borderBottom: `1px solid ${theme.palette.grey[400]}` }}
             TabIndicatorProps={{ sx: { height: 3 } }}>
             {editors.openEditors.map((editor, i) => {
                 // A portion of the path will be displayed if there are multiple files open with the same name
@@ -114,23 +117,15 @@ export const EditorGroups: FunctionComponent = () => {
                         isSelected={isCurrentEditor(editor)} />} />;
             })}
         </Tabs>}
-        {editors.openEditors.map((editor, i) => {
-            if (!editor) {
-                return null;
-            }
-
-            return <EditorTabPanel editor={editor}
-                index={i}
-                key={`open-editor-${i}`}
-                hidden={!isCurrentEditor(editor)}>
+        {editors.openEditors.map((editor, i) =>
+            <Box key={`open-editor-${i}`} hidden={!isCurrentEditor(editor)} sx={{ height: '100%' }}>
                 <EditorProxy
                     editor={editor}
                     onContentChange={() => dispatch(editorContentIsChanged({ ...editor, isChanged: true }))}
                     onContentRestore={() => dispatch(editorContentIsChanged({ ...editor, isChanged: false }))}
-                    onContentSave={() => dispatch(editorContentIsChanged({ ...editor, isChanged: false }))}
-                />
-            </EditorTabPanel>
-        })}
+                    onContentSave={() => dispatch(editorContentIsChanged({ ...editor, isChanged: false }))} />
+            </Box>
+        )}
 
         <EditorGroupsContextMenu open={isContextMenuOpen}
             position={contextMenu}
@@ -153,6 +148,5 @@ export const EditorGroups: FunctionComponent = () => {
 
                 closeContextMenu();
             }} />
-    </Box>
+    </EditorGroupsBox>
 }
-
