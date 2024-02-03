@@ -17,33 +17,7 @@ import { EditorGroupsContextMenu } from "./EditorGroupsContextMenu";
 import { EditorProxy } from "./EditorProxy";
 import { EditorTabLabel } from "./EditorTabLabel";
 import { tabHeight } from "./book/TabHeight";
-
-type EditorGroupsBoxProps = { showBackground: boolean };
-
-const EditorGroupsBox = styled(Box, { shouldForwardProp: propsName => propsName !== 'showBackground' })<EditorGroupsBoxProps>((props) => ({
-    flexGrow: 1,
-    height: '100%',
-    overflow: 'hidden',
-    backgroundImage: props.showBackground ? 'url("images/wilde-logo.png")' : undefined,
-    backgroundSize: '75%',
-    [props.theme.breakpoints.up('sm')]: {
-        backgroundSize: '50%',
-    },
-    [props.theme.breakpoints.up('md')]: {
-        backgroundSize: '45%',
-    },
-    [props.theme.breakpoints.up('lg')]: {
-        backgroundSize: '35%',
-    },
-    [props.theme.breakpoints.up('lg')]: {
-        backgroundSize: '25%',
-    },
-    [props.theme.breakpoints.up('xl')]: {
-        backgroundSize: '15%',
-    },
-    backgroundPosition: 'center',
-    backgroundRepeat: 'no-repeat'
-}));
+import { EditorGroupsBox } from "./EditorGroupsBox";
 
 export const EditorGroups: FunctionComponent = () => {
     const editors = useSelector((state: AppState) => state.openEditors);
