@@ -7,7 +7,8 @@ import { FunctionComponent } from "react";
 import { useTranslation } from "react-i18next";
 
 export interface BooleanSettingProps {
-    name: string;
+    label: string;
+    description: string;
     value: boolean | undefined;
     setValue: (newValue: boolean) => void;
     sx?: SxProps<Theme>;
@@ -23,8 +24,8 @@ export const BooleanSetting: FunctionComponent<BooleanSettingProps> = props => {
                     <Checkbox checked={props.value}
                         onChange={e => props.setValue(e.target.checked)} />
                 }
-                label={t(`settings-${props.name}-label`)} />
-            <FormHelperText sx={{ mt: 0 }}>{t(`settings-${props.name}-description`)}</FormHelperText>
+                label={props.label} />
+            <FormHelperText sx={{ mt: 0 }}>{props.description}</FormHelperText>
         </FormControl>
     </Box>
 }
