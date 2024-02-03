@@ -1,55 +1,70 @@
-import { LogUtils } from "../book/LogUtils";
+import { FileHandleInfo } from "../entity/FileHandleInfo";
 
-export type WildeEvent = {};
-
-// ---------------
-
-//#region Events definitions
-//#endregion
-
-type AppEventMap = {
-    onSaveAll: WildeEvent,
-    onCloseDirectory: WildeEvent,
-    onNewDirectory: WildeEvent,
-    onNewFile: WildeEvent,
-    onDeleteFile: WildeEvent,
-    onShowAbout: WildeEvent,
-}
-
-const allEventTypes: (keyof AppEventMap)[] = [
+const eventTypes = [
     'onSaveAll',
     'onCloseDirectory',
     'onNewDirectory',
     'onNewFile',
     'onDeleteFile',
     'onShowAbout',
-];
+] as const
 
-type EventTypeMap = {
-    [Type in keyof AppEventMap]: AppEventMap[Type];
-};
+type EventType = typeof eventTypes[number]
 
-const mappedEventTypes: EventTypeMap = allEventTypes.reduce((acc, curr) => {
-    acc[curr] = curr;
-    return acc;
-}, {} as EventTypeMap);
+type EventTypeMap = { [P in EventType]: EventType }
+
+const eventType: EventTypeMap = {
+    onSaveAll: 'onSaveAll',
+    onCloseDirectory: 'onCloseDirectory',
+    onNewDirectory: 'onNewDirectory',
+    onNewFile: 'onNewFile',
+    onDeleteFile: 'onDeleteFile',
+    onShowAbout: 'onShowAbout',
+}
+
+export class WildeDeleteEvent extends Event {
+    public fileHandleInfo: FileHandleInfo;
+
+    constructor(fileHandleInfo: FileHandleInfo) {
+        super(`wilde.${eventType.onDeleteFile}`);
+        this.fileHandleInfo = fileHandleInfo;
+    }
+}
+
+interface EventListenerMap {
+    "onSaveAll": (ev: Event) => void,
+    "onCloseDirectory": (ev: Event) => void,
+    "onNewDirectory": (ev: Event) => void,
+    "onNewFile": (ev: Event) => void,
+    "onDeleteFile": (ev: WildeDeleteEvent) => void,
+    "onShowAbout": (ev: Event) => void,
+}
+
+const eventBuilder = {
+    onDeleteFile: (fileHandleInfo: FileHandleInfo) => new WildeDeleteEvent(fileHandleInfo),
+    onSaveAll: () => new Event(`wilde.${eventType.onSaveAll}`),
+    onCloseDirectory: () => new Event(`wilde.${eventType.onCloseDirectory}`),
+    onNewDirectory: () => new Event(`wilde.${eventType.onNewDirectory}`),
+    onNewFile: () => new Event(`wilde.${eventType.onNewFile}`),
+    onShowAbout: () => new Event(`wilde.${eventType.onShowAbout}`),
+}
 
 export const useWilde = () => {
     return {
-        subscribeTo: <TEventName extends keyof AppEventMap>(type: EventTypeMap[TEventName], listener: (ev: AppEventMap[TEventName]) => void) => {
-            LogUtils.info(`wilde.subscribeTo: ${type}`);
-            window.addEventListener(`wilde.${type}`, listener);
+        subscribeTo: <T extends EventType = EventType>(type: T, listener: EventListenerMap[T]) => {
+            window.addEventListener(`wilde.${type}`, listener as EventListener);
         },
-        unsubscribeFrom: <TEventName extends keyof AppEventMap>(type: EventTypeMap[TEventName], listener: (ev: AppEventMap[TEventName]) => void) => {
-            LogUtils.info(`wilde.unsubscribeFrom: ${type}`);
-            window.removeEventListener(`wilde.${type}`, listener);
+        unsubscribeFrom: <T extends EventType = EventType>(type: T, listener: EventListenerMap[T]) => {
+            window.removeEventListener(`wilde.${type}`, listener as EventListener);
         },
-        emit: <TEventName extends keyof AppEventMap>(type: EventTypeMap[TEventName], event: AppEventMap[TEventName] = {}) => {
-            LogUtils.info(`wilde.emit: ${type}`);
-            window.dispatchEvent(new Event(`wilde.${type}`, event));
+        emit: (event: Parameters<EventListenerMap[EventType]>[0]) => {
+            window.dispatchEvent(event);
         },
-        event: {
-            ...mappedEventTypes
+        eventBuilder: {
+            ...eventBuilder
+        },
+        eventType: {
+            ...eventType
         }
     };
 }

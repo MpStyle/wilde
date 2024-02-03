@@ -32,12 +32,12 @@ export const ActionsBar: FunctionComponent<ActionsBarProps> = props => {
         {rootDirectory && <Fragment>
             <IconButton title="New File..."
                 size="small"
-                onClick={() => wilde.emit(wilde.event.onNewFile)}>
+                onClick={() => wilde.emit(wilde.eventBuilder.onNewFile())}>
                 <NoteAddIcon fontSize="small" />
             </IconButton>
             <IconButton title="New folder..."
                 size="small"
-                onClick={() => wilde.emit(wilde.event.onNewDirectory)}>
+                onClick={() => wilde.emit(wilde.eventBuilder.onNewDirectory())}>
                 <CreateNewFolderIcon fontSize="small" />
             </IconButton>
             <IconButton title="Collapse all"
@@ -52,7 +52,7 @@ export const ActionsBar: FunctionComponent<ActionsBarProps> = props => {
             </IconButton>
             <IconButton title="Close folder"
                 size="small"
-                onClick={() => wilde.emit(wilde.event.onCloseDirectory)}>
+                onClick={() => wilde.emit(wilde.eventBuilder.onCloseDirectory())}>
                 <CloseIcon fontSize="small" />
             </IconButton>
         </Fragment>}

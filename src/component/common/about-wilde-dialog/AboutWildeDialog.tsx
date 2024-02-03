@@ -1,8 +1,10 @@
 import CloseIcon from '@mui/icons-material/Close';
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Stack, Typography } from "@mui/material";
+import { Alert, Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Stack, Typography } from "@mui/material";
 import { FunctionComponent, useEffect, useState } from "react";
 import { useWilde } from "../../../hook/WildeHook";
 import { useGetMinorVersionQuery } from "../../../slice/VersionSlice";
+import { t } from 'i18next';
+import { Alarm } from '@mui/icons-material';
 
 export const AboutWildeDialog: FunctionComponent = () => {
     const [open, setOpen] = useState<boolean>(false);
@@ -15,10 +17,10 @@ export const AboutWildeDialog: FunctionComponent = () => {
             setOpen(true);
         }
 
-        wilde.subscribeTo(wilde.event.onShowAbout, onShowAbout);
+        wilde.subscribeTo(wilde.eventType.onShowAbout, onShowAbout);
 
         return () => {
-            wilde.unsubscribeFrom(wilde.event.onShowAbout, onShowAbout);
+            wilde.unsubscribeFrom(wilde.eventType.onShowAbout, onShowAbout);
         };
     });
 
@@ -72,14 +74,18 @@ export const AboutWildeDialog: FunctionComponent = () => {
             <CloseIcon />
         </IconButton>
         <DialogContent>
-            <Typography><strong>Version:</strong> {process.env.REACT_APP_VERSION}.{data ?? 0}</Typography>
-            {data && <Typography><strong>Date:</strong> {formatTimestamp(parseInt(data))}</Typography>}
-            <Typography><strong>Browser:</strong> {navigator.userAgent}</Typography>
+            <Typography>
+                {data && <span><strong>Version:</strong> {process.env.REACT_APP_VERSION}.{data ?? 0}</span>}
+                {error && <Alert severity='success'>{t("Error while retrieve Wilde version")}</Alert>}
+                {isLoading && <span>{t("Loading version, please wait...")}</span>}
+            </Typography>
+            {data && <Typography><strong>{t("Date")}:</strong> {formatTimestamp(parseInt(data))}</Typography>}
+            <Typography><strong>{t("Browser")}:</strong> {navigator.userAgent}</Typography>
         </DialogContent>
         <DialogActions>
             <Button onClick={onClose}
                 aria-label="close">
-                Close
+                {t("Close")}
             </Button>
         </DialogActions>
     </Dialog>

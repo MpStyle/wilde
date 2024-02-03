@@ -2,34 +2,36 @@ import { Button, Dialog, DialogActions, DialogContent, DialogContentText, Dialog
 import { FunctionComponent, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { DirectoryUtils } from "../../../book/DirectoryUtils";
-import { useWilde } from "../../../hook/WildeHook";
+import { WildeDeleteEvent, useWilde } from "../../../hook/WildeHook";
 import { scanDirectoryRequest } from "../../../slice/OpenedDirectorySlice";
 import { AppDispatch, AppState } from "../../../store/AppStore";
 import { PathUtils } from "../../../book/PathUtils";
 import { closeEditor, fileEditorInfoBuilder } from "../../../slice/OpenEditorsSlice";
+import { FileHandleInfo } from "../../../entity/FileHandleInfo";
 
 export const DeleteFileDialog: FunctionComponent = () => {
     const rootDirectory = useSelector((appState: AppState) => appState.openedDirectory.rootDirectory);
-    const fileHandleInfo = useSelector((appState: AppState) => appState.openedDirectory.selectedFile);
     const directoryStructure = useSelector((appState: AppState) => appState.openedDirectory.directoryStructure);
     const [open, setOpen] = useState<boolean>(false);
+    const [fileHandleInfo, setFileHandleInfo] = useState<FileHandleInfo | undefined>(undefined);
     const dispatch = useDispatch<AppDispatch>();
     const wilde = useWilde();
 
     // onDeleteFile event listener
     useEffect(() => {
-        const onDeleteFile = () => {
+        const onDeleteFile = (event: WildeDeleteEvent) => {
             setOpen(true);
+            setFileHandleInfo(event.fileHandleInfo);
         }
 
-        wilde.subscribeTo(wilde.event.onDeleteFile, onDeleteFile);
+        wilde.subscribeTo(wilde.eventType.onDeleteFile, onDeleteFile);
 
         return () => {
-            wilde.unsubscribeFrom(wilde.event.onDeleteFile, onDeleteFile);
+            wilde.unsubscribeFrom(wilde.eventType.onDeleteFile, onDeleteFile);
         };
     });
 
-    if (!fileHandleInfo) {
+    if (!fileHandleInfo || !fileHandleInfo.handle || !fileHandleInfo.path) {
         return null;
     }
 

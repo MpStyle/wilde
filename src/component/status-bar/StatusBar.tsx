@@ -55,7 +55,7 @@ export const StatusBar: FunctionComponent = () => {
                 {t("Settings")}
             </MenuItem>
             <MenuItem onClick={() => {
-                wilde.emit(wilde.event.onShowAbout);
+                wilde.emit(wilde.eventBuilder.onShowAbout());
                 handleClose();
             }}>
                 {t("About wilde")}
