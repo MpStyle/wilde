@@ -43,7 +43,7 @@ console.log(`${process.env.REACT_APP_NAME} ${process.env.REACT_APP_VERSION}`)
 
 ## TODO list (not in priority order):
 - Color highlight on monaco editor
-- Add capability to resize sidebar
+- ~~Add capability to resize sidebar~~
 - ~~Add capability to open a file~~
 - Add keyboard shortcut to open a folder
 - Add keyboard shortcut to open a file

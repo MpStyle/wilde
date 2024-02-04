@@ -6,6 +6,7 @@ import { ActionsBar } from "./ActionsBar";
 import { DirectoryExplorer } from './DirectoryExplorer';
 import { EmptyDirectoryExplorer } from "./EmptyDirectoryExplorer";
 import { useTranslation } from "react-i18next";
+import { ResizableBox } from "../common/resizable-box/ResizableBox";
 
 export const topBarHeight = '40px';
 
@@ -46,13 +47,13 @@ export const Sidebar: FunctionComponent = () => {
         </Fragment>;
     }
 
-    return <Box id='Sidebar'
+    return <ResizableBox id='Sidebar'
+        width='260px'
+        maxWidth='85%'
+        minWidth='220px'
         sx={{
             height: '100%',
             overflow: 'hidden',
-            width: '260px',
-            minWidth: '260px',
-            maxWidth: '550px',
             backgroundColor: theme.palette.grey[200],
             '& > *': {
                 fontSize: '0.9em'
@@ -60,5 +61,5 @@ export const Sidebar: FunctionComponent = () => {
         }}>
 
         {sidebarContent()}
-    </Box>
+    </ResizableBox>
 }
