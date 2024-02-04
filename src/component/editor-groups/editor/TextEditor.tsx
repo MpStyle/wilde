@@ -13,6 +13,7 @@ export const TextEditor: FunctionComponent<FileEditorProps> = props => {
     const settings = useSelector((appState: AppState) => appState.settings);
     const monacoEl = useRef(null);
     const wilde = useWilde();
+    const { isChanged, handle } = props.editor;
 
     const getLanguage = () => {
         const extension = FileUtils.getExtension(props.editor.handle.name);
@@ -31,8 +32,8 @@ export const TextEditor: FunctionComponent<FileEditorProps> = props => {
     // onSave event listener
     useEffect(() => {
         const onSaveAll = () => {
-            if (editor && props.editor.isChanged) {
-                FileUtils.writeContent(props.editor.handle, editor.getValue())
+            if (editor && isChanged) {
+                FileUtils.writeContent(handle, editor.getValue())
                 props.onContentSave();
             }
         }
@@ -40,7 +41,7 @@ export const TextEditor: FunctionComponent<FileEditorProps> = props => {
         wilde.subscribeTo(wilde.eventType.onSaveAll, onSaveAll);
 
         return () => wilde.unsubscribeFrom(wilde.eventType.onSaveAll, onSaveAll);
-    }, []);
+    }, [isChanged, handle]);
 
     // Load editor and its content
     useEffect(() => {
