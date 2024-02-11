@@ -65,3 +65,5 @@ console.log(`${process.env.REACT_APP_NAME} ${process.env.REACT_APP_VERSION}`)
 - ~~Show the name of the current editor in the page title~~
 - Add dark theme
 - ~~Add LICENSE file~~
+- Drag 'n drop on directory explorer to move file and folder
+- Drag 'n drop on editor tab to edge to add new editor group
