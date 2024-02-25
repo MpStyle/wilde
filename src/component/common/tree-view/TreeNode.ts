@@ -5,7 +5,8 @@ export interface TreeNode {
     icon?: ReactNode | undefined
     label: string;
     depth: number;
-    collapsed: boolean;
+    collapsed?: boolean;
+    isCollapsable?: boolean;
     isLeaf?: boolean;
     isSelected?: boolean;
     isContextMenu?: boolean;

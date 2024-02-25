@@ -41,6 +41,10 @@ export const DirectoryExplorer: FunctionComponent<DirectoryExplorerProps> = prop
         const result: TreeNode[] = [];
         const sortedItems = [...items].sort(FileSorter.byTypeByName);
 
+        if (!props.openedNodeIds.includes(path) && path !== PathUtils.rootPath) {
+            return result;
+        }
+
         for (let item of sortedItems) {
             const collapsed = !props.openedNodeIds.includes(PathUtils.combine(path, item.name));
             const itemPath = PathUtils.combine(path, item.name);
@@ -68,7 +72,7 @@ export const DirectoryExplorer: FunctionComponent<DirectoryExplorerProps> = prop
 
     const nodes = toTreeNodes(directoryStructure[PathUtils.rootPath].content, 1, PathUtils.rootPath);
     nodes.unshift({
-        collapsed: false,
+        isCollapsable: false,
         depth: 0,
         label: rootDirectory?.name ?? PathUtils.rootPath,
         id: PathUtils.rootPath,
@@ -80,6 +84,7 @@ export const DirectoryExplorer: FunctionComponent<DirectoryExplorerProps> = prop
 
     return <Fragment>
         <TreeView nodes={nodes}
+            style={{ overflowX: 'hidden' }}
             onSelectEmptyArea={() => {
                 if (!rootDirectory) {
                     return;
