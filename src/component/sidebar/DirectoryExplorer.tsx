@@ -1,141 +1,133 @@
-import memoizeOne from 'memoize-one';
-import React, { Fragment, FunctionComponent } from 'react';
+import { Fragment, FunctionComponent, useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
-import AutoSizer from 'react-virtualized-auto-sizer';
-import { FixedSizeList as List } from 'react-window';
 import { FileSorter } from "../../book/FileSorter";
 import { PathUtils } from "../../book/PathUtils";
-import { fileEditorInfoBuilder, openEditor } from "../../slice/OpenEditorsSlice";
 import { scanDirectoryRequest, setSelectedFile } from "../../slice/OpenedDirectorySlice";
 import { AppDispatch, AppState } from "../../store/AppStore";
 import { DirectoryExplorerContextMenu } from './DirectoryExplorerContextMenu';
-import { DirectoryTreeItem } from "./DirectoryTreeItem";
-import { TreeNode } from "./entity/TreeNode";
+import { FileHandleInfo } from '../../entity/FileHandleInfo';
+import { fileEditorInfoBuilder, openEditor } from '../../slice/OpenEditorsSlice';
+import { FileIcon } from '../common/file-icon/FileIcon';
+import { useTheme } from '@mui/material';
+import { WildeAvatar } from '../common/wilde-avatar/WildeAvatar';
+import { TreeNode } from '../common/tree-view/TreeNode';
+import { TreeView } from '../common/tree-view/TreeView';
 
-const getItemData = memoizeOne(
-    (
-        onOpen: (node: TreeNode) => void,
-        flattenedData: TreeNode[],
-        openContextMenu: (event: React.MouseEvent) => void
-    ) => ({
-        onOpen,
-        flattenedData,
-        openContextMenu
-    }));
+type DirectoryExplorerNode = TreeNode & { handle: FileSystemHandleUnion }
 
-export const DirectoryExplorer: FunctionComponent<SpeedTreeProps> = props => {
-    const rootDirectory = useSelector((appState: AppState) => appState.openedDirectory.rootDirectory);
-    const directoryStructure = useSelector((appState: AppState) => appState.openedDirectory.directoryStructure);
-    const dispatch = useDispatch<AppDispatch>();
-    const [contextMenu, setContextMenu] = React.useState<{
+interface DirectoryExplorerState {
+    contextMenu?: {
+        fileHandleInfo: FileHandleInfo;
         mouseX: number;
         mouseY: number;
-    } | null>(null);
+    } | undefined;
+}
 
-    if (!rootDirectory) {
-        return null;
-    }
+export interface DirectoryExplorerProps {
+    openedNodeIds: string[];
+    setOpenedNodeIds: (openedNodeIds: string[]) => void;
+}
 
-    const isContextMenuOpen = contextMenu !== null;
+export const DirectoryExplorer: FunctionComponent<DirectoryExplorerProps> = props => {
+    const rootDirectory = useSelector((appState: AppState) => appState.openedDirectory.rootDirectory);
+    const directoryStructure = useSelector((appState: AppState) => appState.openedDirectory.directoryStructure);
+    const selectedFile = useSelector((appState: AppState) => appState.openedDirectory.selectedFile);
+    const [state, setState] = useState<DirectoryExplorerState>({});
+    const dispatch = useDispatch<AppDispatch>();
+    const theme = useTheme()
+    const isContextMenuOpen = state.contextMenu !== null;
 
-    const toFlat = (items: FileSystemHandleUnion[], depth: number, path: string): TreeNode[] => {
+    const toTreeNodes = (items: FileSystemHandleUnion[], depth: number, path: string): TreeNode[] => {
         const result: TreeNode[] = [];
         const sortedItems = [...items].sort(FileSorter.byTypeByName);
 
         for (let item of sortedItems) {
             const collapsed = !props.openedNodeIds.includes(PathUtils.combine(path, item.name));
+            const itemPath = PathUtils.combine(path, item.name);
+
             result.push({
-                handle: item,
                 collapsed: collapsed,
                 depth: depth,
-                hasChildren: item.kind === 'directory',
-                path: path
-            });
+                label: item.name,
+                id: itemPath,
+                isLeaf: item.kind === 'file',
+                icon: <FileIcon sx={{ mr: 1, color: theme.palette.grey[400] }} handle={item} collapsed={collapsed} path={itemPath} />,
+                handle: item,
+                isSelected: selectedFile?.handle === item,
+                isContextMenu: state.contextMenu?.fileHandleInfo.handle === item,
+            } as DirectoryExplorerNode);
 
             const absolutePath = PathUtils.combine(path, item.name);
             if (item.kind === 'directory' && directoryStructure.hasOwnProperty(absolutePath) && !collapsed) {
-                result.push(...toFlat(directoryStructure[absolutePath].content, depth + 1, absolutePath))
+                result.push(...toTreeNodes(directoryStructure[absolutePath].content, depth + 1, absolutePath))
             }
         }
 
         return result;
-    }
-
-    const onOpen = (node: TreeNode) => {
-        if (node.handle === rootDirectory) {
-            if (node.collapsed) {
-                return props.setOpenedNodeIds([...props.openedNodeIds, rootDirectory.name]);
-            } else {
-                return props.setOpenedNodeIds(props.openedNodeIds.filter(id => id !== rootDirectory.name));
-            }
-        }
-
-        const nodePath = PathUtils.combine(node.path, node.handle.name);
-
-        if (node.handle.kind === 'file') {
-            dispatch(openEditor(fileEditorInfoBuilder(nodePath, node.handle)));
-            return;
-        }
-
-        if (node.collapsed) {
-            if (!directoryStructure.hasOwnProperty(nodePath)) {
-                dispatch(scanDirectoryRequest({ path: nodePath, dirHandle: node.handle as FileSystemDirectoryHandle }));
-            }
-
-            return props.setOpenedNodeIds([...props.openedNodeIds, nodePath]);
-        } else {
-            return props.setOpenedNodeIds(props.openedNodeIds.filter(id => id !== nodePath));
-        }
     };
 
-    const openContextMenu = (event: React.MouseEvent) => {
-        event.preventDefault();
-        setContextMenu(contextMenu === null ? { mouseX: event.clientX + 2, mouseY: event.clientY - 6, } : null);
-    };
-
-    const flattenedData = toFlat(directoryStructure[PathUtils.rootPath].content, 1, PathUtils.rootPath);
-    flattenedData.unshift({
-        handle: rootDirectory,
+    const nodes = toTreeNodes(directoryStructure[PathUtils.rootPath].content, 1, PathUtils.rootPath);
+    nodes.unshift({
         collapsed: false,
         depth: 0,
-        hasChildren: rootDirectory.kind === 'directory',
-        path: PathUtils.rootPath
-    });
-
-    const itemData = getItemData(onOpen, flattenedData, openContextMenu);
-    const fixedListClass = "fixed-list";
+        label: rootDirectory?.name ?? PathUtils.rootPath,
+        id: PathUtils.rootPath,
+        icon: <WildeAvatar sx={{ mr: 0.6, ml: 0.6 }} name={rootDirectory?.name ?? PathUtils.rootPath} size="small" />,
+        handle: rootDirectory,
+        isSelected: selectedFile?.handle === rootDirectory,
+        isContextMenu: state.contextMenu?.fileHandleInfo.handle === rootDirectory,
+    } as DirectoryExplorerNode);
 
     return <Fragment>
-        <AutoSizer id='DirectoryExplorer'
-            onClick={(event) => {
-                const classList = (event.target as any).classList;
-                if (Array.from(classList).includes(fixedListClass)) {
-                    dispatch(setSelectedFile({ path: PathUtils.rootPath, handle: rootDirectory }));
+        <TreeView nodes={nodes}
+            onSelectEmptyArea={() => {
+                if (!rootDirectory) {
+                    return;
                 }
-            }}>
-            {({ height, width }: { height: string | number, width: string | number }) =>
-                <List height={height}
-                    width={width}
-                    style={{ overflowX: 'hidden' }}
-                    className={fixedListClass}
-                    itemCount={flattenedData.length}
-                    itemSize={24}
-                    itemKey={index =>
-                        index === 0 ?
-                            rootDirectory.name :
-                            (PathUtils.combine(flattenedData[index].path, (flattenedData[index].handle?.name ?? 'loading...')))}
-                    itemData={itemData}>
-                    {DirectoryTreeItem}
-                </List>}
-        </AutoSizer>
 
-        {Boolean(contextMenu) && <DirectoryExplorerContextMenu open={isContextMenuOpen}
-            position={contextMenu}
-            onClose={() => setContextMenu(null)} />}
-    </Fragment>;
-};
+                dispatch(setSelectedFile({
+                    path: PathUtils.rootPath,
+                    handle: rootDirectory
+                }));
+            }}
+            onSelectedItem={node => {
+                const directoryExplorerNode = node as DirectoryExplorerNode;
 
-export interface SpeedTreeProps {
-    openedNodeIds: string[];
-    setOpenedNodeIds: (openedNodeIds: string[]) => void;
+                dispatch(setSelectedFile({
+                    path: node.id,
+                    handle: directoryExplorerNode.handle
+                }));
+
+                if (node.isLeaf) {
+                    dispatch(openEditor(fileEditorInfoBuilder(node.id, directoryExplorerNode.handle as FileSystemFileHandle)));
+                    return;
+                }
+
+                if (node.collapsed) {
+
+                    if (!directoryStructure.hasOwnProperty(node.id)) {
+                        dispatch(scanDirectoryRequest({ path: node.id, dirHandle: directoryExplorerNode.handle as FileSystemDirectoryHandle }));
+                    }
+
+                    return props.setOpenedNodeIds([...props.openedNodeIds, node.id]);
+                } else {
+                    return props.setOpenedNodeIds(props.openedNodeIds.filter(id => id !== node.id));
+                }
+            }}
+            onContextMenu={(node, event) => {
+                event.preventDefault();
+                setState(state => ({
+                    ...state, contextMenu: {
+                        fileHandleInfo: { handle: (node as any).handle, path: node.id },
+                        mouseX: event.clientX + 2,
+                        mouseY: event.clientY - 6
+                    }
+                }))
+            }}
+        />
+
+        {!!state.contextMenu && <DirectoryExplorerContextMenu open={isContextMenuOpen}
+            data={state.contextMenu}
+            onClose={() => setState(state => ({ ...state, contextMenu: undefined }))} />}
+    </Fragment>
 }

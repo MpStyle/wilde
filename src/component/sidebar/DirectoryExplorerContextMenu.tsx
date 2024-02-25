@@ -3,18 +3,28 @@ import { FunctionComponent } from "react";
 import { useSelector } from "react-redux";
 import { useWilde } from "../../hook/WildeHook";
 import { AppState } from "../../store/AppStore";
+import { FileHandleInfo } from "../../entity/FileHandleInfo";
+
+export interface DirectoryExplorerContextMenuProps {
+    open: boolean;
+    data: {
+        fileHandleInfo: FileHandleInfo;
+        mouseX: number;
+        mouseY: number;
+    } | null;
+    onClose: () => void;
+}
 
 export const DirectoryExplorerContextMenu: FunctionComponent<DirectoryExplorerContextMenuProps> = props => {
-    const selectedFile = useSelector((appState: AppState) => appState.openedDirectory.selectedFile);
     const rootDirectory = useSelector((appState: AppState) => appState.openedDirectory.rootDirectory);
     const {
         onClose,
         open,
-        position,
+        data,
     } = props;
     const wilde = useWilde();
 
-    if (!selectedFile) {
+    if (!data?.fileHandleInfo) {
         return null;
     }
 
@@ -22,11 +32,11 @@ export const DirectoryExplorerContextMenu: FunctionComponent<DirectoryExplorerCo
         onClose={onClose}
         anchorReference="anchorPosition"
         anchorPosition={
-            position !== null
-                ? { top: position.mouseY, left: position.mouseX }
+            data !== null
+                ? { top: data.mouseY, left: data.mouseX }
                 : undefined
         }>
-        {selectedFile.handle.kind === 'directory' &&
+        {data.fileHandleInfo.handle.kind === 'directory' &&
             <MenuItem onClick={() => {
                 onClose();
                 wilde.emit(wilde.eventBuilder.onNewFile());
@@ -34,7 +44,7 @@ export const DirectoryExplorerContextMenu: FunctionComponent<DirectoryExplorerCo
                 New File...
             </MenuItem>}
 
-        {selectedFile.handle.kind === 'directory' &&
+        {data.fileHandleInfo.handle.kind === 'directory' &&
             <MenuItem onClick={() => {
                 onClose();
                 wilde.emit(wilde.eventBuilder.onNewDirectory());
@@ -42,21 +52,12 @@ export const DirectoryExplorerContextMenu: FunctionComponent<DirectoryExplorerCo
                 New folder...
             </MenuItem>}
 
-        {selectedFile.handle !== rootDirectory &&
+        {data.fileHandleInfo.handle !== rootDirectory &&
             <MenuItem onClick={() => {
                 onClose();
-                wilde.emit(wilde.eventBuilder.onDeleteFile(selectedFile));
+                wilde.emit(wilde.eventBuilder.onDeleteFile(data.fileHandleInfo));
             }}>
                 Delete
             </MenuItem>}
     </Menu>
-}
-
-export interface DirectoryExplorerContextMenuProps {
-    open: boolean;
-    position: {
-        mouseX: number;
-        mouseY: number;
-    } | null;
-    onClose: () => void;
 }
