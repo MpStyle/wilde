@@ -6,7 +6,7 @@ import { StringUtils } from "../../../book/StringUtils";
 
 export const WildeAvatar: FunctionComponent<WildeAvatarProps> = props => {
     const page = props.name.replace(WildeProtocol, '');
-    const children = page[0];
+    const children = page[0].toUpperCase();
     const bgcolor = StringUtils.toColor(page);
     const sizeToSx = () => {
         switch (props.size) {

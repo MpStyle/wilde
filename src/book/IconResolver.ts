@@ -1,4 +1,4 @@
-import {FileUtils} from "./FileUtils";
+import { FileUtils } from "./FileUtils";
 
 const iconsFolder = 'icons/default/';
 
@@ -8,6 +8,7 @@ const directoryIconByTreeNode = (node: FileSystemHandle, collapsed: boolean | un
     switch (node.name) {
         case 'images':
         case 'imgs':
+        case 'icons':
             fileName = 'folder_type_images';
             break;
         case '.git':
@@ -22,12 +23,44 @@ const directoryIconByTreeNode = (node: FileSystemHandle, collapsed: boolean | un
         case 'bin':
             fileName = 'folder_type_binary';
             break;
+        case '.github':
+            fileName = 'folder_type_github';
+            break;
+        case '.idea':
+            fileName = 'folder_type_idea';
+            break;
+        case 'docs':
+            fileName = 'folder_type_docs';
+            break;
+        case 'src':
+            fileName = 'folder_type_src';
+            break;
+        case 'js':
+        case 'node_modules':
+            fileName = 'folder_type_js';
+            break;
+        case 'component':
+            fileName = 'folder_type_component';
+            break;
+        case 'locale':
+        case 'locales':
+            fileName = 'folder_type_locale';
+            break;
+        case 'hook':
+        case 'hooks':
+            fileName = 'folder_type_hook';
+            break;
     }
 
     return collapsed ? fileName : `${fileName}_opened`;
 }
 
 const fileIconByTreeNode = (node: FileSystemHandle): string => {
+    switch (node.name) {
+        case 'robots.txt':
+            return 'file_type_robots';
+    }
+
     const extension = FileUtils.getExtension(node.name);
 
     if (extension) {
