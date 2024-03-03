@@ -84,6 +84,7 @@ export const DirectoryExplorer: FunctionComponent<DirectoryExplorerProps> = prop
 
     return <Fragment>
         <TreeView nodes={nodes}
+            itemSize={24}
             style={{ overflowX: 'hidden' }}
             onSelectEmptyArea={() => {
                 if (!rootDirectory) {

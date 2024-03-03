@@ -4,33 +4,18 @@ import { Box, Stack, Typography, styled, useTheme } from "@mui/material";
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 
-//#region TreeViewItemBoxProps
-type TreeViewItemBoxProps = { node: TreeNode }
-
-const TreeViewItemBox = styled(Box)<TreeViewItemBoxProps>(props => {
-    const { node, theme } = props;
-
+const TreeViewItemBox = styled(Box)(() => {
     return {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         userSelect: 'none',
-        backgroundColor: node.isSelected ? theme.palette.primary.light : undefined,
-        color: node.isSelected ? theme.palette.primary.contrastText : undefined,
-        border: node.isSelected || node.isContextMenu ? `1px solid ${theme.palette.primary.main}` : undefined,
         cursor: 'pointer',
-        '&:hover': {
-            backgroundColor: node.isSelected ? theme.palette.primary.light : theme.palette.grey[300],
-        }
     };
 });
-//#endregion
 
-//#region TreeViewItemStackProps
-type TreeViewItemStackProps = { left: number }
-
-const TreeViewItemStack = styled(Stack)<TreeViewItemStackProps>(props => {
-    const { left, theme } = props;
+const TreeViewItemStack = styled(Stack)<{ left: number, node: TreeNode }>(props => {
+    const { left, theme, node } = props;
 
     return {
         position: 'absolute',
@@ -41,11 +26,16 @@ const TreeViewItemStack = styled(Stack)<TreeViewItemStackProps>(props => {
         justifyContent: 'left',
         pl: 0.5,
         pr: 0.5,
+        backgroundColor: node.isSelected ? theme.palette.primary.light : undefined,
+        color: node.isSelected ? theme.palette.primary.contrastText : undefined,
+        border: `1px solid ${node.isSelected || node.isContextMenu ? theme.palette.primary.main : 'rgba(0,0,0,0)'}`,
+        '&:hover': {
+            backgroundColor: node.isSelected ? theme.palette.primary.light : theme.palette.grey[300],
+            border: `1px solid ${node.isSelected ? theme.palette.primary.light : theme.palette.grey[300]}`,
+        }
     };
 });
-//#endregion
 
-//#region TreeViewItemTypography
 const TreeViewItemTypography = styled(Typography)(() => ({
     fontWeight: 'inherit',
     flexGrow: 1,
@@ -53,9 +43,7 @@ const TreeViewItemTypography = styled(Typography)(() => ({
     overflow: "hidden",
     textOverflow: "ellipsis",
 }));
-//#endregion
 
-//#region TreeViewItem
 export interface TreeViewItemData {
     nodes: TreeNode[];
     onSelectedItem: (node: TreeNode) => void;
@@ -77,10 +65,9 @@ export const TreeViewItem: FunctionComponent<TreeViewItemProps> = props => {
     const isCollapsable = currentNode.isCollapsable === undefined ? true : currentNode.isCollapsable;
 
     return <TreeViewItemBox style={props.style}
-        node={currentNode}
         onClick={() => onSelectedItem(currentNode)}
         onContextMenu={event => onContextMenu(currentNode, event)}>
-        <TreeViewItemStack direction='row' left={left}>
+        <TreeViewItemStack direction='row' left={left} node={currentNode}>
             {isCollapsable && <Box component={currentNode.collapsed ? KeyboardArrowRightIcon : KeyboardArrowDownIcon}
                 color={currentNode.isSelected ? theme.palette.primary.contrastText : theme.palette.grey[600]}
                 sx={{ visibility: currentNode.isLeaf ? 'hidden' : 'visible' }} />}
@@ -93,4 +80,3 @@ export const TreeViewItem: FunctionComponent<TreeViewItemProps> = props => {
         </TreeViewItemStack>
     </TreeViewItemBox>
 }
-//#endregion
