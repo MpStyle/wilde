@@ -5,6 +5,7 @@ __!!!WORK IN PROGRESS PROJECT!!!__
 <img src="docs/images/wilde-logo.png" width="200" alt="Wilde" />
 
 [![Test](https://github.com/MpStyle/wilde/actions/workflows/test.yml/badge.svg)](https://github.com/MpStyle/wilde/actions/workflows/test.yml)
+[![codecov](https://codecov.io/gh/MpStyle/wilde/graph/badge.svg?token=AEAEG8BV4I)](https://codecov.io/gh/MpStyle/wilde)
 [![Deploy](https://github.com/MpStyle/wilde/actions/workflows/deploy-to-gh-pages.yml/badge.svg)](https://github.com/MpStyle/wilde/actions/workflows/deploy-to-gh-pages.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
