@@ -4,6 +4,10 @@ __!!!WORK IN PROGRESS PROJECT!!!__
 
 <img src="docs/images/wilde-logo.png" width="200" alt="Wilde" />
 
+[![Test](https://github.com/MpStyle/wilde/actions/workflows/test.yml/badge.svg)](https://github.com/MpStyle/wilde/actions/workflows/test.yml)
+[![Deploy](https://github.com/MpStyle/wilde/actions/workflows/deploy-to-gh-pages.yml/badge.svg)](https://github.com/MpStyle/wilde/actions/workflows/deploy-to-gh-pages.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 Wilde is a web integrated local desktop environment. \
 An IDE designed primarily to work on the web. It wasn't conceived as an Electron-like desktop application and later distributed on the web, but rather, it was born and growed-up within a browser tab.
 
