@@ -2,7 +2,7 @@
 
 __!!!WORK IN PROGRESS PROJECT!!!__
 
-![Wilde logo](docs/images/wilde-logo.png)
+<img src="docs/images/wilde-logo.png" width="200" alt="Wilde" />
 
 Wilde is a web integrated local desktop environment. \
 An IDE designed primarily to work on the web. It wasn't conceived as an Electron-like desktop application and later distributed on the web, but rather, it was born and growed-up within a browser tab.
