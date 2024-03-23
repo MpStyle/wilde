@@ -1,8 +1,14 @@
 import { Stack, useTheme } from "@mui/material";
-import { FunctionComponent, useEffect } from 'react';
+import { Fragment, FunctionComponent, useEffect } from 'react';
 import { EditorGroups } from "./editor-groups/EditorGroups";
 import { Sidebar } from "./sidebar/Sidebar";
 import { StatusBar } from "./status-bar/StatusBar";
+import { CloseDirectoryDialog } from "./common/close-directory-dialog/CloseDirectoryDialog";
+import { NewDirectoryDialog } from "./common/new-directory-dialog/NewDirectoryDialog";
+import { NewFileDialog } from "./common/new-file-dialog/NewFileDialog";
+import { DeleteFileDialog } from "./common/delete-file-dialog/DeleteFileDialog";
+import { AboutWildeDialog } from "./common/about-wilde-dialog/AboutWildeDialog";
+import { ShortcutManager } from "./common/shortcut-manager/ShortcutManager";
 
 export const App: FunctionComponent = () => {
     const theme = useTheme();
@@ -26,24 +32,38 @@ export const App: FunctionComponent = () => {
         }
     }, []);
 
-    return <Stack direction="column"
-        id="App"
-        sx={{
-            height: '100%',
-            overflow: 'hidden',
-            '& > :last-child': {
-                borderTop: `1px solid ${theme.palette.grey[400]}`
-            },
-        }}>
+    return <Fragment>
+        <ShortcutManager />
 
-        <Stack direction="row" sx={{
-            height: `calc(100% - ${statusBarHeight})`,
-            overflowX: 'hidden',
-        }}>
-            <Sidebar />
-            <EditorGroups />
+        <Stack direction="column"
+            id="App"
+            sx={{
+                height: '100%',
+                overflow: 'hidden',
+                '& > :last-child': {
+                    borderTop: `1px solid ${theme.palette.grey[400]}`
+                },
+            }}>
+
+            <Stack direction="row" sx={{
+                height: `calc(100% - ${statusBarHeight})`,
+                overflowX: 'hidden',
+            }}>
+                <Sidebar />
+                <EditorGroups />
+            </Stack>
+
+            <StatusBar />
         </Stack>
 
-        <StatusBar />
-    </Stack>;
+        <CloseDirectoryDialog />
+
+        <NewDirectoryDialog />
+
+        <NewFileDialog />
+
+        <DeleteFileDialog />
+
+        <AboutWildeDialog />
+    </Fragment>;
 }
