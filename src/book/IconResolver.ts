@@ -11,6 +11,9 @@ const directoryIconByTreeNode = (node: FileSystemHandle, collapsed: boolean | un
         case 'icons':
             fileName = 'folder_type_images';
             break;
+        case 'common':
+            fileName = 'folder_type_common';
+            break;
         case '.git':
             fileName = 'folder_type_git';
             break;
@@ -36,8 +39,10 @@ const directoryIconByTreeNode = (node: FileSystemHandle, collapsed: boolean | un
             fileName = 'folder_type_src';
             break;
         case 'js':
-        case 'node_modules':
             fileName = 'folder_type_js';
+            break;
+        case 'node_modules':
+            fileName = 'folder_type_node';
             break;
         case 'component':
             fileName = 'folder_type_component';
@@ -50,6 +55,9 @@ const directoryIconByTreeNode = (node: FileSystemHandle, collapsed: boolean | un
         case 'hooks':
             fileName = 'folder_type_hook';
             break;
+        case 'coverage':
+            fileName = 'folder_type_coverage';
+            break;
     }
 
     return collapsed ? fileName : `${fileName}_opened`;
@@ -59,17 +67,29 @@ const fileIconByTreeNode = (node: FileSystemHandle): string => {
     switch (node.name) {
         case 'robots.txt':
             return 'file_type_robots';
+        case 'package.json':
+        case 'package-lock.json':
+            return 'file_type_npm';
+        case 'tsconfig.json':
+            return 'file_type_tsconfig';
     }
 
     const extension = FileUtils.getExtension(node.name);
 
     if (extension) {
         switch (extension) {
+            case 'svg':
+                return `file_type_svg`;
             case 'png':
             case 'gif':
             case 'jpg':
-            case 'svg':
                 return `file_type_image`;
+            case 'js':
+                if (node.name.endsWith('.test.js')) {
+                    return 'file_type_testjs';
+                }
+
+                return 'file_type_js';
             case 'json':
                 return 'file_type_json';
             case 'txt':
@@ -86,6 +106,10 @@ const fileIconByTreeNode = (node: FileSystemHandle): string => {
             case 'css':
                 return 'file_type_css';
             case 'ts':
+                if (node.name.endsWith('.test.ts')) {
+                    return 'file_type_testts';
+                }
+
                 return 'file_type_typescript';
             case 'tsx':
                 return 'file_type_reactts';
