@@ -9,11 +9,14 @@ export const FileSorter = {
             return 1;
         }
 
-        if (a.name < b.name) {
+        const aName = a.name.toLowerCase();
+        const bName = b.name.toLowerCase();
+
+        if (aName < bName) {
             return -1;
         }
 
-        if (a.name > b.name) {
+        if (aName > bName) {
             return 1;
         }
 
