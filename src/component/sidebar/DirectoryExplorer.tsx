@@ -55,7 +55,7 @@ export const DirectoryExplorer: FunctionComponent<DirectoryExplorerProps> = prop
                 label: item.name,
                 id: itemPath,
                 isLeaf: item.kind === 'file',
-                icon: <FileIcon sx={{ mr: 1, color: theme.palette.grey[400] }} handle={item} collapsed={collapsed} path={itemPath} />,
+                icon: <FileIcon size='small' sx={{ mr: 1, color: theme.palette.grey[400] }} handle={item} collapsed={collapsed} path={itemPath} />,
                 handle: item,
                 isSelected: selectedFile?.handle === item,
                 isContextMenu: state.contextMenu?.fileHandleInfo.handle === item,
