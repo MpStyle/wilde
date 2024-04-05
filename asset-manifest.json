@@ -1,0 +1,14 @@
+{
+  "files": {
+    "main.css": "https://mpstyle.github.io/wilde/static/css/main.4439bf05.css",
+    "main.js": "https://mpstyle.github.io/wilde/static/js/main.39cc824d.js",
+    "index.html": "https://mpstyle.github.io/wilde/index.html",
+    "static/media/getFetch.cjs": "https://mpstyle.github.io/wilde/static/media/getFetch.40f37ddea2378391108f.cjs",
+    "main.4439bf05.css.map": "https://mpstyle.github.io/wilde/static/css/main.4439bf05.css.map",
+    "main.39cc824d.js.map": "https://mpstyle.github.io/wilde/static/js/main.39cc824d.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.4439bf05.css",
+    "static/js/main.39cc824d.js"
+  ]
+}
