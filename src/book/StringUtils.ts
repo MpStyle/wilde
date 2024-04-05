@@ -17,5 +17,8 @@ export const StringUtils = {
         /* eslint-enable no-bitwise */
 
         return color;
+    },
+    capitalize: (string: string) => {
+        return string.charAt(0).toUpperCase() + string.slice(1);
     }
 }

@@ -1,40 +1,61 @@
-import ClearIcon from '@mui/icons-material/Clear';
-import { IconButton, Stack, TextField, Typography, alpha, styled, useTheme } from "@mui/material";
 import Box from "@mui/material/Box";
-import cloneDeep from "lodash.clonedeep";
-import { FunctionComponent, useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
-import { useDispatch, useSelector } from "react-redux";
-import { useWilde } from "../../../../hook/WildeHook";
-import { Settings, updateSettings } from "../../../../slice/SettingsSlice";
-import { AppDispatch, AppState } from "../../../../store/AppStore";
-import { EditorProps } from "../../book/EditorProps";
-import { tabPanelHeight } from "../../book/TabHeight";
-import { BooleanSetting } from "./BooleanSetting";
-import { SelectSetting } from "./SelectSetting";
-import { FlatSettingEditorInfo, settingsEditorInfoMap as settingsEditorInfo } from "./entity/SettingsDefinition";
+import React, {FunctionComponent, useEffect, useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
+import {AppDispatch, AppState} from "../../../../store/AppStore";
+import {EditorProps} from "../../book/EditorProps";
+import {
+    SettingsDefinitionKey,
+    SettingsItemDefinition,
+    SettingsValue,
+    updateSettings
+} from "../../../../slice/SettingsSlice";
+import {StringUtils} from "../../../../book/StringUtils";
+import Typography from "@mui/material/Typography";
+import {useWilde} from "../../../../hook/WildeHook";
+import isequal from "lodash.isequal";
+import {SettingsEditorProxy} from "./SettingsEditorProxy";
 
-const SettingsEditorBox = styled(Box)(() => ({
-    height: tabPanelHeight,
-    margin: 0,
-    padding: '0.5em',
-    overflow: 'auto',
-}));
+interface GroupedSettings {
+    [key: string]: SettingsItemDefinition | GroupedSettings;
+}
 
-const reactKeyBuilder = (key: string) => `settings-${key}-key`;
-const labelKeyBuilder = (key: string) => `settings-${key}-label`;
-const descriptionKeyBuilder = (key: string) => `settings-${key}-description`;
+const groupSettings = (settingsDefinition: SettingsItemDefinition[]): GroupedSettings => {
+    const groupedSettings: GroupedSettings = {};
+    const sorted = [...settingsDefinition].sort((a, b) =>
+        a.key.join('/').localeCompare(b.key.join('/')));
+
+    sorted.forEach(item => {
+        let currentGroup: any = groupedSettings;
+
+        // Iterate over each part of the key to create nested objects
+        item.key.forEach((keyPart, index) => {
+            if (index === item.key.length - 1) {
+                // Last part of the key, assign the item
+                currentGroup[keyPart] = item;
+            } else {
+                // Create or update nested group
+                currentGroup[keyPart] = currentGroup[keyPart] || {};
+                currentGroup = currentGroup[keyPart];
+            }
+        });
+    });
+
+    return groupedSettings;
+}
 
 export const SettingsEditor: FunctionComponent<EditorProps> = props => {
-    const settings = useSelector((appState: AppState) => appState.settings);
-    const [state, setState] = useState<Settings>(settings);
-    const [searchSettings, setSearchSettings] = useState<string>('');
-    const [flatSettings, setFlatSettings] = useState<{ [key: string]: FlatSettingEditorInfo; }>({});
-    const [settingsKeys, setSettingsKeys] = useState<string[]>([]);
+    const settings = useSelector((appState: AppState) => appState.settings.values);
+    const settingsDefinition = useSelector((appState: AppState) => appState.settings.definition);
+    const [state, setState] = useState(settings);
     const dispatch = useDispatch<AppDispatch>();
     const wilde = useWilde();
-    const theme = useTheme();
-    const { t } = useTranslation();
+    const groupedSettingsDefinition = groupSettings(settingsDefinition.items);
+
+    useEffect(() => {
+        if (!isequal(state, settings)) {
+            props.onContentChange();
+        }
+    }, [settings, state]);
 
     // onSave event listener
     useEffect(() => {
@@ -46,126 +67,63 @@ export const SettingsEditor: FunctionComponent<EditorProps> = props => {
         wilde.subscribeTo(wilde.eventType.onSaveAll, onSaveAll);
 
         return () => wilde.unsubscribeFrom(wilde.eventType.onSaveAll, onSaveAll);
-    }, []);
+    });
 
-    useEffect(() => {
-        // Iterates throught "settingsDefinitions" to create a flat object with section, subsection and setting type
-        const flatSettings = Object.entries(settingsEditorInfo).reduce((acc, [key, value]) => {
-            const [section, subsection, item] = key.split("/");
-            const label = t(labelKeyBuilder(key));
-            const description = t(descriptionKeyBuilder(key));
-            const newTags = [label, label, description];
-
-            acc[section] = { type: 'section', label, description, tags: newTags.concat(acc[section]?.tags ?? []) };
-
-            if (item !== undefined) {
-                acc[`${section}/${subsection}`] = { type: 'subsection', label, description, tags: newTags.concat((acc[`${section}/${subsection}`]?.tags ?? [])) };
-            }
-
-            acc[key] = { ...value, label, description, tags: newTags.concat(acc[key]?.tags ?? []) };
-
-            return acc;
-        }, {} as { [key: string]: FlatSettingEditorInfo });
-
-        setFlatSettings(flatSettings);
-    }, []);
-
-    useEffect(() => {
-        const settingsKeys = Object.keys(flatSettings)
-            .sort()
-            .filter(sk => searchSettings === '' || flatSettings[sk].tags.filter(tag => tag.toLowerCase().indexOf(searchSettings.toLowerCase()) !== -1).length);
-
-        setSettingsKeys(settingsKeys);
-    }, [searchSettings, flatSettings]);
-
-    const setNewSettings = (newState: Settings) => {
-        setState(newState);
-
-        if (JSON.stringify(newState) === JSON.stringify(settings)) {
-            props.onContentRestore();
-        }
-        else {
-            props.onContentChange();
-        }
+    const setValue = (key: SettingsDefinitionKey, newValue: SettingsValue) => {
+        setState(state => ({
+            ...state,
+            [key.join('/')]: newValue
+        }));
     }
 
-    return <SettingsEditorBox id="SettingsEditorBox">
-        <TextField size="small"
-            fullWidth
-            placeholder={t("Search settings..")}
-            sx={{
-                mb: 2,
-                "& .Mui-focused .MuiIconButton-root": { color: "primary.main" },
-                "& .Mui-focused .MuiTypography-root": {
-                    borderColor: theme.palette.primary.main,
-                    backgroundColor: alpha(theme.palette.primary.main, 0.6),
-                    color: theme.palette.primary.contrastText
-                },
-            }}
-            value={searchSettings}
-            onChange={e => setSearchSettings(e.target.value)}
-            InputProps={{
-                endAdornment: (
-                    <Stack direction='row' sx={{ alignItems: 'center' }}>
-                        {searchSettings !== '' && <Typography variant="caption" sx={{ color: theme.palette.grey[500], whiteSpace: 'nowrap', border: `1px solid ${theme.palette.grey[500]}`, padding: '2px 15px', borderRadius: '10px', fontWeight: 'bold' }}>
-                            {settingsKeys.filter(sk => flatSettings[sk].type !== 'section' && flatSettings[sk].type !== 'subsection').length} Settings found
-                        </Typography>}
-                        <IconButton
-                            sx={{ visibility: searchSettings !== '' ? "visible" : "hidden" }}
-                            onClick={() => setSearchSettings('')}>
-                            <ClearIcon />
-                        </IconButton>
-                    </Stack>
-                ),
-            }} />
+    return <Box sx={{pl: 2, pr: 2}}>
+        {Object.keys(groupedSettingsDefinition).map(levelOneKey => {
+            const levelOne = groupedSettingsDefinition[levelOneKey];
 
-        <Stack direction='column' spacing={1.5}>
-            {settingsKeys.map((key) => {
-                const settingKey = key as keyof Settings;
-                const settingDefinition = flatSettings[settingKey];
-                const reactKey = reactKeyBuilder(key);
+            if (levelOne.hasOwnProperty("key")) {
+                const item = levelOne as SettingsItemDefinition;
+                return <SettingsEditorProxy key={`settings-item-${item.key.join("-")}`}
+                               item={item}
+                               value={state[item.key.join('/')]}
+                               setValue={setValue}/>
+            }
 
-                switch (settingDefinition.type) {
-                    case 'section':
-                        return <Typography key={reactKey} variant="h5" data-tags={settingDefinition.tags}>
-                            {settingDefinition.label}
+            const levelOneGrouped = levelOne as GroupedSettings;
+
+            return <Box key={`settings-level-one-${levelOneKey}`}>
+                <Typography variant="h5" sx={{pt: 2, pb: 1}}>
+                    {StringUtils.capitalize(levelOneKey)}
+                </Typography>
+
+                {Object.keys(levelOne).map(levelTwoKey => {
+                    const levelTwo = levelOneGrouped[levelTwoKey];
+
+                    if (levelTwo.hasOwnProperty("key")) {
+                        const item = levelTwo as SettingsItemDefinition;
+                        return <SettingsEditorProxy key={`settings-item-${item.key.join("-")}`}
+                                       item={item}
+                                       value={state[item.key.join('/')]}
+                                       setValue={setValue}/>
+                    }
+
+                    const levelTwoGrouped = levelTwo as GroupedSettings;
+
+                    return <Box key={`settings-level-two-${levelOneKey}`}>
+                        <Typography variant="h6" sx={{pt: 1.5, pb: 0.5}}>
+                            {StringUtils.capitalize(levelTwoKey)}
                         </Typography>
-                    case 'subsection':
-                        return <Typography key={reactKey} variant="h6" data-tags={settingDefinition.tags}>
-                            {settingDefinition.label}
-                        </Typography>
-                    case 'boolean':
-                        return <BooleanSetting key={reactKey}
-                            data-tags={settingDefinition.tags}
-                            label={settingDefinition.label}
-                            description={settingDefinition.description}
-                            sx={{ ml: 1.5 }}
-                            value={state[settingKey] as boolean}
-                            setValue={(newValue) => {
-                                const newState = cloneDeep(state);
-                                (newState[settingKey] as boolean) = newValue;
 
-                                setNewSettings(newState);
-                            }} />
-                    case "strings":
-                        return <SelectSetting key={reactKey}
-                            data-tags={settingDefinition.tags}
-                            settingsKey={key}
-                            label={settingDefinition.label}
-                            description={settingDefinition.description}
-                            sx={{ ml: 1.5 }}
-                            value={state[settingKey] as string}
-                            options={settingDefinition.options}
-                            setValue={(newValue) => {
-                                const newState = cloneDeep(state);
-                                (newState[settingKey] as (string | undefined)) = newValue;
+                        {Object.keys(levelTwo).map(levelThreeKey => {
+                            const item = levelTwoGrouped[levelThreeKey] as SettingsItemDefinition;
 
-                                setNewSettings(newState);
-                            }} />
-                    default:
-                        return null;
-                }
-            })}
-        </Stack>
-    </SettingsEditorBox>
+                            return <SettingsEditorProxy key={`settings-item-${item.key.join("-")}`}
+                                           item={item}
+                                           value={state[item.key.join('/')]}
+                                           setValue={setValue}/>
+                        })}
+                    </Box>
+                })}
+            </Box>
+        })}
+    </Box>
 }

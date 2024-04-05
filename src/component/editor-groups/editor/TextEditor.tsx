@@ -10,7 +10,7 @@ import { AppState } from "../../../store/AppStore";
 
 export const TextEditor: FunctionComponent<FileEditorProps> = props => {
     const [editor, setEditor] = useState<monaco.editor.IStandaloneCodeEditor | null>(null);
-    const settings = useSelector((appState: AppState) => appState.settings);
+    const settings = useSelector((appState: AppState) => appState.settings.values);
     const monacoEl = useRef(null);
     const wilde = useWilde();
     const { isChanged, handle } = props.editor;
@@ -57,8 +57,8 @@ export const TextEditor: FunctionComponent<FileEditorProps> = props => {
                     language: getLanguage(),
                     automaticLayout: true,
                     minimap: {
-                        enabled: settings["editor/minimap/enabled"],
-                        autohide: settings["editor/minimap/autoHide"],
+                        enabled: settings["editor/minimap/enabled"] as boolean,
+                        autohide: settings["editor/minimap/autoHide"] as boolean,
                     }
                 });
 
