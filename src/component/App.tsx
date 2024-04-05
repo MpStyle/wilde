@@ -1,16 +1,19 @@
-import { Stack, useTheme } from "@mui/material";
-import { Fragment, FunctionComponent, useEffect } from 'react';
-import { EditorGroups } from "./editor-groups/EditorGroups";
-import { Sidebar } from "./sidebar/Sidebar";
-import { StatusBar } from "./status-bar/StatusBar";
-import { CloseDirectoryDialog } from "./common/close-directory-dialog/CloseDirectoryDialog";
-import { NewDirectoryDialog } from "./common/new-directory-dialog/NewDirectoryDialog";
-import { NewFileDialog } from "./common/new-file-dialog/NewFileDialog";
-import { DeleteFileDialog } from "./common/delete-file-dialog/DeleteFileDialog";
-import { AboutWildeDialog } from "./common/about-wilde-dialog/AboutWildeDialog";
-import { ShortcutManager } from "./common/shortcut-manager/ShortcutManager";
+import {Stack, useTheme} from "@mui/material";
+import {Fragment, FunctionComponent, useEffect} from 'react';
+import {EditorGroups} from "./editor-groups/EditorGroups";
+import {Sidebar} from "./sidebar/Sidebar";
+import {StatusBar} from "./status-bar/StatusBar";
+import {CloseDirectoryDialog} from "./common/close-directory-dialog/CloseDirectoryDialog";
+import {NewDirectoryDialog} from "./common/new-directory-dialog/NewDirectoryDialog";
+import {NewFileDialog} from "./common/new-file-dialog/NewFileDialog";
+import {DeleteFileDialog} from "./common/delete-file-dialog/DeleteFileDialog";
+import {AboutWildeDialog} from "./common/about-wilde-dialog/AboutWildeDialog";
+import {ShortcutManager} from "./common/shortcut-manager/ShortcutManager";
+import {useSelector} from "react-redux";
+import {AppState} from "../store/AppStore";
 
 export const App: FunctionComponent = () => {
+    const rootDirectory = useSelector((appState: AppState) => appState.openedDirectory.rootDirectory);
     const theme = useTheme();
     const statusBarHeight = '28px';
 
@@ -33,37 +36,39 @@ export const App: FunctionComponent = () => {
     }, []);
 
     return <Fragment>
-        <ShortcutManager />
+        <ShortcutManager/>
 
         <Stack direction="column"
-            id="App"
-            sx={{
-                height: '100%',
-                overflow: 'hidden',
-                '& > :last-child': {
-                    borderTop: `1px solid ${theme.palette.grey[400]}`
-                },
-            }}>
+               id="App"
+               sx={{
+                   height: '100%',
+                   overflow: 'hidden',
+                   '& > :last-child': {
+                       borderTop: `1px solid ${theme.palette.grey[400]}`
+                   },
+               }}>
 
             <Stack direction="row" sx={{
                 height: `calc(100% - ${statusBarHeight})`,
                 overflowX: 'hidden',
             }}>
-                <Sidebar />
-                <EditorGroups />
+                <Sidebar/>
+                <EditorGroups/>
             </Stack>
 
-            <StatusBar />
+            <StatusBar/>
         </Stack>
 
-        <CloseDirectoryDialog />
+        {rootDirectory && <Fragment>
+            <CloseDirectoryDialog/>
 
-        <NewDirectoryDialog />
+            <NewDirectoryDialog/>
 
-        <NewFileDialog />
+            <NewFileDialog/>
 
-        <DeleteFileDialog />
+            <DeleteFileDialog/>
+        </Fragment>}
 
-        <AboutWildeDialog />
+        <AboutWildeDialog/>
     </Fragment>;
 }
