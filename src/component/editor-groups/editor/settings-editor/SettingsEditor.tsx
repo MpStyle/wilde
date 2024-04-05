@@ -14,6 +14,8 @@ import Typography from "@mui/material/Typography";
 import {useWilde} from "../../../../hook/WildeHook";
 import isequal from "lodash.isequal";
 import {SettingsEditorProxy} from "./SettingsEditorProxy";
+import {TextField} from "@mui/material";
+import {useTranslation} from "react-i18next";
 
 interface GroupedSettings {
     [key: string]: SettingsItemDefinition | GroupedSettings;
@@ -47,7 +49,9 @@ export const SettingsEditor: FunctionComponent<EditorProps> = props => {
     const settings = useSelector((appState: AppState) => appState.settings.values);
     const settingsDefinition = useSelector((appState: AppState) => appState.settings.definition);
     const [state, setState] = useState(settings);
+    const [search, setSearch] = useState('');
     const dispatch = useDispatch<AppDispatch>();
+    const {t} = useTranslation();
     const wilde = useWilde();
     const groupedSettingsDefinition = groupSettings(settingsDefinition.items);
 
@@ -76,16 +80,22 @@ export const SettingsEditor: FunctionComponent<EditorProps> = props => {
         }));
     }
 
-    return <Box sx={{pl: 2, pr: 2}}>
+    return <Box sx={{p: 2}}>
+        <TextField size="small" label={t("Search settings…")}
+                   fullWidth
+                   value={search}
+                   onChange={e => setSearch(e.target.value)}/>
+
         {Object.keys(groupedSettingsDefinition).map(levelOneKey => {
             const levelOne = groupedSettingsDefinition[levelOneKey];
 
             if (levelOne.hasOwnProperty("key")) {
                 const item = levelOne as SettingsItemDefinition;
                 return <SettingsEditorProxy key={`settings-item-${item.key.join("-")}`}
-                               item={item}
-                               value={state[item.key.join('/')]}
-                               setValue={setValue}/>
+                                            search={search}
+                                            item={item}
+                                            value={state[item.key.join('/')]}
+                                            setValue={setValue}/>
             }
 
             const levelOneGrouped = levelOne as GroupedSettings;
@@ -101,9 +111,10 @@ export const SettingsEditor: FunctionComponent<EditorProps> = props => {
                     if (levelTwo.hasOwnProperty("key")) {
                         const item = levelTwo as SettingsItemDefinition;
                         return <SettingsEditorProxy key={`settings-item-${item.key.join("-")}`}
-                                       item={item}
-                                       value={state[item.key.join('/')]}
-                                       setValue={setValue}/>
+                                                    search={search}
+                                                    item={item}
+                                                    value={state[item.key.join('/')]}
+                                                    setValue={setValue}/>
                     }
 
                     const levelTwoGrouped = levelTwo as GroupedSettings;
@@ -117,9 +128,10 @@ export const SettingsEditor: FunctionComponent<EditorProps> = props => {
                             const item = levelTwoGrouped[levelThreeKey] as SettingsItemDefinition;
 
                             return <SettingsEditorProxy key={`settings-item-${item.key.join("-")}`}
-                                           item={item}
-                                           value={state[item.key.join('/')]}
-                                           setValue={setValue}/>
+                                                        search={search}
+                                                        item={item}
+                                                        value={state[item.key.join('/')]}
+                                                        setValue={setValue}/>
                         })}
                     </Box>
                 })}

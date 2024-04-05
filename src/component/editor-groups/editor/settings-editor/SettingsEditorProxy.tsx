@@ -6,20 +6,24 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import {FormHelperText, InputLabel, MenuItem, Select, TextField} from "@mui/material";
 
-export type SettingsEditorProxyProps={
+export type SettingsEditorProxyProps = {
     item: SettingsItemDefinition,
     value: SettingsValue,
-    setValue: (key: SettingsDefinitionKey, newValue: SettingsValue) => void
+    setValue: (key: SettingsDefinitionKey, newValue: SettingsValue) => void,
+    search: string
 };
 
 export const SettingsEditorProxy: FunctionComponent<SettingsEditorProxyProps> = props => {
-    const {item, value, setValue} = props;
+    const {item, value, setValue, search} = props;
     const {t} = useTranslation();
     const labelId = `settings-item-label-${item.key.join('-')}`;
     const label = t(item.label ?? item.key[item.key.length - 1]);
+    const description = item.description ? t(item.description) : '';
+    const isVisible=`${label}, ${description}`.indexOf(search) !== -1;
 
     return <FormControl key={`settings-item-${item.key.join('-')}`}
-                        fullWidth>
+                        fullWidth
+                        sx={{display: isVisible ? 'flex' : 'none'}}>
         {item.type === 'boolean' &&
             <FormControlLabel required={!item.nullable}
                               control={
@@ -56,6 +60,6 @@ export const SettingsEditorProxy: FunctionComponent<SettingsEditorProxyProps> = 
             </Select>
         </Fragment>}
 
-        {item.description && <FormHelperText>{t(item.description)}</FormHelperText>}
+        {item.description && <FormHelperText>{description}</FormHelperText>}
     </FormControl>
 };
